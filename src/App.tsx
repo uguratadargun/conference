@@ -1,0 +1,15 @@
+import { LiveKitProvider } from "./context/LiveKitContext";
+import ConferenceCall from "./components/ConferenceCall";
+import "primereact/resources/themes/lara-dark-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
+function App() {
+  return (
+    <LiveKitProvider>
+      <ConferenceCall />
+    </LiveKitProvider>
+  );
+}
+
+export default App;
