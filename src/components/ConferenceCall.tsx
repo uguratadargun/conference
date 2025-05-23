@@ -8,7 +8,6 @@ import React, {
 import { useLiveKit } from "../context/LiveKitContext";
 import { Button } from "primereact/button";
 import type { Participant } from "../types/livekit";
-import { AccessToken } from "livekit-server-sdk";
 import { Track } from "livekit-client";
 import "./ConferenceCall.css";
 
@@ -137,6 +136,46 @@ const getSizeClassName = (count: number) => {
   return "size-full";
 };
 
+// New simplified VideoParticipant component
+const VideoParticipant = React.memo(
+  ({ participant }: { participant: Participant }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+      const videoElement = videoRef.current;
+      if (!videoElement || !participant.participant) return;
+
+      const videoPublication = participant.participant
+        .getTrackPublications()
+        .find((pub) => pub.kind === Track.Kind.Video);
+
+      if (videoPublication?.track && !videoPublication.isMuted) {
+        const track = videoPublication.track;
+        console.log(`Attaching video track for ${participant.id}`);
+        track.attach(videoElement);
+
+        return () => {
+          console.log(`Detaching video track for ${participant.id}`);
+          track.detach(videoElement);
+        };
+      }
+    }, [participant.participant, participant.isVideoEnabled]);
+
+    return (
+      <video
+        ref={videoRef}
+        className="participant-video"
+        autoPlay
+        playsInline
+        muted={participant.isLocal}
+        style={{
+          display: participant.isVideoEnabled ? "block" : "none",
+        }}
+      />
+    );
+  }
+);
+
 const FullscreenParticipantView = React.memo(
   ({
     participant,
@@ -154,7 +193,7 @@ const FullscreenParticipantView = React.memo(
     <div className="fullscreen-container">
       {renderParticipant(participant, idx)}
       <Button
-        icon="pi pi-times"
+        icon={<span className="material-icons">close</span>}
         onClick={exitFullScreen}
         className="exit-fullscreen-button"
         title="Exit fullscreen"
@@ -173,94 +212,22 @@ const FullscreenParticipantView = React.memo(
 );
 
 const ConferenceCall: React.FC = () => {
-  const { roomState, connect, disconnect, toggleVideo, toggleAudio } =
-    useLiveKit();
-  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
-  const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({});
-  const isConnecting = useRef(false);
+  const {
+    roomState,
+    autoConnect,
+    disconnect,
+    toggleVideo,
+    toggleAudio,
+    retry,
+    error,
+    isRetrying,
+  } = useLiveKit();
+
   const [audioLevels, setAudioLevels] = useState<{ [key: string]: number }>({});
-  const [error, setError] = useState<string | null>(null);
-  const [isRetrying, setIsRetrying] = useState(false);
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
     string | null
   >(null);
-  // Use ref to store previous audio levels to avoid unnecessary updates
   const prevAudioLevelsRef = useRef<{ [key: string]: number }>({});
-
-  const generateToken = useCallback(async () => {
-    if (isConnecting.current || roomState.isConnected) {
-      return;
-    }
-
-    try {
-      isConnecting.current = true;
-      setError(null);
-      setIsRetrying(true);
-
-      const apiKey = "APItrVwR79fsfN6";
-      const apiSecret = "0sbQLRiGbRSTBpAlKUJO7hdniYfGCCfANlv5rUMK8ib";
-      const projectName = "ugurdargun-w5ph6ze0";
-      const roomName = "test-room";
-      const username = `user${Math.floor(Math.random() * 1000)}`;
-
-      const at = new AccessToken(apiKey, apiSecret, { identity: username });
-      at.addGrant({ roomJoin: true, room: roomName });
-      const token = await at.toJwt();
-
-      const url = `wss://${projectName}.livekit.cloud`;
-      await connect(url, token);
-    } catch (error) {
-      console.error("Connection error:", error);
-      if (error instanceof Error) {
-        // Don't prevent app from starting if it's just a media permission issue
-        if (
-          error.message.includes("camera and microphone") ||
-          error.message.includes("Permission denied") ||
-          error.message.includes("NotAllowedError")
-        ) {
-          console.warn("Continuing without media permissions:", error.message);
-          // Try to connect again without requiring media permissions
-          try {
-            const apiKey = "APItrVwR79fsfN6";
-            const apiSecret = "0sbQLRiGbRSTBpAlKUJO7hdniYfGCCfANlv5rUMK8ib";
-            const projectName = "ugurdargun-w5ph6ze0";
-            const roomName = "test-room";
-            const username = `user${Math.floor(Math.random() * 1000)}`;
-
-            const at = new AccessToken(apiKey, apiSecret, {
-              identity: username,
-            });
-            at.addGrant({ roomJoin: true, room: roomName });
-            const token = await at.toJwt();
-
-            const url = `wss://${projectName}.livekit.cloud`;
-            await connect(url, token);
-            return; // Successfully connected without media permissions
-          } catch (retryError) {
-            // If retry fails, show a different error
-            setError("Connected without camera/microphone access.");
-          }
-        } else {
-          setError(error.message);
-        }
-      } else {
-        setError("Failed to connect to the room. Please try again.");
-      }
-    } finally {
-      isConnecting.current = false;
-      setIsRetrying(false);
-    }
-  }, [roomState.isConnected, connect]);
-
-  const handleRetry = useCallback(async () => {
-    // Reset any existing connections
-    if (roomState.isConnected) {
-      disconnect();
-    }
-    // Wait a bit before retrying
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    generateToken();
-  }, [roomState.isConnected, disconnect, generateToken]);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -274,7 +241,7 @@ const ConferenceCall: React.FC = () => {
   const renderVoiceIndicator = useCallback(
     (color: string, audioLevel: number) => {
       // Create a wave-like animation effect
-      const bars = 5;
+      const bars = 10;
       const isActive = audioLevel > AUDIO_THRESHOLD;
 
       return (
@@ -286,14 +253,16 @@ const ConferenceCall: React.FC = () => {
             let height = 4; // baseHeight
 
             if (isActive) {
-              // Create a wave pattern using sine wave
-              const waveOffset = (i / (bars - 1)) * Math.PI;
-              const waveFactor = Math.sin(waveOffset);
+              // Create a bell curve shape with middle being highest
+              const middleIndex = (bars - 1) / 2;
+              const distanceFromMiddle = Math.abs(i - middleIndex);
+              const normalizedDistance = 1 - distanceFromMiddle / middleIndex;
 
-              // Combine wave pattern with audio level
-              const maxHeight = 16;
+              // Use the distance from middle to determine height (bell curve)
+              const maxHeight = 200;
               height =
-                4 + (maxHeight - 4) * (audioLevel * (0.5 + 0.5 * waveFactor));
+                4 +
+                (maxHeight - 4) * audioLevel * Math.pow(normalizedDistance, 2);
               height = Math.max(4, Math.min(maxHeight, height));
             }
 
@@ -324,16 +293,19 @@ const ConferenceCall: React.FC = () => {
       const isSpeaking = audioLevel > AUDIO_THRESHOLD;
       const isFullScreen = fullScreenParticipant === participant.id;
 
-      // Check if participant has an active video track
-      const hasActiveVideo = participant.participant
-        ?.getTrackPublications()
-        .some(
-          (pub) => pub.kind === Track.Kind.Video && pub.track && !pub.isMuted
-        );
+      // Generate a user-friendly display name from the username
+      const displayName = isLocal
+        ? "You"
+        : participant.name.startsWith("user_")
+        ? `User ${
+            participant.name.split("_")[1]?.slice(0, 4) ||
+            participant.name.slice(-4)
+          }`
+        : participant.name;
 
       // Placeholder image URLs or initials
       const profileUrl = undefined; // No avatar in model
-      const initials = participant.name
+      const initials = displayName
         .split(" ")
         .map((n) => n[0]?.toUpperCase())
         .join("")
@@ -352,40 +324,38 @@ const ConferenceCall: React.FC = () => {
           style={{ borderColor: isSpeaking ? borderColor : "transparent" }}
           onClick={() => !isFullScreen && enterFullScreen(participant.id)}
         >
-          <video
-            ref={(el) => {
-              if (el) {
-                videoRefs.current[participant.id] = el;
-              }
-            }}
-            className="participant-video"
-          />
+          <VideoParticipant participant={participant} />
 
-          {/* Only show name, avatar, and voice indicator when video is not active */}
-          {!hasActiveVideo && (
-            <>
-              <div className="participant-name" style={{ color: nameColor }}>
-                {isLocal ? "You" : participant.name}
-              </div>
-              <div className="avatar-container">
-                {profileUrl ? (
-                  <img
-                    src={profileUrl}
-                    alt={participant.name}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                ) : (
-                  <span
-                    className="avatar-initials"
-                    style={{ color: nameColor }}
-                  >
-                    {initials}
-                  </span>
-                )}
-              </div>
-              {renderVoiceIndicator(nameColor, audioLevel)}
-            </>
+          <div className="participant-name" style={{ color: nameColor }}>
+            {displayName}
+          </div>
+
+          {/* Audio mute indicator */}
+          {!participant.isAudioEnabled && (
+            <div className="audio-muted-indicator">
+              <span className="material-icons">mic_off</span>
+            </div>
           )}
+
+          <div
+            className="avatar-container"
+            style={{
+              display: participant.isVideoEnabled ? "none" : "flex",
+            }}
+          >
+            {profileUrl ? (
+              <img
+                src={profileUrl}
+                alt={participant.name}
+                style={{ width: "100%", height: "100%" }}
+              />
+            ) : (
+              <span className="avatar-initials" style={{ color: nameColor }}>
+                {initials}
+              </span>
+            )}
+          </div>
+          {renderVoiceIndicator(nameColor, audioLevel)}
         </div>
       );
     },
@@ -399,7 +369,7 @@ const ConferenceCall: React.FC = () => {
   );
 
   useEffect(() => {
-    generateToken();
+    autoConnect();
 
     return () => {
       if (roomState.isConnected) {
@@ -408,68 +378,7 @@ const ConferenceCall: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    roomState.participants.forEach((participant) => {
-      const videoElement = videoRefs.current[participant.id];
-      if (videoElement && participant.participant) {
-        // Get the video track from the participant
-        const videoTrack = participant.participant
-          .getTrackPublications()
-          .find((pub) => pub.kind === Track.Kind.Video);
-
-        if (videoTrack?.track) {
-          // Detach from any existing elements first
-          videoTrack.track.detach();
-          // Then attach to the current video element
-          videoTrack.track.attach(videoElement);
-        }
-      }
-
-      // Create audio element if it doesn't exist
-      if (!audioRefs.current[participant.id] && participant.participant) {
-        audioRefs.current[participant.id] = document.createElement("audio");
-      }
-
-      // Attach audio track
-      const audioElement = audioRefs.current[participant.id];
-      if (audioElement && participant.participant) {
-        const audioTrack = participant.participant
-          .getTrackPublications()
-          .find((pub) => pub.kind === Track.Kind.Audio);
-
-        if (audioTrack?.track) {
-          // Detach from existing elements first
-          audioTrack.track.detach();
-          // Then attach to the current audio element
-          audioTrack.track.attach(audioElement);
-        }
-      }
-    });
-
-    // Cleanup function to detach tracks when component unmounts or dependencies change
-    return () => {
-      roomState.participants.forEach((participant) => {
-        if (participant.participant) {
-          const videoTrack = participant.participant
-            .getTrackPublications()
-            .find((pub) => pub.kind === Track.Kind.Video);
-
-          const audioTrack = participant.participant
-            .getTrackPublications()
-            .find((pub) => pub.kind === Track.Kind.Audio);
-
-          if (videoTrack?.track) {
-            videoTrack.track.detach();
-          }
-
-          if (audioTrack?.track) {
-            audioTrack.track.detach();
-          }
-        }
-      });
-    };
-  }, [roomState.participants, fullScreenParticipant]);
-
+  // Audio level monitoring
   useEffect(() => {
     const updateAudioLevels = () => {
       const newAudioLevels: { [key: string]: number } = {};
@@ -537,26 +446,19 @@ const ConferenceCall: React.FC = () => {
         <div className="error-message">
           <span>{error}</span>
           <Button
-            icon={isRetrying ? "pi pi-spin pi-spinner" : "pi pi-refresh"}
-            onClick={handleRetry}
+            icon={
+              isRetrying ? (
+                <span className="material-icons rotating">refresh</span>
+              ) : (
+                <span className="material-icons">refresh</span>
+              )
+            }
+            onClick={retry}
             disabled={isRetrying}
             className="error-button"
           />
         </div>
       )}
-
-      <div className="call-info">
-        <div className="participants-count">
-          <i className="pi pi-users"></i>
-          <span>{roomState.participants.length}</span>
-        </div>
-        {roomState.isConnected && (
-          <div className="connection-status">
-            <div className="status-indicator connected"></div>
-            <span>Connected</span>
-          </div>
-        )}
-      </div>
 
       {fullscreenParticipantData?.participant ? (
         <FullscreenParticipantView
@@ -584,9 +486,11 @@ const ConferenceCall: React.FC = () => {
           <div className="control-group">
             <Button
               icon={
-                roomState.isAudioEnabled
-                  ? "pi pi-microphone"
-                  : "pi pi-microphone"
+                roomState.isAudioEnabled ? (
+                  <span className="material-icons">mic</span>
+                ) : (
+                  <span className="material-icons">mic_off</span>
+                )
               }
               onClick={toggleAudio}
               className={`control-button audio-button ${
@@ -599,7 +503,13 @@ const ConferenceCall: React.FC = () => {
 
           <div className="control-group">
             <Button
-              icon={roomState.isVideoEnabled ? "pi pi-video" : "pi pi-video"}
+              icon={
+                roomState.isVideoEnabled ? (
+                  <span className="material-icons">videocam</span>
+                ) : (
+                  <span className="material-icons">videocam_off</span>
+                )
+              }
               onClick={toggleVideo}
               className={`control-button video-button ${
                 !roomState.isVideoEnabled ? "disabled" : ""
@@ -613,7 +523,7 @@ const ConferenceCall: React.FC = () => {
 
           <div className="control-group">
             <Button
-              icon="pi pi-phone"
+              icon={<span className="material-icons">call_end</span>}
               onClick={disconnect}
               className="control-button hang-up-button"
               tooltip="Leave Call"
