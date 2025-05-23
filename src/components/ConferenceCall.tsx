@@ -524,12 +524,6 @@ const ConferenceCall: React.FC = () => {
         // Grid view
         <div className={`participants-grid ${gridClassName}`}>
           {roomState.participants.map((participant, idx) => {
-            // For the 3-participant case, apply specific grid positions
-            let className = "";
-            if (roomState.participants.length === 3 && idx === 2) {
-              className = "participant-position-3";
-            }
-
             return (
               <div className={"size-full"} key={participant.id}>
                 {renderParticipant(participant, idx)}

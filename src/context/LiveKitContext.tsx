@@ -1,13 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import {
-  Room,
-  RoomEvent,
-  RemoteParticipant,
-  LocalParticipant,
-  LocalTrack,
-  Track,
-} from "livekit-client";
-import type { Participant, RoomState } from "../types/livekit";
+import React, { createContext, useContext, useState } from "react";
+import { Room, RoomEvent, RemoteParticipant, Track } from "livekit-client";
+import type { RoomState } from "../types/livekit";
 
 interface LiveKitContextType {
   roomState: RoomState;
@@ -92,15 +85,18 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-        if (track.kind === Track.Kind.Audio) {
-          console.log("Audio track subscribed:", track);
-          // Create and attach audio element
-          const audioElement = new Audio();
-          track.attach(audioElement);
-          audioElement.play().catch(console.error);
+      room.on(
+        RoomEvent.TrackSubscribed,
+        (track, _publication, _participant) => {
+          if (track.kind === Track.Kind.Audio) {
+            console.log("Audio track subscribed:", track);
+            // Create and attach audio element
+            const audioElement = new Audio();
+            track.attach(audioElement);
+            audioElement.play().catch(console.error);
+          }
         }
-      });
+      );
 
       room.on(RoomEvent.Disconnected, () => {
         console.log("Disconnected from room");
