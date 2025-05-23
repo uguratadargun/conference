@@ -1,0 +1,653 @@
+@keyframes pulse {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.1);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.conference-container {
+  width: 100vw;
+  height: 92vh;
+  background: #181a1b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ea4335;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.error-button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.participants-grid {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  gap: 16px;
+  align-items: center;
+  justify-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+}
+
+/* For scrollable grids with many participants */
+.participants-grid.grid-scroll {
+  height: calc(100vh - 100px); /* Leave space for controls */
+  overflow-y: auto;
+  align-items: start;
+  align-content: start;
+  padding: 16px 16px 80px 16px; /* Extra bottom padding for controls */
+}
+
+/* Custom scrollbar styling */
+.participants-grid.grid-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.participants-grid.grid-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.participants-grid.grid-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.participants-grid.grid-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.participant {
+  border: 4px solid transparent;
+  border-radius: 24px;
+  background: #23272a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 32px #0006;
+  transition: border-color 0.2s;
+}
+
+.participant.speaking {
+  border-color: inherit;
+}
+
+.participant-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  background: transparent;
+}
+
+.participant-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+  z-index: 1;
+}
+
+.avatar-container {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #111;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  z-index: 1;
+}
+
+.avatar-initials {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.voice-indicator {
+  display: flex;
+  gap: 3px;
+  margin-top: 12px;
+  height: 16px;
+  align-items: flex-end;
+  opacity: 0.3;
+  transition: opacity 0.2s ease-out;
+}
+
+.voice-indicator.active {
+  opacity: 1;
+}
+
+.voice-bar {
+  width: 4px;
+  height: 4px;
+  background-color: inherit;
+  border-radius: 2px;
+  transition: height 0.1s ease-out;
+}
+
+.voice-bar.animated {
+  animation-name: pulse;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.controls-container {
+  position: fixed;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.controls-panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px);
+}
+
+.controls-panel:hover {
+  background: rgba(25, 25, 25, 0.98);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.control-group:hover {
+  transform: scale(1.05);
+}
+
+.control-button {
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 4px;
+}
+
+.control-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.control-button:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.control-button:active {
+  transform: scale(0.95);
+}
+
+.audio-button {
+  background: #22c55e;
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.audio-button:hover {
+  background: #16a34a;
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.audio-button.disabled {
+  background: #374151;
+  color: #ef4444;
+  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
+  border: 2px solid #ef4444;
+}
+
+/* Ensure icon visibility in disabled state */
+.audio-button.disabled .p-button-icon,
+.audio-button.disabled i {
+  color: #ef4444 !important;
+  opacity: 1 !important;
+}
+
+.audio-button.disabled:hover {
+  background: #4b5563;
+  color: #f87171;
+  box-shadow: 0 6px 16px rgba(55, 65, 81, 0.5);
+  border-color: #f87171;
+}
+
+/* Ensure icon visibility in disabled hover state */
+.audio-button.disabled:hover .p-button-icon,
+.audio-button.disabled:hover i {
+  color: #f87171 !important;
+  opacity: 1 !important;
+}
+
+.video-button {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.video-button:hover {
+  background: #2563eb;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.video-button.disabled {
+  background: #374151;
+  color: #ef4444;
+  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
+  border: 2px solid #ef4444;
+}
+
+/* Ensure icon visibility in disabled state */
+.video-button.disabled .p-button-icon,
+.video-button.disabled i {
+  color: #ef4444 !important;
+  opacity: 1 !important;
+}
+
+.video-button.disabled:hover {
+  background: #4b5563;
+  color: #f87171;
+  box-shadow: 0 6px 16px rgba(55, 65, 81, 0.5);
+  border-color: #f87171;
+}
+
+/* Ensure icon visibility in disabled hover state */
+.video-button.disabled:hover .p-button-icon,
+.video-button.disabled:hover i {
+  color: #f87171 !important;
+  opacity: 1 !important;
+}
+
+.hang-up-button {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  position: relative;
+}
+
+.hang-up-button:hover {
+  background: #dc2626;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+  transform: scale(1.1);
+}
+
+.hang-up-button::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ef4444, #dc2626, #ef4444);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hang-up-button:hover::after {
+  opacity: 0.7;
+}
+
+.control-label {
+  display: none;
+}
+
+.call-info {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.call-info:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.participants-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.participants-count i {
+  font-size: 16px;
+  color: #4caf50;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.status-indicator.connected {
+  background: #4caf50;
+  animation: pulse-indicator 2s infinite;
+}
+
+@keyframes pulse-indicator {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Grid templates */
+.grid-1 {
+  grid-template: 1fr / 1fr;
+}
+
+.grid-2 {
+  grid-template: 1fr / repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template: 1fr 1fr / repeat(2, 1fr);
+}
+
+.grid-4 {
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+}
+
+.grid-6 {
+  grid-template: repeat(2, 1fr) / repeat(3, 1fr);
+}
+
+.grid-7 {
+  grid-template: repeat(2, 1fr) / repeat(4, 1fr);
+}
+
+.grid-8 {
+  grid-template: repeat(2, 1fr) / repeat(4, 1fr);
+}
+
+.grid-9 {
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.grid-12 {
+  grid-template: repeat(3, 1fr) / repeat(4, 1fr);
+}
+
+.grid-default {
+  grid-template: repeat(4, 1fr) / repeat(5, 1fr);
+}
+
+.grid-scroll {
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: minmax(200px, 1fr);
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+.size-full {
+  height: 100%;
+  width: 100%;
+}
+
+.size-scroll {
+  height: 200px;
+  width: 100%;
+  min-height: 150px;
+}
+
+/* Compact participant styling for scrollable grid */
+.grid-scroll .participant {
+  border-width: 2px;
+  border-radius: 12px;
+}
+
+.grid-scroll .participant-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.grid-scroll .avatar-container {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 4px;
+}
+
+.grid-scroll .avatar-initials {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.grid-scroll .voice-indicator {
+  margin-top: 6px;
+  height: 12px;
+}
+
+.grid-scroll .voice-bar {
+  width: 3px;
+  height: 3px;
+}
+
+/* For the 3-participant case, third participant styling */
+.participant-position-3 {
+  grid-row: 2;
+  grid-column: span 2;
+  justify-self: center;
+}
+
+/* Full screen styles */
+.fullscreen-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.participant.fullscreen {
+  width: 100vw;
+  height: calc(100vh - 100px); /* Leave space for controls */
+  border-radius: 0;
+  border: none;
+  cursor: default;
+}
+
+.exit-fullscreen-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  z-index: 15;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exit-fullscreen-button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.thumbnails-container {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 40px;
+  scroll-padding: 40px;
+  scroll-margin: 20px;
+  z-index: 10;
+  /* Hide scrollbar for Webkit browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.thumbnails-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.thumbnail-wrapper {
+  min-width: 120px;
+  max-width: 160px;
+  flex: 0 0 auto;
+  /* Add more styling as needed */
+}
+
+.thumbnail-wrapper .participant {
+  width: 120px;
+  height: 90px;
+  border-radius: 12px;
+  border-width: 2px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.thumbnail-wrapper .participant:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail-wrapper .participant-name {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.thumbnail-wrapper .avatar-container {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+}
+
+.thumbnail-wrapper .avatar-initials {
+  font-size: 16px;
+}
+
+.thumbnail-wrapper .voice-indicator {
+  margin-top: 4px;
+  height: 8px;
+}
+
+.thumbnail-wrapper .voice-bar {
+  width: 2px;
+  height: 2px;
+}
+
+.size-fullscreen {
+  width: 100vw;
+  height: calc(100vh - 100px);
+}
+
+/* Add hover effect for participants in grid view */
+.participant:not(.fullscreen) {
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.participant:not(.fullscreen):hover {
+  transform: scale(1.02);
+}
