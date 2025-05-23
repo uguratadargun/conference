@@ -323,6 +323,14 @@ const ConferenceCall: React.FC = () => {
       const audioLevel = audioLevels[participant.id] || 0;
       const isSpeaking = audioLevel > AUDIO_THRESHOLD;
       const isFullScreen = fullScreenParticipant === participant.id;
+
+      // Check if participant has an active video track
+      const hasActiveVideo = participant.participant
+        ?.getTrackPublications()
+        .some(
+          (pub) => pub.kind === Track.Kind.Video && pub.track && !pub.isMuted
+        );
+
       // Placeholder image URLs or initials
       const profileUrl = undefined; // No avatar in model
       const initials = participant.name
@@ -352,23 +360,32 @@ const ConferenceCall: React.FC = () => {
             }}
             className="participant-video"
           />
-          <div className="participant-name" style={{ color: nameColor }}>
-            {isLocal ? "You" : participant.name}
-          </div>
-          <div className="avatar-container">
-            {profileUrl ? (
-              <img
-                src={profileUrl}
-                alt={participant.name}
-                style={{ width: "100%", height: "100%" }}
-              />
-            ) : (
-              <span className="avatar-initials" style={{ color: nameColor }}>
-                {initials}
-              </span>
-            )}
-          </div>
-          {renderVoiceIndicator(nameColor, audioLevel)}
+
+          {/* Only show name, avatar, and voice indicator when video is not active */}
+          {!hasActiveVideo && (
+            <>
+              <div className="participant-name" style={{ color: nameColor }}>
+                {isLocal ? "You" : participant.name}
+              </div>
+              <div className="avatar-container">
+                {profileUrl ? (
+                  <img
+                    src={profileUrl}
+                    alt={participant.name}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <span
+                    className="avatar-initials"
+                    style={{ color: nameColor }}
+                  >
+                    {initials}
+                  </span>
+                )}
+              </div>
+              {renderVoiceIndicator(nameColor, audioLevel)}
+            </>
+          )}
         </div>
       );
     },
@@ -401,6 +418,9 @@ const ConferenceCall: React.FC = () => {
           .find((pub) => pub.kind === Track.Kind.Video);
 
         if (videoTrack?.track) {
+          // Detach from any existing elements first
+          videoTrack.track.detach();
+          // Then attach to the current video element
           videoTrack.track.attach(videoElement);
         }
       }
@@ -418,11 +438,37 @@ const ConferenceCall: React.FC = () => {
           .find((pub) => pub.kind === Track.Kind.Audio);
 
         if (audioTrack?.track) {
+          // Detach from existing elements first
+          audioTrack.track.detach();
+          // Then attach to the current audio element
           audioTrack.track.attach(audioElement);
         }
       }
     });
-  }, [roomState.participants]);
+
+    // Cleanup function to detach tracks when component unmounts or dependencies change
+    return () => {
+      roomState.participants.forEach((participant) => {
+        if (participant.participant) {
+          const videoTrack = participant.participant
+            .getTrackPublications()
+            .find((pub) => pub.kind === Track.Kind.Video);
+
+          const audioTrack = participant.participant
+            .getTrackPublications()
+            .find((pub) => pub.kind === Track.Kind.Audio);
+
+          if (videoTrack?.track) {
+            videoTrack.track.detach();
+          }
+
+          if (audioTrack?.track) {
+            audioTrack.track.detach();
+          }
+        }
+      });
+    };
+  }, [roomState.participants, fullScreenParticipant]);
 
   useEffect(() => {
     const updateAudioLevels = () => {

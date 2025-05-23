@@ -31,7 +31,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: false,
+          video: true,
         });
         // Stop the stream immediately as we'll get it again through LiveKit
         stream.getTracks().forEach((track) => track.stop());
@@ -126,11 +126,11 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         // Continue without microphone
       }
 
-      // Camera is disabled by default
+      // Enable camera by default
       try {
-        await room.localParticipant.setCameraEnabled(false);
+        await room.localParticipant.setCameraEnabled(true);
       } catch (error) {
-        console.warn("Could not control camera:", error);
+        console.warn("Could not enable camera:", error);
       }
 
       const localParticipant = room.localParticipant;
@@ -140,14 +140,14 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         ...prev,
         room,
         isConnected: true,
-        isVideoEnabled: false, // Set to false since we don't have a camera
+        isVideoEnabled: true, // Set to true since we now enable camera by default
         participants: [
           {
             id: localParticipant.identity,
             name: localParticipant.identity,
             isLocal: true,
             participant: localParticipant,
-            isVideoEnabled: false, // Set to false since we don't have a camera
+            isVideoEnabled: true, // Set to true since we now enable camera by default
             isAudioEnabled: localParticipant.isMicrophoneEnabled,
           },
           ...remoteParticipants.map((participant) => ({
