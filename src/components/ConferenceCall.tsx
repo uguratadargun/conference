@@ -145,21 +145,68 @@ const VideoParticipant = React.memo(
       const videoElement = videoRef.current;
       if (!videoElement || !participant.participant) return;
 
-      const videoPublication = participant.participant
-        .getTrackPublications()
-        .find((pub) => pub.kind === Track.Kind.Video);
+      // Get all track publications and find the video track
+      const trackPublications = participant.participant.getTrackPublications();
+      const videoPublication = trackPublications.find(
+        (pub) => pub.kind === Track.Kind.Video
+      );
 
-      if (videoPublication?.track && !videoPublication.isMuted) {
+      console.log(`Video track check for ${participant.id}:`, {
+        hasVideoPublication: !!videoPublication,
+        hasTrack: !!videoPublication?.track,
+        isMuted: videoPublication?.isMuted,
+        isSubscribed: videoPublication?.isSubscribed,
+        isLocal: participant.isLocal,
+      });
+
+      if (videoPublication?.track) {
         const track = videoPublication.track;
-        console.log(`Attaching video track for ${participant.id}`);
-        track.attach(videoElement);
 
-        return () => {
-          console.log(`Detaching video track for ${participant.id}`);
-          track.detach(videoElement);
-        };
+        // For remote participants, check if the track is subscribed
+        // For local participants, the track should be available immediately
+        const shouldAttach =
+          participant.isLocal || videoPublication.isSubscribed;
+
+        if (shouldAttach && !videoPublication.isMuted) {
+          console.log(`Attaching video track for ${participant.id}`);
+          track.attach(videoElement);
+
+          return () => {
+            console.log(`Detaching video track for ${participant.id}`);
+            track.detach(videoElement);
+          };
+        }
+      } else {
+        console.log(`No video track available for ${participant.id}`);
       }
-    }, [participant.participant, participant.isVideoEnabled]);
+
+      // Check again in a short delay for newly subscribed tracks
+      const timeoutId = setTimeout(() => {
+        const updatedTrackPublications =
+          participant.participant.getTrackPublications();
+        const updatedVideoPublication = updatedTrackPublications.find(
+          (pub) => pub.kind === Track.Kind.Video
+        );
+
+        if (
+          updatedVideoPublication?.track &&
+          updatedVideoPublication.isSubscribed &&
+          !updatedVideoPublication.isMuted
+        ) {
+          console.log(`Delayed attaching video track for ${participant.id}`);
+          updatedVideoPublication.track.attach(videoElement);
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, [
+      participant.participant,
+      participant.isVideoEnabled,
+      participant.id,
+      participant.lastUpdated,
+    ]);
 
     return (
       <video
@@ -228,6 +275,7 @@ const ConferenceCall: React.FC = () => {
     string | null
   >(null);
   const prevAudioLevelsRef = useRef<{ [key: string]: number }>({});
+  const hasConnectedRef = useRef(false);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -259,7 +307,7 @@ const ConferenceCall: React.FC = () => {
               const normalizedDistance = 1 - distanceFromMiddle / middleIndex;
 
               // Use the distance from middle to determine height (bell curve)
-              const maxHeight = 200;
+              const maxHeight = 150;
               height =
                 4 +
                 (maxHeight - 4) * audioLevel * Math.pow(normalizedDistance, 2);
@@ -298,7 +346,7 @@ const ConferenceCall: React.FC = () => {
         ? "You"
         : participant.name.startsWith("user_")
         ? `User ${
-            participant.name.split("_")[1]?.slice(0, 4) ||
+            participant.name.split("_")[2]?.slice(0, 4) ||
             participant.name.slice(-4)
           }`
         : participant.name;
@@ -324,7 +372,10 @@ const ConferenceCall: React.FC = () => {
           style={{ borderColor: isSpeaking ? borderColor : "transparent" }}
           onClick={() => !isFullScreen && enterFullScreen(participant.id)}
         >
-          <VideoParticipant participant={participant} />
+          <VideoParticipant
+            participant={participant}
+            key={`${participant.id}-video-${participant.isVideoEnabled}`}
+          />
 
           <div className="participant-name" style={{ color: nameColor }}>
             {displayName}
@@ -369,7 +420,10 @@ const ConferenceCall: React.FC = () => {
   );
 
   useEffect(() => {
-    autoConnect();
+    if (!hasConnectedRef.current) {
+      hasConnectedRef.current = true;
+      autoConnect();
+    }
 
     return () => {
       if (roomState.isConnected) {

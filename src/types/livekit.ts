@@ -7,6 +7,7 @@ export interface Participant {
   participant: LocalParticipant | RemoteParticipant;
   isVideoEnabled: boolean;
   isAudioEnabled: boolean;
+  lastUpdated?: number;
 }
 
 export interface RoomState {

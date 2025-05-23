@@ -298,10 +298,41 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       room.on(
         RoomEvent.TrackSubscribed,
         (track, _publication, _participant) => {
+          console.log(
+            `Track subscribed: ${track.kind} for participant ${_participant.identity}`
+          );
           if (track.kind === Track.Kind.Audio) {
             console.log("Audio track subscribed:", track);
             // Let the browser handle audio playback automatically
             track.attach();
+          } else if (track.kind === Track.Kind.Video) {
+            console.log("Video track subscribed:", track);
+            // Video tracks will be handled by the VideoParticipant component
+            // Force a state update to trigger re-render of video components
+            setRoomState((prev) => ({
+              ...prev,
+              participants: prev.participants.map((p) =>
+                p.id === _participant.identity
+                  ? {
+                      ...p,
+                      lastUpdated: Date.now(), // Add timestamp to force re-render
+                    }
+                  : p
+              ),
+            }));
+          }
+        }
+      );
+
+      room.on(
+        RoomEvent.TrackUnsubscribed,
+        (track, _publication, _participant) => {
+          console.log(
+            `Track unsubscribed: ${track.kind} for participant ${_participant.identity}`
+          );
+          if (track.kind === Track.Kind.Video) {
+            // Force a state update to trigger re-render of video components
+            updateParticipantState(_participant, _participant.isLocal);
           }
         }
       );
