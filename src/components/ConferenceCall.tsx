@@ -116,9 +116,6 @@ const NAME_COLORS = [
   "#FFE4E1",
 ];
 
-// Audio level threshold (0-1)
-const AUDIO_THRESHOLD = 0.1;
-
 // Move grid class calculation outside component
 const getGridClassName = (count: number) => {
   if (count === 1) return "grid-1";
@@ -279,8 +276,8 @@ const VideoParticipant = React.memo(
     }, [
       participant.participant,
       participant.isVideoEnabled,
+      participant.isAudioEnabled,
       participant.id,
-      participant.lastUpdated,
     ]);
 
     return (
@@ -305,6 +302,14 @@ const VideoParticipant = React.memo(
           />
         )}
       </>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.participant.id === nextProps.participant.id &&
+      prevProps.participant.isVideoEnabled === nextProps.participant.isVideoEnabled &&
+      prevProps.participant.isAudioEnabled === nextProps.participant.isAudioEnabled &&
+      prevProps.participant.participant === nextProps.participant.participant
     );
   }
 );
@@ -508,6 +513,31 @@ const SettingsDialog = React.memo(
   }
 );
 
+// Grid'deki her participant için memoized wrapper
+const MemoizedParticipantWrapper = React.memo(
+  ({ participant, idx, renderParticipant }: { 
+    participant: Participant; 
+    idx: number; 
+    renderParticipant: (p: Participant, idx: number) => React.ReactNode;
+  }) => {
+    return (
+      <div className={"size-full"} key={participant.id}>
+        {renderParticipant(participant, idx)}
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Sadece önemli değişiklikler varsa re-render et
+    return (
+      prevProps.participant.id === nextProps.participant.id &&
+      prevProps.participant.isVideoEnabled === nextProps.participant.isVideoEnabled &&
+      prevProps.participant.isAudioEnabled === nextProps.participant.isAudioEnabled &&
+      prevProps.participant.isSpeaking === nextProps.participant.isSpeaking &&
+      prevProps.idx === nextProps.idx
+    );
+  }
+);
+
 const ConferenceCall: React.FC = () => {
   const {
     roomState,
@@ -527,13 +557,11 @@ const ConferenceCall: React.FC = () => {
     changeAudioOutput,
   } = useLiveKit();
 
-  const [audioLevels, setAudioLevels] = useState<{ [key: string]: number }>({});
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
     string | null
   >(null);
   const [showSettings, setShowSettings] = useState(false);
   const [isErrorExiting, setIsErrorExiting] = useState(false);
-  const prevAudioLevelsRef = useRef<{ [key: string]: number }>({});
   const hasConnectedRef = useRef(false);
   const errorTimeoutRef = useRef<number | null>(null);
 
@@ -581,17 +609,33 @@ const ConferenceCall: React.FC = () => {
     setFullScreenParticipant(null);
   }, []);
 
+  // Audio level monitoring - throttled for better performance
+  useEffect(() => {
+    // KALDIRILIYOR: Audio level monitoring interval'ı gereksiz
+    // ActiveSpeakersChanged event'i zaten isSpeaking bilgisini veriyor
+    // Sadece voice indicator için audioLevel gerekiyor ama bu da LiveKit'in kendi audioLevel property'si ile alınabilir
+    
+    // Manual audio level polling artık gerekli değil
+    return () => {}; // Cleanup function
+  }, []); // Dependency array simplified
+
   // Memoize the voice indicator to avoid recreating on every render
   const renderVoiceIndicator = useCallback(
-    (color: string, audioLevel: number) => {
+    (color: string, audioLevel: number, isSpeaking: boolean) => {
       // Create a wave-like animation effect
       const bars = 10;
-      const isActive = audioLevel > AUDIO_THRESHOLD;
+      // Use isSpeaking from ActiveSpeakersChanged event instead of audioLevel threshold
+      const isActive = isSpeaking;
+
+      // Only log when speaking state is active
+      if (isActive) {
+        console.log(`🎵 Voice indicator ACTIVE: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(3)}`);
+      }
 
       return (
         <div
           className={`voice-indicator ${isActive ? "active" : ""}`}
-          style={{ opacity: isActive ? 0.3 + audioLevel * 0.7 : 0.3 }}
+          style={{ opacity: isActive ? 0.8 + audioLevel * 0.2 : 0.3 }}
         >
           {Array.from({ length: bars }, (_, i) => {
             let height = 4; // baseHeight
@@ -602,11 +646,12 @@ const ConferenceCall: React.FC = () => {
               const distanceFromMiddle = Math.abs(i - middleIndex);
               const normalizedDistance = 1 - distanceFromMiddle / middleIndex;
 
-              // Use the distance from middle to determine height (bell curve)
-              const maxHeight = 150;
+              // Use audioLevel for animation intensity, but only when actually speaking
+              const effectiveLevel = Math.max(audioLevel, 0.3); // Minimum level for visibility
+              const maxHeight = 100;
               height =
                 4 +
-                (maxHeight - 4) * audioLevel * Math.pow(normalizedDistance, 2);
+                (maxHeight - 4) * effectiveLevel * Math.pow(normalizedDistance, 2);
               height = Math.max(4, Math.min(maxHeight, height));
             }
 
@@ -638,8 +683,13 @@ const ConferenceCall: React.FC = () => {
       // This is more reliable than manual audio level polling
       const isSpeaking = participant.isSpeaking || false;
       
-      // Keep audio level for voice indicator animation (can be removed if not needed)
-      const audioLevel = audioLevels[participant.id] || 0;
+      // Get audio level directly from participant instead of state
+      const audioLevel = participant.participant?.audioLevel || 0;
+      
+      // Debug speaking state changes only
+      if (isSpeaking || audioLevel > 0.01) {
+        console.log(`🔊 Participant ${participant.name}: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(3)}`);
+      }
       
       const isFullScreen = fullScreenParticipant === participant.id;
       
@@ -726,12 +776,11 @@ const ConferenceCall: React.FC = () => {
               </span>
             )}
           </div>
-          {renderVoiceIndicator(nameColor, audioLevel)}
+          {renderVoiceIndicator(nameColor, audioLevel, isSpeaking)}
         </div>
       );
     },
     [
-      audioLevels,
       fullScreenParticipant,
       roomState.participants.length,
       enterFullScreen,
@@ -751,45 +800,6 @@ const ConferenceCall: React.FC = () => {
       }
     };
   }, []);
-
-  // Audio level monitoring
-  useEffect(() => {
-    const updateAudioLevels = () => {
-      const newAudioLevels: { [key: string]: number } = {};
-      let hasChanges = false;
-
-      roomState.participants.forEach((participant) => {
-        if (participant.participant) {
-          // Get audio level directly from the participant and ensure it's a valid number
-          const level = participant.participant.audioLevel;
-          // Only set audio level if it's a valid number and above threshold
-          const audioLevel =
-            typeof level === "number" &&
-            !isNaN(level) &&
-            level > AUDIO_THRESHOLD
-              ? level
-              : 0;
-
-          newAudioLevels[participant.id] = audioLevel;
-
-          // Check if this level has changed significantly to avoid unnecessary updates
-          const prevLevel = prevAudioLevelsRef.current[participant.id] || 0;
-          if (Math.abs(audioLevel - prevLevel) > 0.05) {
-            hasChanges = true;
-          }
-        }
-      });
-
-      // Only update state if there are meaningful changes
-      if (hasChanges) {
-        prevAudioLevelsRef.current = newAudioLevels;
-        setAudioLevels(newAudioLevels);
-      }
-    };
-
-    const interval = setInterval(updateAudioLevels, 100);
-    return () => clearInterval(interval);
-  }, [roomState.participants]);
 
   // Memoize the fullscreen component props to avoid unnecessary re-renders
   const fullscreenParticipantData = useMemo(() => {
@@ -892,9 +902,12 @@ const ConferenceCall: React.FC = () => {
         <div className={`participants-grid ${gridClassName}`}>
           {roomState.participants.map((participant, idx) => {
             return (
-              <div className={"size-full"} key={participant.id}>
-                {renderParticipant(participant, idx)}
-              </div>
+              <MemoizedParticipantWrapper
+                key={participant.id}
+                participant={participant}
+                idx={idx}
+                renderParticipant={renderParticipant}
+              />
             );
           })}
         </div>
