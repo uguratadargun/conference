@@ -126,15 +126,62 @@
   color: var(--white);
 }
 
+.audio-enable-message {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-blue);
+  color: var(--white);
+  padding: 16px 24px;
+  border-radius: 12px;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.audio-enable-message .material-icons {
+  font-size: 24px;
+  color: var(--white);
+}
+
+.enable-audio-button {
+  background: var(--white);
+  color: var(--primary-blue);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.enable-audio-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.enable-audio-button .material-icons {
+  font-size: 18px;
+  color: var(--primary-blue);
+}
+
 .participants-grid {
   width: 100%;
   height: 100vh;
   display: grid;
-  gap: 16px;
+  gap: 32px;
   align-items: center;
   justify-items: center;
   background: var(--dark-overlay-light);
-  padding: 16px;
+  padding: 32px;
 }
 
 /* For scrollable grids with many participants */
@@ -274,7 +321,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 1100;
   padding: 16px;
   background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(16px);
@@ -301,27 +348,38 @@
 }
 
 .device-select {
-  flex: 1;
-  padding: 8px 12px;
+  width: 100%;
+  padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  border: 1px solid var(--overlay-border);
+  background: var(--secondary-bg);
+  color: var(--white);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  max-width: 200px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg viewBox='0 0 4 5' xmlns='http://www.w3.org/2000/svg'><path d='M2 0L0 2h4zm0 5L0 3h4z' fill='%23ffffff'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
 }
 
 .device-select:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--overlay-medium);
 }
 
 .device-select:focus {
   outline: none;
   border-color: var(--primary-blue);
-  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.device-select option {
+  background: var(--secondary-bg);
+  color: var(--white);
+  padding: 8px;
 }
 
 .control-button {
@@ -623,7 +681,7 @@
 
 .thumbnails-container {
   position: absolute;
-  bottom: 100px;
+  top: 70px;
   left: 50%;
   transform: translateX(-50%);
   width: 90vw;
@@ -813,6 +871,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1rem 0;
 }
 
 .settings-section {
@@ -880,7 +939,7 @@
 }
 
 .refresh-button:hover {
-  background: var(--secondary-bg);
+  background: rgba(255, 255, 255, 0.05);
   border-color: var(--overlay-medium);
 }
 
@@ -916,4 +975,80 @@
 
 .p-dialog .p-dialog-header-close:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Device section styles */
+.device-section {
+  padding: 0;
+}
+
+.device-section h4 {
+  color: var(--white);
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.device-section h4 .material-icons {
+  font-size: 1.25rem;
+  color: var(--primary-blue);
+}
+
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.device-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--secondary-bg);
+  border: 1px solid var(--overlay-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.device-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--overlay-medium);
+}
+
+.device-label {
+  color: var(--white);
+  font-size: 0.95rem;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.device-button {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.device-button:hover {
+  background: var(--primary-blue-hover);
+  transform: scale(1.05);
+}
+
+.device-button:active {
+  transform: scale(0.95);
+}
+
+.device-button .material-icons {
+  font-size: 18px;
 }

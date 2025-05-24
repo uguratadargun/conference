@@ -9,6 +9,13 @@ import {
 import { AccessToken } from "livekit-server-sdk";
 import type { RoomState } from "../types/livekit";
 
+interface MediaDevice {
+  deviceId: string;
+  groupId: string;
+  kind: string;
+  label: string;
+}
+
 interface LiveKitContextType {
   roomState: RoomState;
   connect: (url: string, token: string) => Promise<void>;
@@ -19,6 +26,20 @@ interface LiveKitContextType {
   retry: () => Promise<void>;
   error: string | null;
   isRetrying: boolean;
+  // Device management
+  getAvailableDevices: () => Promise<{
+    audioInputs: MediaDevice[];
+    videoInputs: MediaDevice[];
+    audioOutputs: MediaDevice[];
+  }>;
+  changeAudioInput: (deviceId: string) => Promise<void>;
+  changeVideoInput: (deviceId: string) => Promise<void>;
+  changeAudioOutput: (deviceId: string) => Promise<void>;
+  getCurrentDevices: () => Promise<{
+    audioInput: string;
+    videoInput: string;
+    audioOutput: string;
+  }>;
 }
 
 // LiveKit Configuration
@@ -43,6 +64,43 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
   });
   const [error, setError] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [audioStartAttempted, setAudioStartAttempted] = useState(false);
+
+  // Function to try starting audio automatically
+  const tryStartAudio = async () => {
+    if (!roomState.room || audioStartAttempted) return;
+    
+    try {
+      await roomState.room.startAudio();
+      console.log('Audio automatically started on user interaction');
+      setAudioStartAttempted(true);
+    } catch (error) {
+      console.log('Audio could not be started automatically:', error);
+    }
+  };
+
+  // Set up global click listener for auto audio start
+  React.useEffect(() => {
+    if (roomState.room && !audioStartAttempted) {
+      const handleUserInteraction = () => {
+        tryStartAudio();
+        // Remove listeners after first attempt
+        document.removeEventListener('click', handleUserInteraction);
+        document.removeEventListener('keydown', handleUserInteraction);
+        document.removeEventListener('touchstart', handleUserInteraction);
+      };
+
+      document.addEventListener('click', handleUserInteraction);
+      document.addEventListener('keydown', handleUserInteraction);
+      document.addEventListener('touchstart', handleUserInteraction);
+
+      return () => {
+        document.removeEventListener('click', handleUserInteraction);
+        document.removeEventListener('keydown', handleUserInteraction);
+        document.removeEventListener('touchstart', handleUserInteraction);
+      };
+    }
+  }, [roomState.room, audioStartAttempted]);
 
   const generateToken = async (): Promise<{ url: string; token: string }> => {
     // Generate a more unique username to avoid duplicates
@@ -84,6 +142,27 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setError(null);
       setIsRetrying(true);
+
+      // Initialize audio context early to avoid audio policy issues
+      try {
+        if (typeof window !== 'undefined' && window.AudioContext) {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          if (audioContext.state === 'suspended') {
+            // Audio context is suspended, will be resumed on user interaction
+            const resumeAudio = () => {
+              audioContext.resume().then(() => {
+                console.log('Audio context resumed');
+                document.removeEventListener('click', resumeAudio);
+                document.removeEventListener('keydown', resumeAudio);
+              });
+            };
+            document.addEventListener('click', resumeAudio, { once: true });
+            document.addEventListener('keydown', resumeAudio, { once: true });
+          }
+        }
+      } catch (audioError) {
+        console.warn('Audio context initialization failed:', audioError);
+      }
 
       const { url, token } = await generateToken();
       await connect(url, token);
@@ -303,7 +382,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
           );
           if (track.kind === Track.Kind.Audio) {
             console.log("Audio track subscribed:", track);
-            // Let the browser handle audio playback automatically
+            // Use LiveKit's built-in audio handling
             track.attach();
           } else if (track.kind === Track.Kind.Video) {
             console.log("Video track subscribed:", track);
@@ -330,12 +409,25 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
           console.log(
             `Track unsubscribed: ${track.kind} for participant ${_participant.identity}`
           );
-          if (track.kind === Track.Kind.Video) {
+          
+          if (track.kind === Track.Kind.Audio) {
+            // Let LiveKit handle cleanup
+            track.detach();
+          } else if (track.kind === Track.Kind.Video) {
             // Force a state update to trigger re-render of video components
             updateParticipantState(_participant, _participant.isLocal);
           }
         }
       );
+
+      // Handle audio playback status changes
+      room.on(RoomEvent.AudioPlaybackStatusChanged, () => {
+        console.log('Audio playback status changed. Can play audio:', room?.canPlaybackAudio);
+        if (room && !room.canPlaybackAudio) {
+          console.warn('Audio playback is blocked. User interaction required.');
+          // The audio will be enabled when user toggles microphone
+        }
+      });
 
       room.on(RoomEvent.Disconnected, () => {
         console.log("Disconnected from room");
@@ -356,6 +448,18 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       await room.connect(url, token, {
         autoSubscribe: true,
       });
+
+      // Try to start audio playback immediately after connection
+      if (room.canPlaybackAudio !== undefined && !room.canPlaybackAudio) {
+        console.log('Audio playback is restricted, will start on user interaction');
+      } else {
+        try {
+          await room.startAudio();
+          console.log('Audio playback started on connection');
+        } catch (error) {
+          console.warn('Could not start audio playback immediately:', error);
+        }
+      }
 
       // Remove automatic enabling of microphone and camera
       const localParticipant = room.localParticipant;
@@ -440,6 +544,111 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Device management functions
+  const getAvailableDevices = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      
+      const audioInputs: MediaDevice[] = devices
+        .filter(device => device.kind === 'audioinput')
+        .map(device => ({
+          deviceId: device.deviceId,
+          groupId: device.groupId,
+          kind: device.kind,
+          label: device.label || `Microphone ${device.deviceId.slice(0, 8)}`
+        }));
+
+      const videoInputs: MediaDevice[] = devices
+        .filter(device => device.kind === 'videoinput')
+        .map(device => ({
+          deviceId: device.deviceId,
+          groupId: device.groupId,
+          kind: device.kind,
+          label: device.label || `Camera ${device.deviceId.slice(0, 8)}`
+        }));
+
+      const audioOutputs: MediaDevice[] = devices
+        .filter(device => device.kind === 'audiooutput')
+        .map(device => ({
+          deviceId: device.deviceId,
+          groupId: device.groupId,
+          kind: device.kind,
+          label: device.label || `Speaker ${device.deviceId.slice(0, 8)}`
+        }));
+
+      return { audioInputs, videoInputs, audioOutputs };
+    } catch (error) {
+      console.error("Failed to get available devices:", error);
+      return { audioInputs: [], videoInputs: [], audioOutputs: [] };
+    }
+  };
+
+  const getCurrentDevices = async () => {
+    if (!roomState.room) {
+      return { audioInput: '', videoInput: '', audioOutput: '' };
+    }
+
+    try {
+      const localParticipant = roomState.room.localParticipant;
+      
+      // Get current devices from LiveKit if available
+      let audioInput = '';
+      let videoInput = '';
+      let audioOutput = '';
+
+      // Try to get current device IDs from the local tracks
+      const audioTrack = localParticipant.getTrackPublication(Track.Source.Microphone)?.track;
+      const videoTrack = localParticipant.getTrackPublication(Track.Source.Camera)?.track;
+
+      if (audioTrack && 'getDeviceId' in audioTrack) {
+        audioInput = await (audioTrack as any).getDeviceId() || '';
+      }
+
+      if (videoTrack && 'getDeviceId' in videoTrack) {
+        videoInput = await (videoTrack as any).getDeviceId() || '';
+      }
+
+      // Audio output device ID is typically stored differently
+      // For now, return empty string as it's harder to detect
+      audioOutput = '';
+
+      return { audioInput, videoInput, audioOutput };
+    } catch (error) {
+      console.error("Failed to get current devices:", error);
+      return { audioInput: '', videoInput: '', audioOutput: '' };
+    }
+  };
+
+  const changeAudioInput = async (deviceId: string) => {
+    if (roomState.room) {
+      try {
+        await roomState.room.switchActiveDevice('audioinput', deviceId);
+      } catch (error) {
+        console.error("Failed to change audio input device:", error);
+      }
+    }
+  };
+
+  const changeVideoInput = async (deviceId: string) => {
+    if (roomState.room) {
+      try {
+        await roomState.room.switchActiveDevice('videoinput', deviceId);
+      } catch (error) {
+        console.error("Failed to change video input device:", error);
+      }
+    }
+  };
+
+  const changeAudioOutput = async (deviceId: string) => {
+    if (roomState.room) {
+      try {
+        await roomState.room.switchActiveDevice('audiooutput', deviceId);
+      } catch (error) {
+        console.error("Failed to change audio output device:", error);
+      }
+    }
+  };
+
   return (
     <LiveKitContext.Provider
       value={{
@@ -452,6 +661,11 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         retry,
         error,
         isRetrying,
+        getAvailableDevices,
+        getCurrentDevices,
+        changeAudioInput,
+        changeVideoInput,
+        changeAudioOutput,
       }}
     >
       {children}

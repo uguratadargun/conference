@@ -8,9 +8,8 @@ import React, {
 import { useLiveKit } from "../context/LiveKitContext";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { TabView, TabPanel } from "primereact/tabview";
 import type { Participant } from "../types/livekit";
-import { Track } from "livekit-client";
+import { Track, RoomEvent } from "livekit-client";
 import "./ConferenceCall.css";
 
 // Participant name colors
@@ -260,6 +259,170 @@ const FullscreenParticipantView = React.memo(
   )
 );
 
+const SettingsDialog = React.memo(
+  ({
+    visible,
+    onHide,
+    getAvailableDevices,
+    getCurrentDevices,
+    changeAudioInput,
+    changeVideoInput,
+    changeAudioOutput,
+  }: {
+    visible: boolean;
+    onHide: () => void;
+    getAvailableDevices: () => Promise<{
+      audioInputs: { deviceId: string; label: string }[];
+      videoInputs: { deviceId: string; label: string }[];
+      audioOutputs: { deviceId: string; label: string }[];
+    }>;
+    getCurrentDevices: () => Promise<{
+      audioInput: string;
+      videoInput: string;
+      audioOutput: string;
+    }>;
+    changeAudioInput: (deviceId: string) => Promise<void>;
+    changeVideoInput: (deviceId: string) => Promise<void>;
+    changeAudioOutput: (deviceId: string) => Promise<void>;
+  }) => {
+    const [audioDevices, setAudioDevices] = useState<{ deviceId: string; label: string }[]>([]);
+    const [videoDevices, setVideoDevices] = useState<{ deviceId: string; label: string }[]>([]);
+    const [audioOutputDevices, setAudioOutputDevices] = useState<{ deviceId: string; label: string }[]>([]);
+    
+    const [selectedAudioInput, setSelectedAudioInput] = useState<string>('');
+    const [selectedVideoInput, setSelectedVideoInput] = useState<string>('');
+    const [selectedAudioOutput, setSelectedAudioOutput] = useState<string>('');
+
+    const fetchDevices = useCallback(async () => {
+      const devices = await getAvailableDevices();
+      setAudioDevices(devices.audioInputs);
+      setVideoDevices(devices.videoInputs);
+      setAudioOutputDevices(devices.audioOutputs);
+      
+      // Get current devices and set as selected
+      const currentDevices = await getCurrentDevices();
+      
+      // Set current devices as selected, or default to first device if available
+      setSelectedAudioInput(currentDevices.audioInput || (devices.audioInputs.length > 0 ? devices.audioInputs[0].deviceId : ''));
+      setSelectedVideoInput(currentDevices.videoInput || (devices.videoInputs.length > 0 ? devices.videoInputs[0].deviceId : ''));
+      setSelectedAudioOutput(currentDevices.audioOutput || (devices.audioOutputs.length > 0 ? devices.audioOutputs[0].deviceId : ''));
+    }, [getAvailableDevices, getCurrentDevices]);
+
+    useEffect(() => {
+      if (visible) {
+        fetchDevices();
+      }
+    }, [visible, fetchDevices]);
+
+    const handleAudioInputChange = async (deviceId: string) => {
+      setSelectedAudioInput(deviceId);
+      await changeAudioInput(deviceId);
+    };
+
+    const handleVideoInputChange = async (deviceId: string) => {
+      setSelectedVideoInput(deviceId);
+      await changeVideoInput(deviceId);
+    };
+
+    const handleAudioOutputChange = async (deviceId: string) => {
+      setSelectedAudioOutput(deviceId);
+      await changeAudioOutput(deviceId);
+    };
+
+    return (
+      <Dialog
+        visible={visible}
+        onHide={onHide}
+        className="settings-dialog"
+        header="Cihaz Ayarları"
+        style={{ width: '600px' }}
+      >
+        <div className="settings-content">
+          <div className="device-section">
+            <h4>
+              <span className="material-icons">mic</span>
+              Mikrofon
+            </h4>
+            <select 
+              className="device-select"
+              value={selectedAudioInput}
+              onChange={(e) => handleAudioInputChange(e.target.value)}
+            >
+              {audioDevices.length === 0 ? (
+                <option value="">Mikrofon bulunamadı</option>
+              ) : (
+                audioDevices.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+          <div className="device-section">
+            <h4>
+              <span className="material-icons">videocam</span>
+              Kamera
+            </h4>
+            <select 
+              className="device-select"
+              value={selectedVideoInput}
+              onChange={(e) => handleVideoInputChange(e.target.value)}
+            >
+              {videoDevices.length === 0 ? (
+                <option value="">Kamera bulunamadı</option>
+              ) : (
+                videoDevices.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+          <div className="device-section">
+            <h4>
+              <span className="material-icons">volume_up</span>
+              Hoparlör
+            </h4>
+            <select 
+              className="device-select"
+              value={selectedAudioOutput}
+              onChange={(e) => handleAudioOutputChange(e.target.value)}
+            >
+              {audioOutputDevices.length === 0 ? (
+                <option value="">Hoparlör bulunamadı</option>
+              ) : (
+                audioOutputDevices.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+          <div className="settings-actions">
+            <Button
+              icon={<span className="material-icons">refresh</span>}
+              onClick={fetchDevices}
+              className="refresh-button"
+              label="Yenile"
+            />
+            <Button
+              label="Kapat"
+              onClick={onHide}
+              className="close-button"
+            />
+          </div>
+        </div>
+      </Dialog>
+    );
+  }
+);
+
 const ConferenceCall: React.FC = () => {
   const {
     roomState,
@@ -270,12 +433,18 @@ const ConferenceCall: React.FC = () => {
     retry,
     error,
     isRetrying,
+    getAvailableDevices,
+    getCurrentDevices,
+    changeAudioInput,
+    changeVideoInput,
+    changeAudioOutput,
   } = useLiveKit();
 
   const [audioLevels, setAudioLevels] = useState<{ [key: string]: number }>({});
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
     string | null
   >(null);
+  const [showSettings, setShowSettings] = useState(false);
   const prevAudioLevelsRef = useRef<{ [key: string]: number }>({});
   const hasConnectedRef = useRef(false);
 
@@ -586,8 +755,29 @@ const ConferenceCall: React.FC = () => {
               tooltipOptions={{ position: "top" }}
             />
           </div>
+
+          <div className="control-group">
+            <Button
+              icon={<span className="material-icons">settings</span>}
+              onClick={() => setShowSettings(true)}
+              className="control-button settings-button"
+              tooltip="Settings"
+              tooltipOptions={{ position: "top" }}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Settings Dialog */}
+      <SettingsDialog
+        visible={showSettings}
+        onHide={() => setShowSettings(false)}
+        getAvailableDevices={getAvailableDevices}
+        getCurrentDevices={getCurrentDevices}
+        changeAudioInput={changeAudioInput}
+        changeVideoInput={changeVideoInput}
+        changeAudioOutput={changeAudioOutput}
+      />
     </div>
   );
 };
