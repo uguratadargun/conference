@@ -268,48 +268,65 @@
 
 .controls-container {
   position: fixed;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(16px);
 }
 
 .controls-panel {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px;
-  background: var(--dark-overlay-control);
-  border: 1px solid var(--overlay-border);
-  border-radius: 50px;
-  box-shadow: 0 8px 32px var(--dark-overlay-medium),
-    0 2px 8px var(--shadow-medium);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(16px);
-}
-
-.controls-panel:hover {
-  background: var(--dark-overlay-control-hover);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 4px 12px var(--shadow-strong);
-  transform: translateY(-4px);
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .control-group {
   display: flex;
   align-items: center;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
 }
 
-.control-group:hover {
-  transform: scale(1.05);
+.device-select {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 200px;
+}
+
+.device-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.device-select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .control-button {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border: none;
   border-radius: 50%;
   font-size: 20px;
@@ -317,26 +334,13 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  margin: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.control-button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--overlay-light);
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.control-button:hover::before {
-  opacity: 1;
-  transform: scale(1);
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .control-button:active {
@@ -346,115 +350,38 @@
 .audio-button {
   background: var(--success-color);
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .audio-button:hover {
   background: var(--success-hover);
-  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
 }
 
 .audio-button.disabled {
-  background: var(--disabled-bg);
-  color: var(--disabled-text);
-  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
-  border: 2px solid var(--disabled-text);
-}
-
-/* Ensure icon visibility in disabled state */
-.audio-button.disabled .p-button-icon,
-.audio-button.disabled i {
-  color: var(--disabled-text) !important;
-  opacity: 1 !important;
-}
-
-.audio-button.disabled:hover {
-  background: var(--disabled-hover);
-  color: var(--disabled-text-hover);
-  box-shadow: 0 6px 16px rgba(55, 65, 81, 0.5);
-  border-color: var(--disabled-text-hover);
-}
-
-/* Ensure icon visibility in disabled hover state */
-.audio-button.disabled:hover .p-button-icon,
-.audio-button.disabled:hover i {
-  color: var(--disabled-text-hover) !important;
-  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .video-button {
   background: var(--primary-blue);
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .video-button:hover {
   background: var(--primary-blue-hover);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
 .video-button.disabled {
-  background: var(--disabled-bg);
-  color: var(--disabled-text);
-  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
-  border: 2px solid var(--disabled-text);
-}
-
-/* Ensure icon visibility in disabled state */
-.video-button.disabled .p-button-icon,
-.video-button.disabled i {
-  color: var(--disabled-text) !important;
-  opacity: 1 !important;
-}
-
-.video-button.disabled:hover {
-  background: var(--disabled-hover);
-  color: var(--disabled-text-hover);
-  box-shadow: 0 6px 16px rgba(55, 65, 81, 0.5);
-  border-color: var(--disabled-text-hover);
-}
-
-/* Ensure icon visibility in disabled hover state */
-.video-button.disabled:hover .p-button-icon,
-.video-button.disabled:hover i {
-  color: var(--disabled-text-hover) !important;
-  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .hang-up-button {
   background: var(--danger-color);
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-  position: relative;
 }
 
 .hang-up-button:hover {
   background: var(--danger-hover);
-  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
-  transform: scale(1.1);
-}
-
-.hang-up-button::after {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(
-    45deg,
-    var(--danger-color),
-    var(--danger-hover),
-    var(--danger-color)
-  );
-  border-radius: 50%;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.hang-up-button:hover::after {
-  opacity: 0.7;
 }
 
 .control-label {
@@ -801,4 +728,192 @@
 .thumbnail-wrapper .voice-bar {
   width: 2px;
   height: 2px;
+}
+
+.settings-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+}
+
+.settings-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.settings-dialog {
+  background: var(--primary-bg);
+  border: 1px solid var(--overlay-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.settings-dialog .p-dialog-header {
+  background: var(--secondary-bg);
+  border-bottom: 1px solid var(--overlay-border);
+  padding: 1rem;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.settings-dialog .p-dialog-title {
+  color: var(--white);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.settings-dialog .p-dialog-content {
+  background: var(--primary-bg);
+  padding: 1.5rem;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Tab styles */
+.settings-tabs {
+  width: 100%;
+}
+
+.settings-tabs .p-tabview-nav {
+  background: var(--secondary-bg);
+  border: none;
+  border-bottom: 1px solid var(--overlay-border);
+  padding: 0 1rem;
+}
+
+.settings-tabs .p-tabview-nav li .p-tabview-nav-link {
+  color: var(--white);
+  background: transparent;
+  border: none;
+  padding: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.settings-tabs .p-tabview-nav li .p-tabview-nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-tabs .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.settings-tabs .p-tabview-nav li .p-tabview-nav-link .material-icons {
+  margin-right: 0.5rem;
+  font-size: 1.25rem;
+  vertical-align: middle;
+}
+
+.settings-tabs .p-tabview-panels {
+  background: var(--primary-bg);
+  padding: 1.5rem 0;
+  border: none;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-section h3 {
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.settings-description {
+  color: var(--overlay-text);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.settings-select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--overlay-border);
+  background: var(--secondary-bg);
+  color: var(--white);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.settings-select:hover {
+  border-color: var(--overlay-medium);
+  background: var(--secondary-bg);
+}
+
+.settings-select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.settings-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--overlay-border);
+}
+
+.refresh-button {
+  background: var(--secondary-bg);
+  color: var(--white);
+  border: 1px solid var(--overlay-border);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background: var(--secondary-bg);
+  border-color: var(--overlay-medium);
+}
+
+.close-button {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: var(--primary-blue-hover);
+}
+
+/* Override PrimeReact Dialog styles */
+.p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.p-dialog .p-dialog-header-close {
+  color: var(--white);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  transition: all 0.2s ease;
+}
+
+.p-dialog .p-dialog-header-close:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

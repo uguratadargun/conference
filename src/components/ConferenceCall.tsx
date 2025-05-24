@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { useLiveKit } from "../context/LiveKitContext";
 import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
+import { TabView, TabPanel } from "primereact/tabview";
 import type { Participant } from "../types/livekit";
 import { Track } from "livekit-client";
 import "./ConferenceCall.css";

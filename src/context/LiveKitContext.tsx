@@ -357,21 +357,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         autoSubscribe: true,
       });
 
-      // Try to enable microphone, but don't fail if not available
-      try {
-        await room.localParticipant.setMicrophoneEnabled(true);
-      } catch (error) {
-        console.warn("Could not enable microphone:", error);
-        // Continue without microphone
-      }
-
-      // Enable camera by default
-      try {
-        await room.localParticipant.setCameraEnabled(true);
-      } catch (error) {
-        console.warn("Could not enable camera:", error);
-      }
-
+      // Remove automatic enabling of microphone and camera
       const localParticipant = room.localParticipant;
       const remoteParticipants = Array.from(room.remoteParticipants.values());
 
@@ -379,16 +365,16 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         ...prev,
         room,
         isConnected: true,
-        isVideoEnabled: localParticipant.isCameraEnabled, // Use actual state from LiveKit
-        isAudioEnabled: localParticipant.isMicrophoneEnabled, // Use actual state from LiveKit
+        isVideoEnabled: false, // Set to false by default
+        isAudioEnabled: false, // Set to false by default
         participants: [
           {
             id: localParticipant.identity,
             name: localParticipant.identity,
             isLocal: true,
             participant: localParticipant,
-            isVideoEnabled: localParticipant.isCameraEnabled, // Use actual state from LiveKit
-            isAudioEnabled: localParticipant.isMicrophoneEnabled,
+            isVideoEnabled: false, // Set to false by default
+            isAudioEnabled: false, // Set to false by default
           },
           ...remoteParticipants.map((participant) => ({
             id: participant.identity,
