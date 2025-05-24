@@ -94,103 +94,34 @@
 
 .conference-container {
   width: 100vw;
-  height: 92vh;
+  height: 100vh;
   background: var(--primary-bg);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   position: relative;
   overflow: hidden;
 }
 
-.error-message {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--error-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: 8px;
-  z-index: 1000;
-  box-shadow: 0 4px 12px var(--shadow-light);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.error-button {
-  background: transparent;
-  border: 1px solid var(--white);
-  color: var(--white);
-}
-
-.audio-enable-message {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-blue);
-  color: var(--white);
-  padding: 16px 24px;
-  border-radius: 12px;
-  z-index: 1000;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 400px;
-  text-align: center;
-}
-
-.audio-enable-message .material-icons {
-  font-size: 24px;
-  color: var(--white);
-}
-
-.enable-audio-button {
-  background: var(--white);
-  color: var(--primary-blue);
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.enable-audio-button:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.05);
-}
-
-.enable-audio-button .material-icons {
-  font-size: 18px;
-  color: var(--primary-blue);
-}
-
 .participants-grid {
   width: 100%;
-  height: 100vh;
+  height: 87vh; /* Reduced to account for new top status group */
+  margin-top: 5vh; /* Space for the new top status group */
   display: grid;
   gap: 32px;
   align-items: center;
   justify-items: center;
   background: var(--dark-overlay-light);
-  padding: 32px;
+  padding: 32px; /* Extra bottom padding for controls */
 }
 
 /* For scrollable grids with many participants */
 .participants-grid.grid-scroll {
-  height: calc(100vh - 100px); /* Leave space for controls */
+  height: 87vh; /* Account for both top status group and bottom controls */
+  margin-top: 50px;
   overflow-y: auto;
   align-items: start;
   align-content: start;
-  padding: 16px 16px 80px 16px; /* Extra bottom padding for controls */
+  padding: 16px 16px 120px 16px; /* Extra bottom padding for controls */
 }
 
 /* Custom scrollbar styling */
@@ -325,6 +256,7 @@
   padding: 16px;
   background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(16px);
+  height: 8vh;
 }
 
 .controls-panel {
@@ -345,6 +277,10 @@
   gap: 8px;
   flex: 1;
   justify-content: center;
+}
+
+.control-group.status-group {
+  display: none !important;
 }
 
 .device-select {
@@ -510,14 +446,6 @@
   grid-template: repeat(2, 1fr) / repeat(3, 1fr);
 }
 
-.grid-7 {
-  grid-template: repeat(2, 1fr) / repeat(4, 1fr);
-}
-
-.grid-8 {
-  grid-template: repeat(2, 1fr) / repeat(4, 1fr);
-}
-
 .grid-9 {
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
@@ -581,18 +509,11 @@
   height: 3px;
 }
 
-/* For the 3-participant case, third participant styling */
-.participant-position-3 {
-  grid-row: 2;
-  grid-column: span 2;
-  justify-self: center;
-}
-
 /* Full screen styles */
 .fullscreen-container {
   width: 100vw;
-  height: 100vh;
-  top: 0;
+  height: 87vh; /* Account for top status group */
+  margin-top: 5vh; /* Space for the new top status group */
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -602,7 +523,7 @@
 
 .participant.fullscreen {
   width: 100vw;
-  height: 100vh;
+  height: 87vh; /* Account for both top status group and bottom controls */
   border-radius: 0;
   border: none;
   cursor: default;
@@ -651,7 +572,7 @@
 
 .participant.fullscreen .voice-indicator {
   position: absolute;
-  bottom: 20px;
+  bottom: 48px;
   right: 20px;
   z-index: 15;
 }
@@ -706,7 +627,6 @@
   min-width: 120px;
   max-width: 160px;
   flex: 0 0 auto;
-  /* Add more styling as needed */
 }
 
 .thumbnail-wrapper .participant {
@@ -758,7 +678,7 @@
 
 .size-fullscreen {
   width: 100vw;
-  height: calc(100vh - 100px);
+  height: 87vh;
 }
 
 /* Add hover effect for participants in grid view */
@@ -1051,4 +971,229 @@
 
 .device-button .material-icons {
   font-size: 18px;
+}
+
+/* Connection Issues Indicator */
+.connection-issues-indicator {
+  position: absolute;
+  top: 40px;
+  right: 8px;
+  background: var(--error-color);
+  border-radius: 50%;
+  padding: 4px;
+  z-index: 10;
+  animation: pulse 2s infinite;
+}
+
+.connection-issues-indicator .material-icons {
+  font-size: 14px;
+  color: var(--white);
+}
+
+/* Buffering Indicator */
+.buffering-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: var(--dark-overlay-control);
+  border-radius: 6px;
+  padding: 4px 6px;
+  z-index: 10;
+}
+
+.buffering-indicator .material-icons {
+  font-size: 16px;
+  color: var(--primary-blue);
+}
+
+.status-item.connection-status.connected {
+  color: var(--success-color);
+}
+
+.status-item.connection-status.disconnected {
+  color: var(--error-color);
+}
+
+/* Top Status Bar - for participants count and connection status */
+.top-status-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px 24px;
+  background: var(--dark-overlay-control);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--overlay-border);
+  z-index: 1200;
+  height: 5vh;
+}
+
+.top-status-bar .status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--overlay-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.top-status-bar .status-item .material-icons {
+  font-size: 18px;
+}
+
+.top-status-bar .status-item.connection-status.connected {
+  color: var(--success-color);
+}
+
+.top-status-bar .status-item.connection-status.connecting {
+  color: var(--primary-blue);
+}
+
+.top-status-bar .status-item.connection-status.connecting .material-icons {
+  animation: rotate 1s linear infinite;
+}
+
+.top-status-bar .status-item.connection-status.disconnected {
+  color: var(--error-color);
+}
+
+/* Error Notification - Floating in top-right corner */
+.error-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 350px;
+  max-width: calc(100vw - 40px);
+  background: var(--primary-bg);
+  border: 1px solid var(--error-color);
+  border-left: 4px solid var(--error-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1300;
+  animation: slideInError 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.error-notification.exit {
+  animation: slideOutError 0.3s ease-in;
+}
+
+@keyframes slideInError {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutError {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.error-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--error-color);
+  font-weight: 600;
+  font-size: 14px;
+  justify-content: space-between;
+}
+
+.error-header .material-icons {
+  font-size: 20px;
+}
+
+.error-close-button {
+  background: transparent !important;
+  color: var(--overlay-text) !important;
+  border: none !important;
+  padding: 4px !important;
+  min-width: auto !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+  margin-left: auto !important;
+}
+
+.error-close-button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--white) !important;
+  transform: scale(1.1) !important;
+}
+
+.error-close-button .material-icons {
+  font-size: 16px !important;
+}
+
+.error-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.error-message {
+  color: var(--overlay-text);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  word-break: break-word;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.error-retry-button {
+  background: var(--error-color) !important;
+  color: var(--white) !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.error-retry-button:hover {
+  background: var(--danger-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.error-retry-button:disabled {
+  background: var(--disabled-bg) !important;
+  color: var(--disabled-text) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.error-retry-button .material-icons {
+  font-size: 16px !important;
 }

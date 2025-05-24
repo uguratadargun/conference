@@ -9,7 +9,7 @@ import { useLiveKit } from "../context/LiveKitContext";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import type { Participant } from "../types/livekit";
-import { Track, RoomEvent } from "livekit-client";
+import { Track } from "livekit-client";
 import "./ConferenceCall.css";
 
 // Participant name colors
@@ -431,8 +431,10 @@ const ConferenceCall: React.FC = () => {
     toggleVideo,
     toggleAudio,
     retry,
+    clearError,
     error,
     isRetrying,
+    connectionState,
     getAvailableDevices,
     getCurrentDevices,
     changeAudioInput,
@@ -445,8 +447,46 @@ const ConferenceCall: React.FC = () => {
     string | null
   >(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [isErrorExiting, setIsErrorExiting] = useState(false);
   const prevAudioLevelsRef = useRef<{ [key: string]: number }>({});
   const hasConnectedRef = useRef(false);
+  const errorTimeoutRef = useRef<number | null>(null);
+
+  // Function to handle error dismissal with animation
+  const dismissError = useCallback(() => {
+    setIsErrorExiting(true);
+    setTimeout(() => {
+      clearError();
+      setIsErrorExiting(false);
+    }, 300); // Match animation duration
+  }, [clearError]);
+
+  // Auto-dismiss general errors after 5 seconds
+  useEffect(() => {
+    // Clear any existing timeout
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+
+    // Reset exit state when error changes
+    setIsErrorExiting(false);
+
+    // If there's a general error (not connection error), set timeout to dismiss it
+    if (error && error.type === 'general') {
+      errorTimeoutRef.current = setTimeout(() => {
+        dismissError();
+      }, 5000);
+    }
+
+    // Cleanup timeout on unmount or error change
+    return () => {
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+        errorTimeoutRef.current = null;
+      }
+    };
+  }, [error, dismissError]);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -508,9 +548,19 @@ const ConferenceCall: React.FC = () => {
       const borderColor = BORDER_COLORS[idx % BORDER_COLORS.length];
       const nameColor = NAME_COLORS[idx % NAME_COLORS.length];
       const isLocal = participant.isLocal;
+      
+      // Use the new isSpeaking property from ActiveSpeakersChanged event
+      // This is more reliable than manual audio level polling
+      const isSpeaking = participant.isSpeaking || false;
+      
+      // Keep audio level for voice indicator animation (can be removed if not needed)
       const audioLevel = audioLevels[participant.id] || 0;
-      const isSpeaking = audioLevel > AUDIO_THRESHOLD;
+      
       const isFullScreen = fullScreenParticipant === participant.id;
+      
+      // Get connection status indicators
+      const hasConnectionIssues = participant.hasConnectionIssues || false;
+      const streamState = participant.streamState;
 
       // Generate a user-friendly display name from the username
       const displayName = isLocal
@@ -556,6 +606,20 @@ const ConferenceCall: React.FC = () => {
           {!participant.isAudioEnabled && (
             <div className="audio-muted-indicator">
               <span className="material-icons">mic_off</span>
+            </div>
+          )}
+
+          {/* Connection issues indicator */}
+          {hasConnectionIssues && (
+            <div className="connection-issues-indicator">
+              <span className="material-icons">warning</span>
+            </div>
+          )}
+
+          {/* Stream buffering indicator */}
+          {streamState === 'buffering' && (
+            <div className="buffering-indicator">
+              <span className="material-icons rotating">sync</span>
             </div>
           )}
 
@@ -667,21 +731,66 @@ const ConferenceCall: React.FC = () => {
 
   return (
     <div className="conference-container">
+      {/* Top Status Bar */}
+      <div className="top-status-bar">
+        <div className="status-item">
+          <span className="material-icons">people</span>
+          <span>{roomState.participants.length} participant{roomState.participants.length !== 1 ? 's' : ''}</span>
+        </div>
+        
+        <div className={`status-item connection-status ${
+          connectionState === 'connected' ? 'connected' : 
+          connectionState === 'connecting' ? 'connecting' : 'disconnected'
+        }`}>
+          <span className="material-icons">
+            {connectionState === 'connected' ? 'wifi' : 
+             connectionState === 'connecting' ? 'sync' : 'wifi_off'}
+          </span>
+          <span>
+            {connectionState === 'connected' ? 'Connected' : 
+             connectionState === 'connecting' ? 'Connecting...' : 'Disconnected'}
+          </span>
+        </div>
+      </div>
+
+      {/* Error Notification - Floating in top-right */}
       {error && (
-        <div className="error-message">
-          <span>{error}</span>
-          <Button
-            icon={
-              isRetrying ? (
-                <span className="material-icons rotating">refresh</span>
-              ) : (
-                <span className="material-icons">refresh</span>
-              )
-            }
-            onClick={retry}
-            disabled={isRetrying}
-            className="error-button"
-          />
+        <div className={`error-notification ${isErrorExiting ? 'exit' : ''}`}>
+          <div className="error-content">
+            <div className="error-header">
+              <span className="material-icons">error_outline</span>
+              <span className="error-title">
+                {error.type === 'connection' ? 'Connection Error' : 'Error'}
+              </span>
+              <Button
+                icon={<span className="material-icons">close</span>}
+                onClick={dismissError}
+                className="error-close-button"
+                size="small"
+                tooltip="Close"
+                tooltipOptions={{ position: "left" }}
+              />
+            </div>
+            <div className="error-message">{error.message}</div>
+            {error.type === 'connection' && (
+              <div className="error-actions">
+                <Button
+                  icon={
+                    isRetrying ? (
+                      <span className="material-icons rotating">refresh</span>
+                    ) : (
+                      <span className="material-icons">refresh</span>
+                    )
+                  }
+                  onClick={retry}
+                  disabled={isRetrying}
+                  className="error-retry-button"
+                  label={isRetrying ? "Retrying..." : "Retry"}
+                  size="small"
+                />
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -708,6 +817,11 @@ const ConferenceCall: React.FC = () => {
 
       <div className="controls-container">
         <div className="controls-panel">
+          {/* Status items moved to top status bar - hiding this */}
+          {/* <div className="control-group status-group">
+            ... (commented out - moved to top)
+          </div> */}
+
           <div className="control-group">
             <Button
               icon={

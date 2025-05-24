@@ -16,6 +16,11 @@ interface MediaDevice {
   label: string;
 }
 
+interface ErrorState {
+  type: 'connection' | 'general';
+  message: string;
+}
+
 interface LiveKitContextType {
   roomState: RoomState;
   connect: (url: string, token: string) => Promise<void>;
@@ -24,8 +29,10 @@ interface LiveKitContextType {
   toggleVideo: () => void;
   toggleAudio: () => void;
   retry: () => Promise<void>;
-  error: string | null;
+  clearError: () => void;
+  error: ErrorState | null;
   isRetrying: boolean;
+  connectionState: string;
   // Device management
   getAvailableDevices: () => Promise<{
     audioInputs: MediaDevice[];
@@ -62,8 +69,9 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     isVideoEnabled: true,
     isAudioEnabled: true,
   });
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [connectionState, setConnectionState] = useState<string>('disconnected');
   const [audioStartAttempted, setAudioStartAttempted] = useState(false);
 
   // Function to try starting audio automatically
@@ -142,6 +150,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setError(null);
       setIsRetrying(true);
+      setConnectionState('connecting');
 
       // Initialize audio context early to avoid audio policy issues
       try {
@@ -168,6 +177,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       await connect(url, token);
     } catch (error) {
       console.error("Connection error:", error);
+      setConnectionState('disconnected');
       if (error instanceof Error) {
         // Don't prevent app from starting if it's just a media permission issue
         if (
@@ -178,18 +188,22 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
           console.warn("Continuing without media permissions:", error.message);
           // Try to connect again without requiring media permissions
           try {
+            setConnectionState('connecting');
             const { url, token } = await generateToken();
             await connect(url, token);
-            return; // Successfully connected without media permissions
+            // Don't set an error for successful connection without media permissions
+            // The connection success will be handled by the Connected event
+            return;
           } catch (retryError) {
-            // If retry fails, show a different error
-            setError("Connected without camera/microphone access.");
+            // If retry fails, show a proper error
+            setConnectionState('disconnected');
+            setError({ type: 'connection', message: "Failed to connect to the room. Please try again." });
           }
         } else {
-          setError(error.message);
+          setError({ type: 'connection', message: error.message });
         }
       } else {
-        setError("Failed to connect to the room. Please try again.");
+        setError({ type: 'connection', message: "Failed to connect to the room. Please try again." });
       }
     } finally {
       setIsRetrying(false);
@@ -290,14 +304,14 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
             ...prev,
             participants: [
               ...prev.participants,
-              {
-                id: participant.identity,
-                name: participant.identity,
-                isLocal: false,
-                participant,
-                isVideoEnabled: participant.isCameraEnabled,
-                isAudioEnabled: participant.isMicrophoneEnabled,
-              },
+                          {
+              id: participant.identity,
+              name: participant.identity,
+              isLocal: false,
+              participant,
+              isVideoEnabled: participant.isCameraEnabled,
+              isAudioEnabled: participant.isMicrophoneEnabled,
+            },
             ],
           }));
         }
@@ -376,38 +390,31 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
 
       room.on(
         RoomEvent.TrackSubscribed,
-        (track, _publication, _participant) => {
-          console.log(
-            `Track subscribed: ${track.kind} for participant ${_participant.identity}`
-          );
-          if (track.kind === Track.Kind.Audio) {
-            console.log("Audio track subscribed:", track);
-            // Use LiveKit's built-in audio handling
-            track.attach();
-          } else if (track.kind === Track.Kind.Video) {
-            console.log("Video track subscribed:", track);
-            // Video tracks will be handled by the VideoParticipant component
-            // Force a state update to trigger re-render of video components
-            setRoomState((prev) => ({
-              ...prev,
-              participants: prev.participants.map((p) =>
-                p.id === _participant.identity
-                  ? {
-                      ...p,
-                      lastUpdated: Date.now(), // Add timestamp to force re-render
-                    }
-                  : p
-              ),
-            }));
-          }
+        (track, _publication, participant) => {
+          console.log(`✅ Track subscribed: ${track.kind} from ${participant.identity}`);
+          
+          // Update participant state to reflect new track subscription
+          setRoomState((prev) => ({
+            ...prev,
+            participants: prev.participants.map((p) =>
+              p.id === participant.identity
+                ? { 
+                    ...p, 
+                    isVideoEnabled: participant.isCameraEnabled,
+                    isAudioEnabled: participant.isMicrophoneEnabled,
+                    lastUpdated: Date.now()
+                  }
+                : p
+            )
+          }));
         }
       );
 
       room.on(
         RoomEvent.TrackUnsubscribed,
-        (track, _publication, _participant) => {
+        (track, _publication, participant) => {
           console.log(
-            `Track unsubscribed: ${track.kind} for participant ${_participant.identity}`
+            `Track unsubscribed: ${track.kind} for participant ${participant.identity}`
           );
           
           if (track.kind === Track.Kind.Audio) {
@@ -415,7 +422,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
             track.detach();
           } else if (track.kind === Track.Kind.Video) {
             // Force a state update to trigger re-render of video components
-            updateParticipantState(_participant, _participant.isLocal);
+            updateParticipantState(participant, participant.isLocal);
           }
         }
       );
@@ -429,8 +436,218 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       });
 
+      // Handle reconnection attempts
+      room.on(RoomEvent.Reconnecting, () => {
+        setError({ type: 'connection', message: 'Connection lost, reconnecting...' });
+        setIsRetrying(true);
+        
+        setRoomState((prev) => ({
+          ...prev,
+          isReconnecting: true
+        }));
+      });
+
+      // Handle successful reconnection
+      room.on(RoomEvent.Reconnected, () => {
+        setError(null);
+        setIsRetrying(false);
+        
+        setRoomState((prev) => ({
+          ...prev,
+          isReconnecting: false
+        }));
+      });
+
+      // Handle initial connection established
+      room.on(RoomEvent.Connected, () => {
+        setError(null);
+        setIsRetrying(false);
+        
+        setRoomState((prev) => ({
+          ...prev,
+          isConnected: true,
+          isReconnecting: false
+        }));
+      });
+
+      // Handle participant permission changes
+      room.on(RoomEvent.ParticipantPermissionsChanged, (_prevPermissions: any, participant: any) => {
+        // Update participant state with new permissions
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participant.identity
+              ? { ...p, permissions: participant.permissions }
+              : p
+          )
+        }));
+      });
+
+      // Data channel buffer status monitoring
+      room.on(RoomEvent.DCBufferStatusChanged, (isLow: boolean, _kind: any) => {
+        // This can be used to monitor data channel health
+        console.log(`Data channel buffer ${isLow ? 'low' : 'normal'}`);
+      });
+
+      // Handle encryption state changes (if using E2EE)
+      room.on(RoomEvent.EncryptionError, (error: Error) => {
+        console.error('Encryption error:', error);
+        setError({ type: 'general', message: 'Encryption error occurred. Please reconnect.' });
+      });
+
+      // Handle when participant changes their name/metadata
+      room.on(RoomEvent.ParticipantNameChanged, (name: string, participant: any) => {
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participant.identity
+              ? { ...p, name: name || participant.identity }
+              : p
+          )
+        }));
+      });
+
+      // Handle active speakers for speaking indicators
+      room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+        const activeSpeakerIds = speakers.map(p => p.identity);
+        
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) => ({
+            ...p,
+            isSpeaking: activeSpeakerIds.includes(p.id),
+            lastUpdated: Date.now()
+          }))
+        }));
+      });
+
+      // Connection quality monitoring (only for local participant)
+      room.on(RoomEvent.ConnectionQualityChanged, (quality, participant) => {
+        // Only track local participant's connection quality
+        if (participant.isLocal) {
+          console.log(`🔄 Connection quality changed for local participant: ${quality}`);
+          setRoomState((prev) => ({
+            ...prev,
+            localConnectionQuality: quality,
+          }));
+        }
+      });
+
+      // Track stream state changes (bandwidth-related)
+      room.on(RoomEvent.TrackStreamStateChanged, (_pub, streamState, participant) => {
+        // Update participant state with stream quality info
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participant.identity
+              ? { ...p, streamState: streamState }
+              : p
+          )
+        }));
+      });
+
+      // Participant metadata changes
+      room.on(RoomEvent.ParticipantMetadataChanged, (_prevMetadata, participant) => {
+        // Update participant state with new metadata
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participant.identity
+              ? { ...p, metadata: participant.metadata }
+              : p
+          )
+        }));
+      });
+
+      // Room-level metadata changes
+      room.on(RoomEvent.RoomMetadataChanged, (metadata) => {
+        // Update room state with new metadata
+        setRoomState((prev) => ({
+          ...prev,
+          roomMetadata: metadata
+        }));
+      });
+
+      // Recording status changes
+      room.on(RoomEvent.RecordingStatusChanged, (isRecording) => {
+        // Update state to show recording indicator in UI
+        setRoomState((prev) => ({
+          ...prev,
+          isRecording: isRecording
+        }));
+      });
+
+      // Track subscription failures
+      room.on(RoomEvent.TrackSubscriptionFailed, (_trackSid, participant) => {
+        // Show error notification to user
+        setError({ type: 'general', message: `Failed to load media from ${participant.identity}. Connection may be unstable.` });
+        
+        // Update participant state to show connection issues
+        setRoomState((prev) => ({
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participant.identity
+              ? { ...p, hasConnectionIssues: true }
+              : p
+          )
+        }));
+      });
+
+      // Connection state changes
+      room.on(RoomEvent.ConnectionStateChanged, (state) => {
+        // Update connection state for UI indicators
+        setConnectionState(state);
+        setRoomState((prev) => ({
+          ...prev,
+          connectionState: state
+        }));
+        
+        // Handle different connection states - only show errors for actual failures
+        if (state === 'disconnected') {
+          setError({ type: 'connection', message: 'Connection lost' });
+        } else if (state === 'connecting') {
+          // Don't show connecting as an error - this is normal connection flow
+          setError(null);
+        } else if (state === 'connected') {
+          setError(null);
+        }
+      });
+
+      // Periodically update connection quality for local participant only
+      const connectionQualityInterval = setInterval(() => {
+        if (!room || room.state !== 'connected') {
+          return;
+        }
+
+        const liveParticipant = room.localParticipant;
+        const currentQuality = liveParticipant.connectionQuality;
+        
+        setRoomState((prev) => {
+          // Always update if quality changed, or if it's still unknown (to keep trying)
+          if (currentQuality !== prev.localConnectionQuality || currentQuality === 'unknown') {
+            console.log(`Updating connection quality for local participant: ${prev.localConnectionQuality} -> ${currentQuality}`);
+            return {
+              ...prev,
+              localConnectionQuality: currentQuality,
+            };
+          }
+          return prev;
+        });
+      }, 3000); // Check every 3 seconds
+
+      // Store interval reference for cleanup
+      (room as any)._connectionQualityInterval = connectionQualityInterval;
+
       room.on(RoomEvent.Disconnected, () => {
         console.log("Disconnected from room");
+        
+        // Clean up connection quality interval
+        if ((room as any)._connectionQualityInterval) {
+          clearInterval((room as any)._connectionQualityInterval);
+          (room as any)._connectionQualityInterval = null;
+        }
+        
+        setConnectionState('disconnected');
         setRoomState({
           room: null,
           participants: [],
@@ -441,7 +658,8 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       room.on(RoomEvent.MediaDevicesError, (error: Error) => {
-        console.error("Media devices error:", error);
+        // Handle media device errors gracefully
+        setError({ type: 'general', message: `Media device error: ${error.message}. Please check your camera and microphone permissions.` });
       });
 
       // Connect to the room
@@ -471,6 +689,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         isConnected: true,
         isVideoEnabled: false, // Set to false by default
         isAudioEnabled: false, // Set to false by default
+        localConnectionQuality: localParticipant.connectionQuality,
         participants: [
           {
             id: localParticipant.identity,
@@ -496,6 +715,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       if (room) {
         room.disconnect();
       }
+      setConnectionState('disconnected');
       setRoomState({
         room: null,
         participants: [],
@@ -509,7 +729,14 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const disconnect = () => {
     if (roomState.room) {
+      // Clean up connection quality interval
+      if ((roomState.room as any)._connectionQualityInterval) {
+        clearInterval((roomState.room as any)._connectionQualityInterval);
+        (roomState.room as any)._connectionQualityInterval = null;
+      }
+      
       roomState.room.disconnect();
+      setConnectionState('disconnected');
       setRoomState({
         room: null,
         participants: [],
@@ -649,6 +876,10 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const clearError = () => {
+    setError(null);
+  };
+
   return (
     <LiveKitContext.Provider
       value={{
@@ -659,8 +890,10 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         toggleVideo,
         toggleAudio,
         retry,
+        clearError,
         error,
         isRetrying,
+        connectionState,
         getAvailableDevices,
         getCurrentDevices,
         changeAudioInput,
