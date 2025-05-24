@@ -80,18 +80,51 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     
     try {
       await roomState.room.startAudio();
-      console.log('Audio automatically started on user interaction');
+      console.log('✅ Audio playback started successfully');
       setAudioStartAttempted(true);
     } catch (error) {
-      console.log('Audio could not be started automatically:', error);
+      console.warn('⚠️ Audio could not be started automatically:', error);
+      // Try again on next user interaction
     }
+  };
+
+  // Enhanced audio debugging
+  const debugAudioState = (room: Room) => {
+    console.log('🔊 Audio State Debug:', {
+      canPlaybackAudio: room.canPlaybackAudio,
+      audioContext: typeof window !== 'undefined' && window.AudioContext ? 'available' : 'not available',
+      participants: room.remoteParticipants.size,
+      localParticipant: {
+        audioTracks: Array.from(room.localParticipant.getTrackPublications().values())
+          .filter(pub => pub.kind === 'audio')
+          .map(pub => ({ 
+            sid: pub.trackSid, 
+            hasTrack: !!pub.track,
+            muted: pub.isMuted 
+          }))
+      },
+      remoteParticipants: Array.from(room.remoteParticipants.values()).map(p => ({
+        identity: p.identity,
+        audioTracks: Array.from(p.getTrackPublications().values())
+          .filter(pub => pub.kind === 'audio')
+          .map(pub => ({ 
+            sid: pub.trackSid, 
+            subscribed: pub.isSubscribed,
+            hasTrack: !!pub.track,
+            muted: pub.isMuted 
+          }))
+      }))
+    });
   };
 
   // Set up global click listener for auto audio start
   React.useEffect(() => {
     if (roomState.room && !audioStartAttempted) {
-      const handleUserInteraction = () => {
-        tryStartAudio();
+      const handleUserInteraction = async () => {
+        console.log('👆 User interaction detected, attempting to start audio...');
+        await tryStartAudio();
+        debugAudioState(roomState.room!);
+        
         // Remove listeners after first attempt
         document.removeEventListener('click', handleUserInteraction);
         document.removeEventListener('keydown', handleUserInteraction);
@@ -668,16 +701,37 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       // Try to start audio playback immediately after connection
+      console.log('🔍 Checking initial audio state after connection...');
+      debugAudioState(room);
+      
       if (room.canPlaybackAudio !== undefined && !room.canPlaybackAudio) {
-        console.log('Audio playback is restricted, will start on user interaction');
+        console.log('⚠️ Audio playback is restricted, will start on user interaction');
       } else {
         try {
           await room.startAudio();
-          console.log('Audio playback started on connection');
+          console.log('✅ Audio playback started on connection');
+          setAudioStartAttempted(true);
         } catch (error) {
-          console.warn('Could not start audio playback immediately:', error);
+          console.warn('⚠️ Could not start audio playback immediately:', error);
         }
       }
+
+      // Debug: Log when remote participants join and their audio tracks
+      room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+        if (track.kind === Track.Kind.Audio && !participant.isLocal) {
+          console.log(`🎵 Audio track subscribed from ${participant.identity}:`, {
+            trackSid: publication.trackSid,
+            trackEnabled: !publication.isMuted,
+            canPlayAudio: room?.canPlaybackAudio
+          });
+          
+          // Debug audio state when new audio track comes in
+          const currentRoom = room;
+          if (currentRoom) {
+            setTimeout(() => debugAudioState(currentRoom), 100);
+          }
+        }
+      });
 
       // Remove automatic enabling of microphone and camera
       const localParticipant = room.localParticipant;
@@ -869,7 +923,22 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
   const changeAudioOutput = async (deviceId: string) => {
     if (roomState.room) {
       try {
+        // LiveKit's switchActiveDevice doesn't work well for audio output
+        // We need to manually set the sinkId on all audio elements
         await roomState.room.switchActiveDevice('audiooutput', deviceId);
+        
+        // Additionally, find all audio elements and set their sinkId
+        const audioElements = document.querySelectorAll('audio');
+        for (const audioElement of audioElements) {
+          if ('setSinkId' in audioElement && typeof audioElement.setSinkId === 'function') {
+            try {
+              await audioElement.setSinkId(deviceId);
+              console.log(`✅ Set audio output device for audio element: ${deviceId}`);
+            } catch (sinkError) {
+              console.warn('⚠️ Failed to set sink ID for audio element:', sinkError);
+            }
+          }
+        }
       } catch (error) {
         console.error("Failed to change audio output device:", error);
       }
@@ -913,3 +982,4 @@ export const useLiveKit = () => {
   }
   return context;
 };
+

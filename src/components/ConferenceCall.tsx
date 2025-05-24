@@ -141,66 +141,140 @@ const getSizeClassName = (count: number) => {
 const VideoParticipant = React.memo(
   ({ participant }: { participant: Participant }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const attachedTracksRef = useRef<Set<string>>(new Set());
 
     useEffect(() => {
       const videoElement = videoRef.current;
-      if (!videoElement || !participant.participant) return;
+      const audioElement = audioRef.current;
+      if (!participant.participant) return;
 
-      // Get all track publications and find the video track
+      // Get all track publications
       const trackPublications = participant.participant.getTrackPublications();
       const videoPublication = trackPublications.find(
         (pub) => pub.kind === Track.Kind.Video
       );
+      const audioPublication = trackPublications.find(
+        (pub) => pub.kind === Track.Kind.Audio
+      );
 
-      console.log(`Video track check for ${participant.id}:`, {
+      console.log(`Track check for ${participant.id}:`, {
         hasVideoPublication: !!videoPublication,
-        hasTrack: !!videoPublication?.track,
-        isMuted: videoPublication?.isMuted,
-        isSubscribed: videoPublication?.isSubscribed,
+        hasAudioPublication: !!audioPublication,
+        hasVideoTrack: !!videoPublication?.track,
+        hasAudioTrack: !!audioPublication?.track,
+        videoSubscribed: videoPublication?.isSubscribed,
+        audioSubscribed: audioPublication?.isSubscribed,
         isLocal: participant.isLocal,
       });
 
-      if (videoPublication?.track) {
-        const track = videoPublication.track;
+      const cleanupCallbacks: (() => void)[] = [];
 
-        // For remote participants, check if the track is subscribed
-        // For local participants, the track should be available immediately
-        const shouldAttach =
-          participant.isLocal || videoPublication.isSubscribed;
+      // Handle video track - only attach/detach when track actually changes
+      if (videoElement && videoPublication?.track) {
+        const track = videoPublication.track;
+        const trackKey = `video-${track.sid}`;
+        const shouldAttach = participant.isLocal || videoPublication.isSubscribed;
 
         if (shouldAttach && !videoPublication.isMuted) {
-          console.log(`Attaching video track for ${participant.id}`);
-          track.attach(videoElement);
-
-          return () => {
-            console.log(`Detaching video track for ${participant.id}`);
+          // Only attach if not already attached
+          if (!attachedTracksRef.current.has(trackKey)) {
+            console.log(`Attaching video track for ${participant.id}`);
+            track.attach(videoElement);
+            attachedTracksRef.current.add(trackKey);
+            
+            cleanupCallbacks.push(() => {
+              console.log(`Detaching video track for ${participant.id}`);
+              track.detach(videoElement);
+              attachedTracksRef.current.delete(trackKey);
+            });
+          }
+        } else {
+          // Detach if currently attached but should not be
+          if (attachedTracksRef.current.has(trackKey)) {
+            console.log(`Detaching video track for ${participant.id} (muted or unsubscribed)`);
             track.detach(videoElement);
-          };
+            attachedTracksRef.current.delete(trackKey);
+          }
         }
-      } else {
-        console.log(`No video track available for ${participant.id}`);
+      }
+
+      // Handle audio track (only for remote participants)
+      if (audioElement && audioPublication?.track && !participant.isLocal) {
+        const track = audioPublication.track;
+        const trackKey = `audio-${track.sid}`;
+        const shouldAttach = audioPublication.isSubscribed;
+
+        if (shouldAttach && !audioPublication.isMuted) {
+          // Only attach if not already attached
+          if (!attachedTracksRef.current.has(trackKey)) {
+            console.log(`Attaching audio track for ${participant.id}`);
+            track.attach(audioElement);
+            attachedTracksRef.current.add(trackKey);
+            
+            cleanupCallbacks.push(() => {
+              console.log(`Detaching audio track for ${participant.id}`);
+              track.detach(audioElement);
+              attachedTracksRef.current.delete(trackKey);
+            });
+          }
+        } else {
+          // Detach if currently attached but should not be
+          if (attachedTracksRef.current.has(trackKey)) {
+            console.log(`Detaching audio track for ${participant.id} (muted or unsubscribed)`);
+            track.detach(audioElement);
+            attachedTracksRef.current.delete(trackKey);
+          }
+        }
       }
 
       // Check again in a short delay for newly subscribed tracks
       const timeoutId = setTimeout(() => {
-        const updatedTrackPublications =
-          participant.participant.getTrackPublications();
+        const updatedTrackPublications = participant.participant.getTrackPublications();
         const updatedVideoPublication = updatedTrackPublications.find(
           (pub) => pub.kind === Track.Kind.Video
         );
+        const updatedAudioPublication = updatedTrackPublications.find(
+          (pub) => pub.kind === Track.Kind.Audio
+        );
 
+        // Delayed video attachment
         if (
+          videoElement &&
           updatedVideoPublication?.track &&
           updatedVideoPublication.isSubscribed &&
           !updatedVideoPublication.isMuted
         ) {
-          console.log(`Delayed attaching video track for ${participant.id}`);
-          updatedVideoPublication.track.attach(videoElement);
+          const track = updatedVideoPublication.track;
+          const trackKey = `video-${track.sid}`;
+          if (!attachedTracksRef.current.has(trackKey)) {
+            console.log(`Delayed attaching video track for ${participant.id}`);
+            track.attach(videoElement);
+            attachedTracksRef.current.add(trackKey);
+          }
+        }
+
+        // Delayed audio attachment (only for remote participants)
+        if (
+          audioElement &&
+          updatedAudioPublication?.track &&
+          updatedAudioPublication.isSubscribed &&
+          !updatedAudioPublication.isMuted &&
+          !participant.isLocal
+        ) {
+          const track = updatedAudioPublication.track;
+          const trackKey = `audio-${track.sid}`;
+          if (!attachedTracksRef.current.has(trackKey)) {
+            console.log(`Delayed attaching audio track for ${participant.id}`);
+            track.attach(audioElement);
+            attachedTracksRef.current.add(trackKey);
+          }
         }
       }, 100);
 
       return () => {
         clearTimeout(timeoutId);
+        cleanupCallbacks.forEach(cleanup => cleanup());
       };
     }, [
       participant.participant,
@@ -210,16 +284,27 @@ const VideoParticipant = React.memo(
     ]);
 
     return (
-      <video
-        ref={videoRef}
-        className="participant-video"
-        autoPlay
-        playsInline
-        muted={participant.isLocal}
-        style={{
-          display: participant.isVideoEnabled ? "block" : "none",
-        }}
-      />
+      <>
+        <video
+          ref={videoRef}
+          className="participant-video"
+          autoPlay
+          playsInline
+          muted={participant.isLocal}
+          style={{
+            display: participant.isVideoEnabled ? "block" : "none",
+          }}
+        />
+        {/* Audio element for remote participants only */}
+        {!participant.isLocal && (
+          <audio
+            ref={audioRef}
+            autoPlay
+            playsInline
+            style={{ display: 'none' }}
+          />
+        )}
+      </>
     );
   }
 );
@@ -595,7 +680,7 @@ const ConferenceCall: React.FC = () => {
         >
           <VideoParticipant
             participant={participant}
-            key={`${participant.id}-video-${participant.isVideoEnabled}`}
+            key={`${participant.id}-video`}
           />
 
           <div className="participant-name" style={{ color: nameColor }}>
