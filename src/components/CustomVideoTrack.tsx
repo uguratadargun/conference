@@ -60,6 +60,8 @@ const CustomVideoTrack: React.FC<{
 
       const publication = participant.getTrackPublication(trackSource);
 
+      console.log("Attach Track is local", isLocal);
+
       if (publication?.track && publication.isSubscribed) {
         try {
           publication.track.attach(element);
