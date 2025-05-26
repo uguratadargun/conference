@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Track, Participant } from "livekit-client";
 
 // Custom Video Component using refs for track attachment
@@ -26,8 +26,7 @@ const CustomVideoTrack: React.FC<{
           console.log("AudioContext initialized by user interaction");
 
           // Try to play any audio elements
-          const audioElements = document.querySelectorAll("audio");
-          audioElements.forEach((audio) => {
+          document.querySelectorAll("audio").forEach((audio) => {
             audio
               .play()
               .catch((err) => console.log("Still could not play audio:", err));
@@ -35,7 +34,7 @@ const CustomVideoTrack: React.FC<{
         });
       }
 
-      // Remove event listener after initialization
+      // Remove event listeners after initialization
       document.removeEventListener("click", initAudioContext);
       document.removeEventListener("touchstart", initAudioContext);
     };
@@ -50,187 +49,127 @@ const CustomVideoTrack: React.FC<{
     };
   }, [audioContextInitialized]);
 
-  // Video track effect - only depends on camera state
+  // Attach video/audio track helper function
+  const attachTrack = useCallback(
+    (
+      element: HTMLVideoElement | HTMLAudioElement | null,
+      trackSource: Track.Source,
+      isLocal: boolean
+    ) => {
+      if (!element || !participant) return false;
+
+      const publication = participant.getTrackPublication(trackSource);
+
+      if (publication?.track && publication.isSubscribed) {
+        try {
+          publication.track.attach(element);
+
+          // For audio elements, try to play them
+          if (element instanceof HTMLAudioElement) {
+            element.play().catch((error) => {
+              console.log("Audio autoplay prevented:", error);
+            });
+          }
+
+          return true;
+        } catch (error) {
+          console.warn(`Failed to attach ${trackSource} track:`, error);
+        }
+      }
+
+      return false;
+    },
+    []
+  );
+
+  // Detach track helper function
+  const detachTrack = useCallback(
+    (
+      element: HTMLVideoElement | HTMLAudioElement | null,
+      trackSource: Track.Source
+    ) => {
+      if (!element || !participant) return;
+
+      const publication = participant.getTrackPublication(trackSource);
+
+      if (publication?.track) {
+        try {
+          publication.track.detach(element);
+        } catch (error) {
+          console.warn(`Failed to detach ${trackSource} track:`, error);
+        }
+      }
+    },
+    [participant]
+  );
+
+  // Video track management
   useEffect(() => {
     const videoElement = videoRef.current;
-    if (!participant) return;
+    if (!videoElement || !participant) return;
 
-    const videoPublication = participant.getTrackPublication(source);
-
-    // Attach video track
-    if (
-      videoElement &&
-      videoPublication?.track &&
-      videoPublication.isSubscribed
-    ) {
-      try {
-        videoPublication.track.attach(videoElement);
-        setTrackAttached(true);
-      } catch (error) {
-        console.warn("Failed to attach video track:", error);
-        setTrackAttached(false);
-      }
-    } else if (
-      videoElement &&
-      videoPublication?.track &&
-      !videoPublication.isSubscribed
-    ) {
-      // If track exists but not subscribed, try to subscribe
-      console.log("Video track exists but not subscribed, waiting...");
-      setTrackAttached(false);
-    } else {
-      setTrackAttached(false);
-    }
+    const success = attachTrack(videoElement, source, participant.isLocal);
+    setTrackAttached(success);
 
     return () => {
-      // Cleanup video track
-      try {
-        if (videoElement && videoPublication?.track) {
-          videoPublication.track.detach(videoElement);
-        }
-      } catch (error) {
-        console.warn("Failed to detach video track:", error);
-      }
+      detachTrack(videoElement, source);
       setTrackAttached(false);
     };
-  }, [participant, source, participant.isCameraEnabled, trackAttached]);
+  }, [
+    participant,
+    source,
+    participant?.isCameraEnabled,
+    attachTrack,
+    detachTrack,
+  ]);
 
-  // Audio track effect - separate from video, only for remote participants
+  // Audio track management (for remote participants only)
   useEffect(() => {
     const audioElement = audioRef.current;
-    if (!participant || participant.isLocal) return;
+    if (!audioElement || !participant || participant.isLocal) return;
 
-    const audioPublication = participant.getTrackPublication(
-      Track.Source.Microphone
-    );
-
-    // Attach audio track (only for remote participants)
-    if (
-      audioElement &&
-      audioPublication?.track &&
-      audioPublication.isSubscribed
-    ) {
-      try {
-        audioPublication.track.attach(audioElement);
-
-        // Try to play audio - will succeed if user has already interacted with the page
-        audioElement.play().catch((error) => {
-          console.log("Audio autoplay prevented:", error);
-
-          // Add a one-time click handler to the document to start audio playback
-          const playAudioOnInteraction = () => {
-            audioElement
-              .play()
-              .then(() => {
-                console.log("Audio playback started after user interaction");
-              })
-              .catch((err) => console.warn("Still could not play audio:", err));
-
-            // Remove the event listeners after first interaction
-            document.removeEventListener("click", playAudioOnInteraction);
-            document.removeEventListener("touchstart", playAudioOnInteraction);
-          };
-
-          document.addEventListener("click", playAudioOnInteraction);
-          document.addEventListener("touchstart", playAudioOnInteraction);
-        });
-      } catch (error) {
-        console.warn("Failed to attach audio track:", error);
-      }
-    }
+    attachTrack(audioElement, Track.Source.Microphone, false);
 
     return () => {
-      // Cleanup audio track
-      try {
-        if (audioElement && audioPublication?.track) {
-          audioPublication.track.detach(audioElement);
-        }
-      } catch (error) {
-        console.warn("Failed to detach audio track:", error);
-      }
+      detachTrack(audioElement, Track.Source.Microphone);
     };
-  }, [participant, participant.isMicrophoneEnabled]);
+  }, [participant, participant?.isMicrophoneEnabled, attachTrack, detachTrack]);
 
-  // Additional effect to handle track publication changes
+  // Handle track publications and subscriptions
   useEffect(() => {
     if (!participant) return;
 
-    const handleTrackPublished = (publication: any) => {
-      console.log(
-        "Track published:",
-        publication.source,
-        "attempting to attach..."
-      );
-      // Only handle camera track publications
-      if (publication.source !== source) return;
-
-      // Trigger re-render to attempt attachment
+    const handleTrackEvent = () => {
+      // Small delay to ensure track is ready
       setTimeout(() => {
-        const videoElement = videoRef.current;
-        const videoPublication = participant.getTrackPublication(source);
-
-        if (
-          videoElement &&
-          videoPublication?.track &&
-          videoPublication.isSubscribed &&
-          !trackAttached
-        ) {
-          try {
-            videoPublication.track.attach(videoElement);
+        if (videoRef.current && !trackAttached) {
+          const success = attachTrack(
+            videoRef.current,
+            source,
+            participant.isLocal
+          );
+          if (success) {
             setTrackAttached(true);
-            console.log("Video track attached successfully on publication");
-          } catch (error) {
-            console.warn("Failed to attach video track on publication:", error);
+            console.log(`${source} track attached successfully`);
           }
         }
-      }, 100);
-    };
 
-    const handleTrackSubscribed = (track: any, publication: any) => {
-      console.log(
-        "Track subscribed:",
-        publication.source,
-        "attempting to attach...",
-        track,
-        publication
-      );
-      // Only handle camera track subscriptions
-      if (publication.source !== source) return;
-
-      // Trigger re-render to attempt attachment
-      setTimeout(() => {
-        const videoElement = videoRef.current;
-        const videoPublication = participant.getTrackPublication(source);
-
-        if (
-          videoElement &&
-          videoPublication?.track &&
-          videoPublication.isSubscribed &&
-          !trackAttached
-        ) {
-          try {
-            videoPublication.track.attach(videoElement);
-            setTrackAttached(true);
-            console.log("Video track attached successfully on subscription");
-          } catch (error) {
-            console.warn(
-              "Failed to attach video track on subscription:",
-              error
-            );
-          }
+        // Handle audio track for remote participants
+        if (audioRef.current && !participant.isLocal) {
+          attachTrack(audioRef.current, Track.Source.Microphone, false);
         }
       }, 100);
     };
 
     // Listen for track events
-    participant.on("trackPublished", handleTrackPublished);
-    participant.on("trackSubscribed", handleTrackSubscribed);
+    participant.on("trackPublished", handleTrackEvent);
+    participant.on("trackSubscribed", handleTrackEvent);
 
     return () => {
-      participant.off("trackPublished", handleTrackPublished);
-      participant.off("trackSubscribed", handleTrackSubscribed);
+      participant.off("trackPublished", handleTrackEvent);
+      participant.off("trackSubscribed", handleTrackEvent);
     };
-  }, [participant, source, trackAttached]);
+  }, [participant, source, trackAttached, attachTrack]);
 
   return (
     <>
