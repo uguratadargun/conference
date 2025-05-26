@@ -1213,3 +1213,64 @@
 .error-retry-button .material-icons {
   font-size: 16px !important;
 }
+
+/* Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--white);
+  gap: 16px;
+}
+
+.loading-container .material-icons {
+  font-size: 48px;
+  color: var(--primary-blue);
+}
+
+.loading-container span:not(.material-icons) {
+  font-size: 18px;
+  color: var(--overlay-text);
+}
+
+/* Error Container */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--white);
+  gap: 24px;
+  padding: 32px;
+  text-align: center;
+}
+
+.error-container .material-icons {
+  font-size: 64px;
+  color: var(--error-color);
+}
+
+.error-container span:not(.material-icons) {
+  font-size: 18px;
+  color: var(--overlay-text);
+  max-width: 500px;
+}
+
+.retry-button {
+  background: var(--primary-blue) !important;
+  border: none !important;
+  color: var(--white) !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.retry-button:hover {
+  background: var(--primary-blue-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}

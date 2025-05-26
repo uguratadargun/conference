@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@livekit/components-react": "^2.9.9",
     "livekit-client": "^2.13.1",
     "livekit-server-sdk": "^2.13.0",
     "primeicons": "^7.0.0",
