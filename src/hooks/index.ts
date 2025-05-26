@@ -1,2 +1,2 @@
-export * from './useDeviceManagement';
-export * from './useAudioInteraction'; 
+export * from "./useDeviceManagement";
+export * from "./useAudioInteraction";

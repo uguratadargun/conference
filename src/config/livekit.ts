@@ -31,4 +31,4 @@ export const INTERVALS = {
   // CONNECTION_QUALITY_CHECK: 5000, // KALDIRILIYOR: Event-driven yaklaşım kullanılıyor
   RETRY_DELAY: 1000, // Bağlantı yeniden deneme gecikmesi - gerekli
   // AUDIO_LEVEL_UPDATE: 150, // KALDIRILIYOR: ActiveSpeakersChanged event'i kullanılıyor
-} as const; 
+} as const;

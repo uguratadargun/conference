@@ -171,7 +171,8 @@ const VideoParticipant = React.memo(
       if (videoElement && videoPublication?.track) {
         const track = videoPublication.track;
         const trackKey = `video-${track.sid}`;
-        const shouldAttach = participant.isLocal || videoPublication.isSubscribed;
+        const shouldAttach =
+          participant.isLocal || videoPublication.isSubscribed;
 
         if (shouldAttach && !videoPublication.isMuted) {
           // Only attach if not already attached
@@ -179,7 +180,7 @@ const VideoParticipant = React.memo(
             console.log(`Attaching video track for ${participant.id}`);
             track.attach(videoElement);
             attachedTracksRef.current.add(trackKey);
-            
+
             cleanupCallbacks.push(() => {
               console.log(`Detaching video track for ${participant.id}`);
               track.detach(videoElement);
@@ -189,7 +190,9 @@ const VideoParticipant = React.memo(
         } else {
           // Detach if currently attached but should not be
           if (attachedTracksRef.current.has(trackKey)) {
-            console.log(`Detaching video track for ${participant.id} (muted or unsubscribed)`);
+            console.log(
+              `Detaching video track for ${participant.id} (muted or unsubscribed)`
+            );
             track.detach(videoElement);
             attachedTracksRef.current.delete(trackKey);
           }
@@ -208,7 +211,7 @@ const VideoParticipant = React.memo(
             console.log(`Attaching audio track for ${participant.id}`);
             track.attach(audioElement);
             attachedTracksRef.current.add(trackKey);
-            
+
             cleanupCallbacks.push(() => {
               console.log(`Detaching audio track for ${participant.id}`);
               track.detach(audioElement);
@@ -218,7 +221,9 @@ const VideoParticipant = React.memo(
         } else {
           // Detach if currently attached but should not be
           if (attachedTracksRef.current.has(trackKey)) {
-            console.log(`Detaching audio track for ${participant.id} (muted or unsubscribed)`);
+            console.log(
+              `Detaching audio track for ${participant.id} (muted or unsubscribed)`
+            );
             track.detach(audioElement);
             attachedTracksRef.current.delete(trackKey);
           }
@@ -227,7 +232,8 @@ const VideoParticipant = React.memo(
 
       // Check again in a short delay for newly subscribed tracks
       const timeoutId = setTimeout(() => {
-        const updatedTrackPublications = participant.participant.getTrackPublications();
+        const updatedTrackPublications =
+          participant.participant.getTrackPublications();
         const updatedVideoPublication = updatedTrackPublications.find(
           (pub) => pub.kind === Track.Kind.Video
         );
@@ -271,7 +277,7 @@ const VideoParticipant = React.memo(
 
       return () => {
         clearTimeout(timeoutId);
-        cleanupCallbacks.forEach(cleanup => cleanup());
+        cleanupCallbacks.forEach((cleanup) => cleanup());
       };
     }, [
       participant.participant,
@@ -298,7 +304,7 @@ const VideoParticipant = React.memo(
             ref={audioRef}
             autoPlay
             playsInline
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         )}
       </>
@@ -307,8 +313,10 @@ const VideoParticipant = React.memo(
   (prevProps, nextProps) => {
     return (
       prevProps.participant.id === nextProps.participant.id &&
-      prevProps.participant.isVideoEnabled === nextProps.participant.isVideoEnabled &&
-      prevProps.participant.isAudioEnabled === nextProps.participant.isAudioEnabled &&
+      prevProps.participant.isVideoEnabled ===
+        nextProps.participant.isVideoEnabled &&
+      prevProps.participant.isAudioEnabled ===
+        nextProps.participant.isAudioEnabled &&
       prevProps.participant.participant === nextProps.participant.participant
     );
   }
@@ -375,27 +383,48 @@ const SettingsDialog = React.memo(
     changeVideoInput: (deviceId: string) => Promise<void>;
     changeAudioOutput: (deviceId: string) => Promise<void>;
   }) => {
-    const [audioDevices, setAudioDevices] = useState<{ deviceId: string; label: string }[]>([]);
-    const [videoDevices, setVideoDevices] = useState<{ deviceId: string; label: string }[]>([]);
-    const [audioOutputDevices, setAudioOutputDevices] = useState<{ deviceId: string; label: string }[]>([]);
-    
-    const [selectedAudioInput, setSelectedAudioInput] = useState<string>('');
-    const [selectedVideoInput, setSelectedVideoInput] = useState<string>('');
-    const [selectedAudioOutput, setSelectedAudioOutput] = useState<string>('');
+    const [audioDevices, setAudioDevices] = useState<
+      { deviceId: string; label: string }[]
+    >([]);
+    const [videoDevices, setVideoDevices] = useState<
+      { deviceId: string; label: string }[]
+    >([]);
+    const [audioOutputDevices, setAudioOutputDevices] = useState<
+      { deviceId: string; label: string }[]
+    >([]);
+
+    const [selectedAudioInput, setSelectedAudioInput] = useState<string>("");
+    const [selectedVideoInput, setSelectedVideoInput] = useState<string>("");
+    const [selectedAudioOutput, setSelectedAudioOutput] = useState<string>("");
 
     const fetchDevices = useCallback(async () => {
       const devices = await getAvailableDevices();
       setAudioDevices(devices.audioInputs);
       setVideoDevices(devices.videoInputs);
       setAudioOutputDevices(devices.audioOutputs);
-      
+
       // Get current devices and set as selected
       const currentDevices = await getCurrentDevices();
-      
+
       // Set current devices as selected, or default to first device if available
-      setSelectedAudioInput(currentDevices.audioInput || (devices.audioInputs.length > 0 ? devices.audioInputs[0].deviceId : ''));
-      setSelectedVideoInput(currentDevices.videoInput || (devices.videoInputs.length > 0 ? devices.videoInputs[0].deviceId : ''));
-      setSelectedAudioOutput(currentDevices.audioOutput || (devices.audioOutputs.length > 0 ? devices.audioOutputs[0].deviceId : ''));
+      setSelectedAudioInput(
+        currentDevices.audioInput ||
+          (devices.audioInputs.length > 0
+            ? devices.audioInputs[0].deviceId
+            : "")
+      );
+      setSelectedVideoInput(
+        currentDevices.videoInput ||
+          (devices.videoInputs.length > 0
+            ? devices.videoInputs[0].deviceId
+            : "")
+      );
+      setSelectedAudioOutput(
+        currentDevices.audioOutput ||
+          (devices.audioOutputs.length > 0
+            ? devices.audioOutputs[0].deviceId
+            : "")
+      );
     }, [getAvailableDevices, getCurrentDevices]);
 
     useEffect(() => {
@@ -425,7 +454,7 @@ const SettingsDialog = React.memo(
         onHide={onHide}
         className="settings-dialog"
         header="Cihaz Ayarları"
-        style={{ width: '600px' }}
+        style={{ width: "600px" }}
       >
         <div className="settings-content">
           <div className="device-section">
@@ -433,7 +462,7 @@ const SettingsDialog = React.memo(
               <span className="material-icons">mic</span>
               Mikrofon
             </h4>
-            <select 
+            <select
               className="device-select"
               value={selectedAudioInput}
               onChange={(e) => handleAudioInputChange(e.target.value)}
@@ -441,7 +470,7 @@ const SettingsDialog = React.memo(
               {audioDevices.length === 0 ? (
                 <option value="">Mikrofon bulunamadı</option>
               ) : (
-                audioDevices.map(device => (
+                audioDevices.map((device) => (
                   <option key={device.deviceId} value={device.deviceId}>
                     {device.label}
                   </option>
@@ -455,7 +484,7 @@ const SettingsDialog = React.memo(
               <span className="material-icons">videocam</span>
               Kamera
             </h4>
-            <select 
+            <select
               className="device-select"
               value={selectedVideoInput}
               onChange={(e) => handleVideoInputChange(e.target.value)}
@@ -463,7 +492,7 @@ const SettingsDialog = React.memo(
               {videoDevices.length === 0 ? (
                 <option value="">Kamera bulunamadı</option>
               ) : (
-                videoDevices.map(device => (
+                videoDevices.map((device) => (
                   <option key={device.deviceId} value={device.deviceId}>
                     {device.label}
                   </option>
@@ -477,7 +506,7 @@ const SettingsDialog = React.memo(
               <span className="material-icons">volume_up</span>
               Hoparlör
             </h4>
-            <select 
+            <select
               className="device-select"
               value={selectedAudioOutput}
               onChange={(e) => handleAudioOutputChange(e.target.value)}
@@ -485,7 +514,7 @@ const SettingsDialog = React.memo(
               {audioOutputDevices.length === 0 ? (
                 <option value="">Hoparlör bulunamadı</option>
               ) : (
-                audioOutputDevices.map(device => (
+                audioOutputDevices.map((device) => (
                   <option key={device.deviceId} value={device.deviceId}>
                     {device.label}
                   </option>
@@ -501,11 +530,7 @@ const SettingsDialog = React.memo(
               className="refresh-button"
               label="Yenile"
             />
-            <Button
-              label="Kapat"
-              onClick={onHide}
-              className="close-button"
-            />
+            <Button label="Kapat" onClick={onHide} className="close-button" />
           </div>
         </div>
       </Dialog>
@@ -515,9 +540,13 @@ const SettingsDialog = React.memo(
 
 // Grid'deki her participant için memoized wrapper
 const MemoizedParticipantWrapper = React.memo(
-  ({ participant, idx, renderParticipant }: { 
-    participant: Participant; 
-    idx: number; 
+  ({
+    participant,
+    idx,
+    renderParticipant,
+  }: {
+    participant: Participant;
+    idx: number;
     renderParticipant: (p: Participant, idx: number) => React.ReactNode;
   }) => {
     return (
@@ -530,8 +559,10 @@ const MemoizedParticipantWrapper = React.memo(
     // Sadece önemli değişiklikler varsa re-render et
     return (
       prevProps.participant.id === nextProps.participant.id &&
-      prevProps.participant.isVideoEnabled === nextProps.participant.isVideoEnabled &&
-      prevProps.participant.isAudioEnabled === nextProps.participant.isAudioEnabled &&
+      prevProps.participant.isVideoEnabled ===
+        nextProps.participant.isVideoEnabled &&
+      prevProps.participant.isAudioEnabled ===
+        nextProps.participant.isAudioEnabled &&
       prevProps.participant.isSpeaking === nextProps.participant.isSpeaking &&
       prevProps.idx === nextProps.idx
     );
@@ -586,7 +617,7 @@ const ConferenceCall: React.FC = () => {
     setIsErrorExiting(false);
 
     // If there's a general error (not connection error), set timeout to dismiss it
-    if (error && error.type === 'general') {
+    if (error && error.type === "general") {
       errorTimeoutRef.current = setTimeout(() => {
         dismissError();
       }, 5000);
@@ -614,7 +645,7 @@ const ConferenceCall: React.FC = () => {
     // KALDIRILIYOR: Audio level monitoring interval'ı gereksiz
     // ActiveSpeakersChanged event'i zaten isSpeaking bilgisini veriyor
     // Sadece voice indicator için audioLevel gerekiyor ama bu da LiveKit'in kendi audioLevel property'si ile alınabilir
-    
+
     // Manual audio level polling artık gerekli değil
     return () => {}; // Cleanup function
   }, []); // Dependency array simplified
@@ -629,7 +660,11 @@ const ConferenceCall: React.FC = () => {
 
       // Only log when speaking state is active
       if (isActive) {
-        console.log(`🎵 Voice indicator ACTIVE: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(3)}`);
+        console.log(
+          `🎵 Voice indicator ACTIVE: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(
+            3
+          )}`
+        );
       }
 
       return (
@@ -651,7 +686,9 @@ const ConferenceCall: React.FC = () => {
               const maxHeight = 100;
               height =
                 4 +
-                (maxHeight - 4) * effectiveLevel * Math.pow(normalizedDistance, 2);
+                (maxHeight - 4) *
+                  effectiveLevel *
+                  Math.pow(normalizedDistance, 2);
               height = Math.max(4, Math.min(maxHeight, height));
             }
 
@@ -678,21 +715,25 @@ const ConferenceCall: React.FC = () => {
       const borderColor = BORDER_COLORS[idx % BORDER_COLORS.length];
       const nameColor = NAME_COLORS[idx % NAME_COLORS.length];
       const isLocal = participant.isLocal;
-      
+
       // Use the new isSpeaking property from ActiveSpeakersChanged event
       // This is more reliable than manual audio level polling
       const isSpeaking = participant.isSpeaking || false;
-      
+
       // Get audio level directly from participant instead of state
       const audioLevel = participant.participant?.audioLevel || 0;
-      
+
       // Debug speaking state changes only
       if (isSpeaking || audioLevel > 0.01) {
-        console.log(`🔊 Participant ${participant.name}: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(3)}`);
+        console.log(
+          `🔊 Participant ${
+            participant.name
+          }: isSpeaking=${isSpeaking}, audioLevel=${audioLevel.toFixed(3)}`
+        );
       }
-      
+
       const isFullScreen = fullScreenParticipant === participant.id;
-      
+
       // Get connection status indicators
       const hasConnectionIssues = participant.hasConnectionIssues || false;
       const streamState = participant.streamState;
@@ -752,7 +793,7 @@ const ConferenceCall: React.FC = () => {
           )}
 
           {/* Stream buffering indicator */}
-          {streamState === 'buffering' && (
+          {streamState === "buffering" && (
             <div className="buffering-indicator">
               <span className="material-icons rotating">sync</span>
             </div>
@@ -830,32 +871,46 @@ const ConferenceCall: React.FC = () => {
       <div className="top-status-bar">
         <div className="status-item">
           <span className="material-icons">people</span>
-          <span>{roomState.participants.length} participant{roomState.participants.length !== 1 ? 's' : ''}</span>
+          <span>
+            {roomState.participants.length} participant
+            {roomState.participants.length !== 1 ? "s" : ""}
+          </span>
         </div>
-        
-        <div className={`status-item connection-status ${
-          connectionState === 'connected' ? 'connected' : 
-          connectionState === 'connecting' ? 'connecting' : 'disconnected'
-        }`}>
+
+        <div
+          className={`status-item connection-status ${
+            connectionState === "connected"
+              ? "connected"
+              : connectionState === "connecting"
+              ? "connecting"
+              : "disconnected"
+          }`}
+        >
           <span className="material-icons">
-            {connectionState === 'connected' ? 'wifi' : 
-             connectionState === 'connecting' ? 'sync' : 'wifi_off'}
+            {connectionState === "connected"
+              ? "wifi"
+              : connectionState === "connecting"
+              ? "sync"
+              : "wifi_off"}
           </span>
           <span>
-            {connectionState === 'connected' ? 'Connected' : 
-             connectionState === 'connecting' ? 'Connecting...' : 'Disconnected'}
+            {connectionState === "connected"
+              ? "Connected"
+              : connectionState === "connecting"
+              ? "Connecting..."
+              : "Disconnected"}
           </span>
         </div>
       </div>
 
       {/* Error Notification - Floating in top-right */}
       {error && (
-        <div className={`error-notification ${isErrorExiting ? 'exit' : ''}`}>
+        <div className={`error-notification ${isErrorExiting ? "exit" : ""}`}>
           <div className="error-content">
             <div className="error-header">
               <span className="material-icons">error_outline</span>
               <span className="error-title">
-                {error.type === 'connection' ? 'Connection Error' : 'Error'}
+                {error.type === "connection" ? "Connection Error" : "Error"}
               </span>
               <Button
                 icon={<span className="material-icons">close</span>}
@@ -867,7 +922,7 @@ const ConferenceCall: React.FC = () => {
               />
             </div>
             <div className="error-message">{error.message}</div>
-            {error.type === 'connection' && (
+            {error.type === "connection" && (
               <div className="error-actions">
                 <Button
                   icon={

@@ -1,9 +1,15 @@
-import React, { createContext, useContext, useState, useMemo, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { Room } from "livekit-client";
-import type { 
-  RoomState, 
-  ErrorState, 
-  LiveKitContextType 
+import type {
+  RoomState,
+  ErrorState,
+  LiveKitContextType,
 } from "../types/livekit";
 import { ROOM_OPTIONS, CONNECTION_CONFIG, INTERVALS } from "../config/livekit";
 import { generateToken } from "../utils/livekit-token";
@@ -26,14 +32,19 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
   });
   const [error, setError] = useState<ErrorState | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
-  const [connectionState, setConnectionState] = useState<string>('disconnected');
+  const [connectionState, setConnectionState] =
+    useState<string>("disconnected");
   const [audioStartAttempted, setAudioStartAttempted] = useState(false);
 
   // Use device management hook
   const deviceManagement = useDeviceManagement(roomState.room);
 
   // Use audio interaction hook
-  useAudioInteraction(roomState.room, audioStartAttempted, setAudioStartAttempted);
+  useAudioInteraction(
+    roomState.room,
+    audioStartAttempted,
+    setAudioStartAttempted
+  );
 
   // Memoized functions to prevent unnecessary re-renders
   const requestMediaPermissions = useCallback(async (): Promise<void> => {
@@ -84,41 +95,43 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   }, []);
 
-  const connect = useCallback(async (url: string, token: string): Promise<void> => {
-    let room: Room | null = null;
+  const connect = useCallback(
+    async (url: string, token: string): Promise<void> => {
+      let room: Room | null = null;
 
-    try {
-      await requestMediaPermissions();
-      room = initializeRoom();
+      try {
+        await requestMediaPermissions();
+        room = initializeRoom();
 
-      setupRoomEventHandlers(
-        room,
-        setRoomState,
-        setError,
-        setIsRetrying,
-        setConnectionState,
-        setAudioStartAttempted
-      );
+        setupRoomEventHandlers(
+          room,
+          setRoomState,
+          setError,
+          setIsRetrying,
+          setConnectionState,
+          setAudioStartAttempted
+        );
 
-      await room.connect(url, token, CONNECTION_CONFIG);
-      setupInitialParticipants(room);
-
-    } catch (error) {
-      console.error("Failed to connect to room:", error);
-      if (room) {
-        room.disconnect();
+        await room.connect(url, token, CONNECTION_CONFIG);
+        setupInitialParticipants(room);
+      } catch (error) {
+        console.error("Failed to connect to room:", error);
+        if (room) {
+          room.disconnect();
+        }
+        setConnectionState("disconnected");
+        setRoomState({
+          room: null,
+          participants: [],
+          isConnected: false,
+          isVideoEnabled: true,
+          isAudioEnabled: true,
+        });
+        throw error;
       }
-      setConnectionState('disconnected');
-      setRoomState({
-        room: null,
-        participants: [],
-        isConnected: false,
-        isVideoEnabled: true,
-        isAudioEnabled: true,
-      });
-      throw error;
-    }
-  }, [requestMediaPermissions, initializeRoom, setupInitialParticipants]);
+    },
+    [requestMediaPermissions, initializeRoom, setupInitialParticipants]
+  );
 
   const autoConnect = useCallback(async (): Promise<void> => {
     if (roomState.isConnected) {
@@ -128,15 +141,15 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setError(null);
       setIsRetrying(true);
-      setConnectionState('connecting');
+      setConnectionState("connecting");
 
       await initializeAudioContext();
       const { url, token } = await generateToken();
       await connect(url, token);
     } catch (error) {
       console.error("Connection error:", error);
-      setConnectionState('disconnected');
-      
+      setConnectionState("disconnected");
+
       if (error instanceof Error) {
         if (
           error.message.includes("camera and microphone") ||
@@ -145,24 +158,24 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         ) {
           console.warn("Continuing without media permissions:", error.message);
           try {
-            setConnectionState('connecting');
+            setConnectionState("connecting");
             const { url, token } = await generateToken();
             await connect(url, token);
             return;
           } catch (retryError) {
-            setConnectionState('disconnected');
-            setError({ 
-              type: 'connection', 
-              message: "Failed to connect to the room. Please try again." 
+            setConnectionState("disconnected");
+            setError({
+              type: "connection",
+              message: "Failed to connect to the room. Please try again.",
             });
           }
         } else {
-          setError({ type: 'connection', message: error.message });
+          setError({ type: "connection", message: error.message });
         }
       } else {
-        setError({ 
-          type: 'connection', 
-          message: "Failed to connect to the room. Please try again." 
+        setError({
+          type: "connection",
+          message: "Failed to connect to the room. Please try again.",
         });
       }
     } finally {
@@ -181,7 +194,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
   const disconnect = useCallback((): void => {
     if (roomState.room) {
       roomState.room.disconnect();
-      setConnectionState('disconnected');
+      setConnectionState("disconnected");
       setRoomState({
         room: null,
         participants: [],
@@ -190,7 +203,7 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
         isAudioEnabled: true,
       });
     }
-    
+
     // Cleanup device management
     if (deviceManagement.cleanup) {
       deviceManagement.cleanup();
@@ -224,33 +237,36 @@ export const LiveKitProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   // Memoize context value to prevent unnecessary re-renders
-  const contextValue = useMemo(() => ({
-    roomState,
-    connect,
-    autoConnect,
-    disconnect,
-    toggleVideo,
-    toggleAudio,
-    retry,
-    clearError,
-    error,
-    isRetrying,
-    connectionState,
-    ...deviceManagement,
-  }), [
-    roomState,
-    connect,
-    autoConnect,
-    disconnect,
-    toggleVideo,
-    toggleAudio,
-    retry,
-    clearError,
-    error,
-    isRetrying,
-    connectionState,
-    deviceManagement,
-  ]);
+  const contextValue = useMemo(
+    () => ({
+      roomState,
+      connect,
+      autoConnect,
+      disconnect,
+      toggleVideo,
+      toggleAudio,
+      retry,
+      clearError,
+      error,
+      isRetrying,
+      connectionState,
+      ...deviceManagement,
+    }),
+    [
+      roomState,
+      connect,
+      autoConnect,
+      disconnect,
+      toggleVideo,
+      toggleAudio,
+      retry,
+      clearError,
+      error,
+      isRetrying,
+      connectionState,
+      deviceManagement,
+    ]
+  );
 
   return (
     <LiveKitContext.Provider value={contextValue}>
@@ -266,4 +282,3 @@ export const useLiveKit = () => {
   }
   return context;
 };
-
