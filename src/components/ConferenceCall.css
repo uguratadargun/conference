@@ -149,10 +149,91 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 20px;
-  background: transparent;
+  background: var(--secondary-bg);
   z-index: 2;
+}
+
+/* Voice Indicator */
+.voice-indicator-container {
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.voice-indicator {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+}
+
+.wave {
+  display: inline-block;
+  width: 3px;
+  height: 100%;
+  margin: 0 2px;
+  border-radius: 1px;
+  background-color: #4ade80;
+  animation: voice-level-animation 1s infinite;
+}
+
+.wave1 {
+  animation-delay: 0s;
+  height: 30%;
+}
+.wave2 {
+  animation-delay: 0.1s;
+  height: 60%;
+}
+.wave3 {
+  animation-delay: 0.2s;
+  height: 100%;
+}
+.wave4 {
+  animation-delay: 0.3s;
+  height: 60%;
+}
+.wave5 {
+  animation-delay: 0.4s;
+  height: 30%;
+}
+
+@keyframes voice-level-animation {
+  0%,
+  100% {
+    transform: scaleY(0.8);
+  }
+  50% {
+    transform: scaleY(1.2);
+  }
+}
+
+/* Adjust for fullscreen mode */
+.fullscreen-container .voice-indicator-container {
+  bottom: 80px;
+}
+
+/* Adjust for thumbnail mode */
+.thumbnail-wrapper .voice-indicator-container {
+  bottom: 6px;
+  display: none; /* Hide voice indicators in thumbnails */
+}
+
+.thumbnail-wrapper .voice-indicator {
+  height: 12px;
+  padding: 0 4px;
+}
+
+.thumbnail-wrapper .wave {
+  width: 2px;
+  margin: 0 1px;
 }
 
 /* Maximize Button */
@@ -235,6 +316,12 @@
   margin-bottom: 16px;
   text-align: center;
   z-index: 1;
+}
+
+.name-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .avatar-container {

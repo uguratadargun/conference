@@ -307,41 +307,42 @@ const CustomParticipantTile: React.FC<{
       }`}
       style={{
         borderColor: participant.isSpeaking ? borderColor : "transparent",
+        cursor: onMaximize ? "pointer" : "default",
       }}
+      onClick={onMaximize}
     >
       <CustomVideoTrack
         participant={participant}
         source={Track.Source.Camera}
       />
 
-      {/* Maximize button in top-right corner */}
-      {onMaximize && (
-        <div className="maximize-button-container">
-          <Button
-            icon={<span className="material-icons">fullscreen</span>}
-            onClick={onMaximize}
-            className="maximize-button"
-            tooltip="Fullscreen"
-            tooltipOptions={{ position: "left" }}
-          />
-        </div>
-      )}
-
       <div className="participant-name" style={{ color: nameColor }}>
-        {displayName}
+        <div className="name-container">{displayName}</div>
       </div>
-
-      {!participant.isMicrophoneEnabled && (
-        <div className="audio-muted-indicator">
-          <span className="material-icons">mic_off</span>
-        </div>
-      )}
 
       {!participant.isCameraEnabled && (
         <div className="avatar-container" style={{ display: "flex" }}>
           <span className="avatar-initials" style={{ color: nameColor }}>
             {initials}
           </span>
+        </div>
+      )}
+
+      {participant.isMicrophoneEnabled && participant.isSpeaking && (
+        <div className="voice-indicator-container">
+          <div className="voice-indicator">
+            <span className="wave wave1"></span>
+            <span className="wave wave2"></span>
+            <span className="wave wave3"></span>
+            <span className="wave wave4"></span>
+            <span className="wave wave5"></span>
+          </div>
+        </div>
+      )}
+
+      {!participant.isMicrophoneEnabled && (
+        <div className="audio-muted-indicator">
+          <span className="material-icons">mic_off</span>
         </div>
       )}
     </div>
@@ -566,6 +567,7 @@ const RoomComponent: React.FC = () => {
                   <CustomParticipantTile
                     participant={participant}
                     idx={idx + 1}
+                    onMaximize={() => enterFullScreen(participant.identity)}
                   />
                 </div>
               ))}
