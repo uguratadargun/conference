@@ -8,7 +8,7 @@ import {
   useMediaDeviceSelect,
   useRoomContext,
 } from "@livekit/components-react";
-import { Track, ConnectionState, Room } from "livekit-client";
+import { Track, ConnectionState } from "livekit-client";
 import type { Participant } from "livekit-client";
 import { useLiveKit } from "../context/LiveKitContext";
 import { Button } from "primereact/button";
@@ -83,11 +83,6 @@ const getGridClassName = (count: number) => {
   return "grid-scroll";
 };
 
-const getSizeClassName = (count: number) => {
-  if (count > 20) return "size-scroll";
-  return "size-full";
-};
-
 // Custom Video Component using refs for track attachment
 const CustomVideoTrack: React.FC<{
   participant: Participant;
@@ -97,15 +92,12 @@ const CustomVideoTrack: React.FC<{
   const audioRef = useRef<HTMLAudioElement>(null);
   const [trackAttached, setTrackAttached] = useState(false);
 
+  // Video track effect - only depends on camera state
   useEffect(() => {
     const videoElement = videoRef.current;
-    const audioElement = audioRef.current;
     if (!participant) return;
 
     const videoPublication = participant.getTrackPublication(source);
-    const audioPublication = participant.getTrackPublication(
-      Track.Source.Microphone
-    );
 
     // Attach video track
     if (
@@ -132,11 +124,32 @@ const CustomVideoTrack: React.FC<{
       setTrackAttached(false);
     }
 
+    return () => {
+      // Cleanup video track
+      try {
+        if (videoElement && videoPublication?.track) {
+          videoPublication.track.detach(videoElement);
+        }
+      } catch (error) {
+        console.warn("Failed to detach video track:", error);
+      }
+      setTrackAttached(false);
+    };
+  }, [participant, source, participant.isCameraEnabled, trackAttached]);
+
+  // Audio track effect - separate from video, only for remote participants
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (!participant || participant.isLocal) return;
+
+    const audioPublication = participant.getTrackPublication(
+      Track.Source.Microphone
+    );
+
     // Attach audio track (only for remote participants)
     if (
       audioElement &&
       audioPublication?.track &&
-      !participant.isLocal &&
       audioPublication.isSubscribed
     ) {
       try {
@@ -147,26 +160,16 @@ const CustomVideoTrack: React.FC<{
     }
 
     return () => {
-      // Cleanup
+      // Cleanup audio track
       try {
-        if (videoElement && videoPublication?.track) {
-          videoPublication.track.detach(videoElement);
-        }
-        if (audioElement && audioPublication?.track && !participant.isLocal) {
+        if (audioElement && audioPublication?.track) {
           audioPublication.track.detach(audioElement);
         }
       } catch (error) {
-        console.warn("Failed to detach tracks:", error);
+        console.warn("Failed to detach audio track:", error);
       }
-      setTrackAttached(false);
     };
-  }, [
-    participant,
-    source,
-    participant.isCameraEnabled,
-    participant.isMicrophoneEnabled,
-    trackAttached,
-  ]);
+  }, [participant, participant.isMicrophoneEnabled]);
 
   // Additional effect to handle track publication changes
   useEffect(() => {
@@ -207,7 +210,9 @@ const CustomVideoTrack: React.FC<{
       console.log(
         "Track subscribed:",
         publication.source,
-        "attempting to attach..."
+        "attempting to attach...",
+        track,
+        publication
       );
       // Only handle camera track subscriptions
       if (publication.source !== source) return;
@@ -275,8 +280,8 @@ const CustomVideoTrack: React.FC<{
 const CustomParticipantTile: React.FC<{
   participant: Participant;
   idx: number;
-  onDoubleClick?: () => void;
-}> = ({ participant, idx, onDoubleClick }) => {
+  onMaximize?: () => void;
+}> = ({ participant, idx, onMaximize }) => {
   const borderColor = BORDER_COLORS[idx % BORDER_COLORS.length];
   const nameColor = NAME_COLORS[idx % NAME_COLORS.length];
 
@@ -303,12 +308,24 @@ const CustomParticipantTile: React.FC<{
       style={{
         borderColor: participant.isSpeaking ? borderColor : "transparent",
       }}
-      onDoubleClick={onDoubleClick}
     >
       <CustomVideoTrack
         participant={participant}
         source={Track.Source.Camera}
       />
+
+      {/* Maximize button in top-right corner */}
+      {onMaximize && (
+        <div className="maximize-button-container">
+          <Button
+            icon={<span className="material-icons">fullscreen</span>}
+            onClick={onMaximize}
+            className="maximize-button"
+            tooltip="Fullscreen"
+            tooltipOptions={{ position: "left" }}
+          />
+        </div>
+      )}
 
       <div className="participant-name" style={{ color: nameColor }}>
         {displayName}
@@ -443,6 +460,21 @@ const RoomComponent: React.FC = () => {
     setFullScreenParticipant(null);
   }, []);
 
+  // ESC key listener for exiting fullscreen
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && fullScreenParticipant) {
+        exitFullScreen();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [fullScreenParticipant, exitFullScreen]);
+
   const toggleVideo = useCallback(async () => {
     if (localParticipant) {
       await localParticipant.setCameraEnabled(
@@ -547,7 +579,7 @@ const RoomComponent: React.FC = () => {
               <CustomParticipantTile
                 participant={participant}
                 idx={idx}
-                onDoubleClick={() => enterFullScreen(participant.identity)}
+                onMaximize={() => enterFullScreen(participant.identity)}
               />
             </div>
           ))}

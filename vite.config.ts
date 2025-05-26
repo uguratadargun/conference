@@ -1,13 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
     // Performance optimizations
-    target: 'es2020',
-    minify: 'terser',
+    target: "es2020",
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true,
@@ -18,9 +18,9 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor chunk for better caching
-          vendor: ['react', 'react-dom'],
-          livekit: ['livekit-client'],
-          primereact: ['primereact', 'primeicons'],
+          vendor: ["react", "react-dom"],
+          livekit: ["livekit-client"],
+          primereact: ["primereact"],
         },
       },
     },
@@ -34,14 +34,14 @@ export default defineConfig({
     },
   },
   // Asset optimizations
-  assetsInclude: ['**/*.woff2', '**/*.woff'],
+  assetsInclude: ["**/*.woff2", "**/*.woff"],
   // CSS optimizations
   css: {
     devSourcemap: false,
   },
   // Preload optimization
   optimizeDeps: {
-    include: ['react', 'react-dom', 'livekit-client'],
-    exclude: ['@vite/client', '@vite/env'],
+    include: ["react", "react-dom", "livekit-client"],
+    exclude: ["@vite/client", "@vite/env"],
   },
-})
+});
