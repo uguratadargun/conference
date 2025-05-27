@@ -143,6 +143,7 @@ const CustomVideoTrack: React.FC<{
         const playPromise = audioElement.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
+            console.log("Error playing audio:", err);
             // If we get an error, we'll try to reattach the track
             if (audioTrackRef.current && document.contains(audioElement)) {
               try {
