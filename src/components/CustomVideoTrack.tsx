@@ -10,6 +10,7 @@ const CustomVideoTrack: React.FC<{
   const audioRef = useRef<HTMLAudioElement>(null);
   const [trackAttached, setTrackAttached] = useState(false);
   const [audioContextInitialized, setAudioContextInitialized] = useState(false);
+  const audioTrackRef = useRef<Track | null>(null);
 
   // Initialize audio context on first user interaction
   useEffect(() => {
@@ -23,14 +24,8 @@ const CustomVideoTrack: React.FC<{
         const audioContext = new AudioContext();
         audioContext.resume().then(() => {
           setAudioContextInitialized(true);
-          console.log("AudioContext initialized by user interaction");
-
-          // Try to play any audio elements
-          document.querySelectorAll("audio").forEach((audio) => {
-            audio
-              .play()
-              .catch((err) => console.log("Still could not play audio:", err));
-          });
+          // Don't try to play all audio elements - this can cause issues
+          // when elements are being added/removed from DOM
         });
       }
 
@@ -53,24 +48,33 @@ const CustomVideoTrack: React.FC<{
   const attachTrack = useCallback(
     (
       element: HTMLVideoElement | HTMLAudioElement | null,
-      trackSource: Track.Source,
-      isLocal: boolean
+      trackSource: Track.Source
     ) => {
       if (!element || !participant) return false;
 
       const publication = participant.getTrackPublication(trackSource);
 
-      console.log("Attach Track is local", isLocal);
-
       if (publication?.track && publication.isSubscribed) {
         try {
           publication.track.attach(element);
 
+          // Store audio track reference for reattachment if needed
+          if (
+            element instanceof HTMLAudioElement &&
+            trackSource === Track.Source.Microphone
+          ) {
+            audioTrackRef.current = publication.track;
+          }
+
           // For audio elements, try to play them
           if (element instanceof HTMLAudioElement) {
-            element.play().catch((error) => {
-              console.log("Audio autoplay prevented:", error);
-            });
+            // Use a silent version to avoid console errors
+            const playPromise = element.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(() => {
+                // Ignore errors here - we'll retry on user interaction
+              });
+            }
           }
 
           return true;
@@ -81,7 +85,7 @@ const CustomVideoTrack: React.FC<{
 
       return false;
     },
-    []
+    [participant]
   );
 
   // Detach track helper function
@@ -110,7 +114,7 @@ const CustomVideoTrack: React.FC<{
     const videoElement = videoRef.current;
     if (!videoElement || !participant) return;
 
-    const success = attachTrack(videoElement, source, participant.isLocal);
+    const success = attachTrack(videoElement, source);
     setTrackAttached(success);
 
     return () => {
@@ -130,10 +134,94 @@ const CustomVideoTrack: React.FC<{
     const audioElement = audioRef.current;
     if (!audioElement || !participant || participant.isLocal) return;
 
-    attachTrack(audioElement, Track.Source.Microphone, false);
+    // Attach the audio track initially
+    attachTrack(audioElement, Track.Source.Microphone);
+
+    // Helper function to safely play audio
+    const safePlayAudio = () => {
+      if (audioElement && document.contains(audioElement)) {
+        const playPromise = audioElement.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            // If we get an error, we'll try to reattach the track
+            if (audioTrackRef.current && document.contains(audioElement)) {
+              try {
+                audioTrackRef.current.attach(audioElement);
+                audioElement.play().catch(() => {
+                  // Silence final errors to avoid console spam
+                });
+              } catch (e) {
+                // Last resort failed, we'll try again on next user interaction
+              }
+            }
+          });
+        }
+      }
+    };
+
+    // Create a more robust fullscreen handler
+    const handleVisibilityOrFullscreenChange = () => {
+      // Small delay to allow DOM to stabilize
+      setTimeout(() => {
+        // Check if the audio element exists and is in the document
+        if (audioElement && document.contains(audioElement)) {
+          // If we have the track reference, reattach it to be safe
+          if (audioTrackRef.current) {
+            try {
+              // Detach and reattach to ensure clean state
+              audioTrackRef.current.detach(audioElement);
+              audioTrackRef.current.attach(audioElement);
+              safePlayAudio();
+            } catch (e) {
+              console.log("Error reattaching audio track:", e);
+            }
+          } else {
+            // Just try to play if we don't have the track ref
+            safePlayAudio();
+          }
+        }
+      }, 300);
+    };
+
+    // Listen for events that might affect audio playback
+    document.addEventListener(
+      "fullscreenchange",
+      handleVisibilityOrFullscreenChange
+    );
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityOrFullscreenChange
+    );
+    window.addEventListener("focus", handleVisibilityOrFullscreenChange);
+
+    // Also set up an interval to check audio playback periodically
+    const audioCheckInterval = setInterval(() => {
+      if (
+        audioElement &&
+        document.contains(audioElement) &&
+        audioElement.paused &&
+        audioTrackRef.current
+      ) {
+        safePlayAudio();
+      }
+    }, 2000);
 
     return () => {
-      detachTrack(audioElement, Track.Source.Microphone);
+      // Clean up all event listeners
+      document.removeEventListener(
+        "fullscreenchange",
+        handleVisibilityOrFullscreenChange
+      );
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityOrFullscreenChange
+      );
+      window.removeEventListener("focus", handleVisibilityOrFullscreenChange);
+      clearInterval(audioCheckInterval);
+
+      if (audioElement) {
+        detachTrack(audioElement, Track.Source.Microphone);
+      }
     };
   }, [participant, participant?.isMicrophoneEnabled, attachTrack, detachTrack]);
 
@@ -145,11 +233,7 @@ const CustomVideoTrack: React.FC<{
       // Small delay to ensure track is ready
       setTimeout(() => {
         if (videoRef.current && !trackAttached) {
-          const success = attachTrack(
-            videoRef.current,
-            source,
-            participant.isLocal
-          );
+          const success = attachTrack(videoRef.current, source);
           if (success) {
             setTrackAttached(true);
             console.log(`${source} track attached successfully`);
@@ -158,7 +242,7 @@ const CustomVideoTrack: React.FC<{
 
         // Handle audio track for remote participants
         if (audioRef.current && !participant.isLocal) {
-          attachTrack(audioRef.current, Track.Source.Microphone, false);
+          attachTrack(audioRef.current, Track.Source.Microphone);
         }
       }, 100);
     };

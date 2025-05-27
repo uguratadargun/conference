@@ -10,6 +10,8 @@ import { ConnectionState } from "livekit-client";
 import { Button } from "primereact/button";
 import CustomParticipantTile from "./CustomParticipantTile";
 import SettingsDialog from "./SettingsDialog";
+import ParticipantListSidebar from "./ParticipantListSidebar";
+import "./ParticipantListSidebar.css";
 
 // Grid layout helpers
 const getGridClassName = (count: number) => {
@@ -33,6 +35,7 @@ const RoomComponent: React.FC = () => {
     string | null
   >(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showParticipantList, setShowParticipantList] = useState(false);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -91,7 +94,11 @@ const RoomComponent: React.FC = () => {
   );
 
   return (
-    <div className="conference-container">
+    <div
+      className={`conference-container ${
+        showParticipantList ? "sidebar-open" : ""
+      }`}
+    >
       {/* Top Status Bar */}
       <div className="top-status-bar">
         <div className="status-item">
@@ -129,6 +136,18 @@ const RoomComponent: React.FC = () => {
               : "Disconnected"}
           </span>
         </div>
+
+        {/* Participant List Button */}
+        {!showParticipantList && (
+          <div className="status-item participant-list-button">
+            <Button
+              icon={<span className="material-icons">people_alt</span>}
+              onClick={() => setShowParticipantList(true)}
+              className="p-button-text"
+              tooltipOptions={{ position: "bottom" }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Main Video Area */}
@@ -245,6 +264,13 @@ const RoomComponent: React.FC = () => {
       <SettingsDialog
         visible={showSettings}
         onHide={() => setShowSettings(false)}
+      />
+
+      {/* Participant List Sidebar */}
+      <ParticipantListSidebar
+        visible={showParticipantList}
+        onHide={() => setShowParticipantList(false)}
+        participants={participants}
       />
     </div>
   );
