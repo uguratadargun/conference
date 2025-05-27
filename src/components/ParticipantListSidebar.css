@@ -255,3 +255,19 @@
 .status-icon.inactive {
   color: #f44336;
 }
+
+/* Participant list button styles */
+.status-item.participant-list-button .p-button-text {
+  display: flex;
+  align-items: center;
+  width: auto;
+  border-radius: 20px;
+  padding: 0 12px;
+}
+
+.status-item.participant-list-button .p-button-text .p-button-label {
+  margin-left: 8px;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+}

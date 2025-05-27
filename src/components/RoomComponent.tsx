@@ -11,6 +11,7 @@ import { Button } from "primereact/button";
 import CustomParticipantTile from "./CustomParticipantTile";
 import SettingsDialog from "./SettingsDialog";
 import ParticipantListSidebar from "./ParticipantListSidebar";
+import ControlBar from "./ControlBar";
 import "./ParticipantListSidebar.css";
 
 // Grid layout helpers
@@ -85,6 +86,10 @@ const RoomComponent: React.FC = () => {
     }
   }, [room]);
 
+  const openSettings = useCallback(() => {
+    setShowSettings(true);
+  }, []);
+
   const gridClassName = getGridClassName(participants.length);
   const fullscreenParticipant = participants.find(
     (p) => p.identity === fullScreenParticipant
@@ -101,14 +106,6 @@ const RoomComponent: React.FC = () => {
     >
       {/* Top Status Bar */}
       <div className="top-status-bar">
-        <div className="status-item">
-          <span className="material-icons">people</span>
-          <span>
-            {participants.length} participant
-            {participants.length !== 1 ? "s" : ""}
-          </span>
-        </div>
-
         <div
           className={`status-item connection-status ${
             connectionState === ConnectionState.Connected
@@ -145,6 +142,9 @@ const RoomComponent: React.FC = () => {
               onClick={() => setShowParticipantList(true)}
               className="p-button-text"
               tooltipOptions={{ position: "bottom" }}
+              label={`${participants.length} participant${
+                participants.length !== 1 ? "s" : ""
+              }`}
             />
           </div>
         )}
@@ -189,73 +189,13 @@ const RoomComponent: React.FC = () => {
       )}
 
       {/* Controls */}
-      <div className="controls-container">
-        <div className="controls-panel">
-          <div className="control-group">
-            <Button
-              icon={
-                localParticipant?.isMicrophoneEnabled ? (
-                  <span className="material-icons">mic</span>
-                ) : (
-                  <span className="material-icons">mic_off</span>
-                )
-              }
-              onClick={toggleAudio}
-              className={`control-button audio-button ${
-                !localParticipant?.isMicrophoneEnabled ? "disabled" : ""
-              }`}
-              tooltip={
-                localParticipant?.isMicrophoneEnabled
-                  ? "Mute Audio"
-                  : "Unmute Audio"
-              }
-              tooltipOptions={{ position: "top" }}
-            />
-          </div>
-
-          <div className="control-group">
-            <Button
-              icon={
-                localParticipant?.isCameraEnabled ? (
-                  <span className="material-icons">videocam</span>
-                ) : (
-                  <span className="material-icons">videocam_off</span>
-                )
-              }
-              onClick={toggleVideo}
-              className={`control-button video-button ${
-                !localParticipant?.isCameraEnabled ? "disabled" : ""
-              }`}
-              tooltip={
-                localParticipant?.isCameraEnabled
-                  ? "Turn Off Camera"
-                  : "Turn On Camera"
-              }
-              tooltipOptions={{ position: "top" }}
-            />
-          </div>
-
-          <div className="control-group">
-            <Button
-              icon={<span className="material-icons">call_end</span>}
-              onClick={disconnect}
-              className="control-button hang-up-button"
-              tooltip="Leave Call"
-              tooltipOptions={{ position: "top" }}
-            />
-          </div>
-
-          <div className="control-group">
-            <Button
-              icon={<span className="material-icons">settings</span>}
-              onClick={() => setShowSettings(true)}
-              className="control-button settings-button"
-              tooltip="Settings"
-              tooltipOptions={{ position: "top" }}
-            />
-          </div>
-        </div>
-      </div>
+      <ControlBar
+        localParticipant={localParticipant}
+        toggleAudio={toggleAudio}
+        toggleVideo={toggleVideo}
+        disconnect={disconnect}
+        openSettings={openSettings}
+      />
 
       {/* Audio Renderer for spatial audio */}
       <RoomAudioRenderer />
