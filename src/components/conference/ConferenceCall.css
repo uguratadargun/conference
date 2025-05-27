@@ -88,11 +88,11 @@
   height: 87vh;
   margin-top: 5vh;
   display: grid;
-  gap: 32px;
+  gap: 8px;
   align-items: center;
   justify-items: center;
   background: var(--dark-overlay-light);
-  padding: 32px;
+  padding: 8px;
   contain: layout style;
   will-change: contents;
 }
