@@ -8,7 +8,7 @@ interface OneToOneCallViewProps {
   localParticipant: Participant;
 }
 
-type LayoutType = "standard" | "focus";
+type LayoutType = "standard" | "focus" | "no-video";
 
 const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   remoteParticipant,
@@ -19,8 +19,14 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   const [isSwapped, setIsSwapped] = useState(false);
 
   const toggleLayout = () => {
-    // Toggle between standard and focus layouts
-    setLayout(layout === "standard" ? "focus" : "standard");
+    // Cycle through layouts: standard -> focus -> no-video -> standard
+    if (layout === "standard") {
+      setLayout("focus");
+    } else if (layout === "focus") {
+      setLayout("no-video");
+    } else {
+      setLayout("standard");
+    }
   };
 
   // Function to swap positions
@@ -49,6 +55,18 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
               <CustomParticipantTile
                 participant={secondaryParticipant}
                 idx={1}
+                onMaximize={swapParticipants}
+              />
+            </div>
+          </div>
+        );
+      case "no-video":
+        return (
+          <div className="one-to-one-no-video">
+            <div className="one-to-one-remote-only">
+              <CustomParticipantTile
+                participant={remoteParticipant}
+                idx={0}
                 onMaximize={swapParticipants}
               />
             </div>
@@ -86,9 +104,13 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
         icon={<span className="material-icons">grid_view</span>}
         onClick={toggleLayout}
         className="layout-toggle-button"
-        tooltip={`Change to ${
-          layout === "standard" ? "focus" : "standard"
-        } layout`}
+        tooltip={
+          layout === "standard"
+            ? "Change to focus layout"
+            : layout === "focus"
+            ? "Change to no-video layout"
+            : "Change to standard layout"
+        }
         tooltipOptions={{ position: "left" }}
       />
     </div>

@@ -97,31 +97,36 @@ const CustomParticipantTile: React.FC<{
         source={Track.Source.Camera}
       />
 
-      <div className="participant-name" style={{ color: nameColor }}>
-        <div className="name-container">{displayName}</div>
-      </div>
+      <div className="participant-content-container">
+        <div className="participant-name" style={{ color: nameColor }}>
+          <div className="name-container">{displayName}</div>
+        </div>
 
-      {!participant.isCameraEnabled && (
-        <div className="avatar-container" style={{ display: "flex" }}>
+        <div
+          className="avatar-container"
+          style={{ display: !participant.isCameraEnabled ? "flex" : "none" }}
+        >
           <span className="avatar-initials" style={{ color: nameColor }}>
             {initials}
           </span>
         </div>
-      )}
 
-      {participant.isMicrophoneEnabled &&
-        participant.isSpeaking &&
-        !participant.isCameraEnabled && (
-          <div className="voice-indicator-container">
-            <div className="voice-indicator">
-              <span className="wave wave1"></span>
-              <span className="wave wave2"></span>
-              <span className="wave wave3"></span>
-              <span className="wave wave4"></span>
-              <span className="wave wave5"></span>
-            </div>
+        <div
+          className={`audio-waveform-container${
+            participant.isSpeaking ? " speaking" : " silent"
+          }`}
+        >
+          <div className="audio-waveform">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className="waveform-bar"
+                style={{ backgroundColor: nameColor }}
+              />
+            ))}
           </div>
-        )}
+        </div>
+      </div>
 
       {!participant.isMicrophoneEnabled && (
         <div className="audio-muted-indicator">
