@@ -12,7 +12,6 @@ import CustomParticipantTile from "./CustomParticipantTile";
 import SettingsDialog from "./SettingsDialog";
 import ParticipantListSidebar from "./ParticipantListSidebar";
 import ControlBar from "./ControlBar";
-import "./ParticipantListSidebar.css";
 
 // Grid layout helpers
 const getGridClassName = (count: number) => {

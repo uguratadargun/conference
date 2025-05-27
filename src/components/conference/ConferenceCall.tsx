@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 import { useLiveKit } from "../../context/LiveKitContext";
-import "./ConferenceCall.css";
 import RoomComponent from "../RoomComponent";
 import { Button } from "primereact/button";
 
