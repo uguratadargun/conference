@@ -12,6 +12,7 @@ import CustomParticipantTile from "./CustomParticipantTile";
 import SettingsDialog from "./SettingsDialog";
 import ParticipantListSidebar from "./ParticipantListSidebar";
 import ControlBar from "./ControlBar";
+import OneToOneCallView from "./OneToOneCallView";
 
 // Grid layout helpers
 const getGridClassName = (count: number) => {
@@ -36,6 +37,13 @@ const ConferenceComponent: React.FC = () => {
   >(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showParticipantList, setShowParticipantList] = useState(false);
+  // State to track one-to-one view mode
+  const [isOneToOneView, setIsOneToOneView] = useState(false);
+
+  // Check if we should use one-to-one view (exactly 2 participants)
+  useEffect(() => {
+    setIsOneToOneView(participants.length === 2);
+  }, [participants.length]);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -96,6 +104,11 @@ const ConferenceComponent: React.FC = () => {
   const otherParticipants = participants.filter(
     (p) => p.identity !== fullScreenParticipant
   );
+
+  // Get remote participant in one-to-one view
+  const remoteParticipant = participants.find((p) => !p.isLocal);
+  // Get local participant in one-to-one view
+  const localParticipantObj = participants.find((p) => p.isLocal);
 
   return (
     <div
@@ -173,6 +186,11 @@ const ConferenceComponent: React.FC = () => {
             </div>
           )}
         </div>
+      ) : isOneToOneView && remoteParticipant && localParticipantObj ? (
+        <OneToOneCallView
+          remoteParticipant={remoteParticipant}
+          localParticipant={localParticipantObj}
+        />
       ) : (
         <div className={`participants-grid ${gridClassName}`}>
           {participants.map((participant, idx) => (

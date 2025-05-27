@@ -1212,3 +1212,206 @@
   font-weight: 500;
   font-size: 14px;
 }
+
+/* One-to-one call view styles - Updated with new design */
+.one-to-one-container {
+  width: 100%;
+  height: 87vh;
+  margin-top: 5vh;
+  position: relative;
+  display: flex;
+  background: var(--primary-bg);
+  padding: 24px;
+  contain: layout style;
+  will-change: contents;
+  overflow: hidden;
+}
+
+/* Layout toggle button */
+.layout-toggle-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: none !important;
+  color: white !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  opacity: 0.7;
+}
+
+.layout-toggle-button:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.layout-toggle-button .material-icons {
+  font-size: 18px;
+}
+
+/* Standard Layout */
+.one-to-one-remote {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.one-to-one-local {
+  position: absolute;
+  bottom: 100px;
+  right: 40px;
+  width: 220px;
+  height: 165px;
+  z-index: 10;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transform-origin: right bottom;
+}
+
+.one-to-one-local:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8);
+}
+
+/* Focus Layout */
+.one-to-one-focus {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.one-to-one-focus-remote {
+  width: 100%;
+  height: 100%;
+  max-height: 65%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  margin-bottom: 16px;
+}
+
+.one-to-one-focus-local {
+  width: 100%;
+  max-width: 600px;
+  height: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Participant styles for different layouts */
+.one-to-one-focus .participant {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 16px;
+  border-width: 0;
+  overflow: hidden;
+  background-color: var(--secondary-bg);
+}
+
+/* Adjust participant styles in one-to-one view */
+.one-to-one-remote .participant {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 16px;
+  border-width: 0;
+  overflow: hidden;
+  background-color: var(--secondary-bg);
+}
+
+.one-to-one-local .participant {
+  border-width: 0;
+  border-radius: 10px;
+  box-shadow: none;
+  background-color: var(--secondary-bg);
+}
+
+.one-to-one-local .participant-name {
+  font-size: 14px;
+  bottom: 8px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+}
+
+.one-to-one-remote .participant-name {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.one-to-one-local .audio-muted-indicator {
+  font-size: 12px;
+  top: 8px;
+  right: 8px;
+  padding: 4px;
+  left: auto;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.one-to-one-remote .audio-muted-indicator {
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.one-to-one-local .maximize-button-container {
+  display: none;
+}
+
+.one-to-one-remote .avatar-container {
+  width: 120px;
+  height: 120px;
+}
+
+.one-to-one-remote .avatar-initials {
+  font-size: 48px;
+}
+
+.one-to-one-local .avatar-container {
+  width: 50px;
+  height: 50px;
+}
+
+.one-to-one-local .avatar-initials {
+  font-size: 20px;
+}

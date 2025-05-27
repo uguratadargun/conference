@@ -259,7 +259,7 @@ const CustomVideoTrack: React.FC<{
   }, [participant, source, trackAttached, attachTrack]);
 
   return (
-    <>
+    <div>
       <video
         ref={videoRef}
         className="participant-video"
@@ -278,7 +278,7 @@ const CustomVideoTrack: React.FC<{
           style={{ display: "none" }}
         />
       )}
-    </>
+    </div>
   );
 };
 
