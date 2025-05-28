@@ -304,6 +304,49 @@
   padding: var(--spacing-md) var(--spacing-md) 120px var(--spacing-md);
 }
 
+.participants-grid .participant-name {
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  top: 0;
+}
+
+.participants-grid .participant-content-container {
+  justify-content: flex-start;
+  padding-top: var(--spacing-md);
+}
+
+.participants-grid .avatar-container {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0;
+  position: absolute;
+  bottom: var(--spacing-md);
+  left: var(--spacing-md);
+}
+
+.participants-grid .avatar-initials {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.participants-grid .audio-waveform-container {
+  position: absolute;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
+  width: auto;
+  z-index: 5;
+}
+
+.participants-grid .participant {
+  position: relative;
+  min-height: 200px;
+}
+
+.participants-grid.grid-scroll .participant-content-container {
+  justify-content: flex-start;
+  padding-top: var(--spacing-md);
+}
+
 .participants-grid.grid-scroll::-webkit-scrollbar {
   width: 8px;
 }
@@ -646,7 +689,6 @@
 /* Adjust for fullscreen mode */
 .fullscreen-container .participant-content-container {
   position: absolute;
-  bottom: 80px;
   left: 0;
   width: 100%;
 }
@@ -654,16 +696,14 @@
 /* Thumbnails in fullscreen mode */
 .thumbnails-container {
   position: absolute;
-  top: 70px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90vw;
+  width: 85vw;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   gap: var(--spacing-lg);
   overflow-x: auto;
-  padding: var(--spacing-lg);
   scroll-padding: 40px;
   scroll-margin: 20px;
   z-index: 15;

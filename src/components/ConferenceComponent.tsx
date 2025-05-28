@@ -23,7 +23,7 @@ const getGridClassName = (count: number) => {
   if (count <= 6) return "grid-6";
   if (count <= 9) return "grid-9";
   if (count <= 12) return "grid-12";
-  if (count <= 20) return "grid-default";
+  if (count <= 15) return "grid-default";
   return "grid-scroll";
 };
 
