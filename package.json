@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@livekit/components-react": "^2.9.9",
     "chart.js": "^4.4.9",
     "livekit-client": "^2.13.1",
     "livekit-server-sdk": "^2.13.0",
