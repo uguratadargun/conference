@@ -1,7 +1,7 @@
 import React from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { useMediaDeviceSelect } from "@livekit/components-react";
+import { useMediaDeviceSelect } from "../@livekit/components-react/dist";
 
 // Settings Dialog Component
 const SettingsDialog: React.FC<{

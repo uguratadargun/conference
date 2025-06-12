@@ -5,7 +5,7 @@ import {
   useParticipants,
   useConnectionState,
   useRoomContext,
-} from "@livekit/components-react";
+} from "../@livekit/components-react/dist";
 import { ConnectionState } from "livekit-client";
 import { Button } from "primereact/button";
 import CustomParticipantTile from "./CustomParticipantTile";

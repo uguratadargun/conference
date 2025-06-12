@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LiveKitRoom } from "@livekit/components-react";
+import { LiveKitRoom } from "../@livekit/components-react/dist";
 import { useLiveKit } from "../context/LiveKitContext";
 import ConferenceComponent from "./ConferenceComponent";
 import { Button } from "primereact/button";
