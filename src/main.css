@@ -10,7 +10,7 @@
  */
 
 /* ====== 1. CSS Variables ====== */
-:root {
+#call-root {
   /* Primary Colors */
   --primary-bg: #181a1b;
   --secondary-bg: #161818;
