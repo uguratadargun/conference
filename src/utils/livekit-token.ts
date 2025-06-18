@@ -27,7 +27,7 @@ export const generateToken = async (): Promise<{
   });
   at.addGrant({ roomJoin: true, room: LIVEKIT_CONFIG.roomName });
   const token = await at.toJwt();
-  const url = `wss://${LIVEKIT_CONFIG.projectName}.livekit.cloud`;
+  const url = `ws://10.0.2.148:7880`;
 
   return { url, token };
 };
