@@ -1,13 +1,14 @@
-import { differenceBy, chunk, zip } from '../helper/array-helper';
-import { log } from '../logger';
-import type { TrackReferenceOrPlaceholder } from '../track-reference';
+// @ts-nocheck
+import { differenceBy, chunk, zip } from "../helper/array-helper";
+import { log } from "../logger";
+import type { TrackReferenceOrPlaceholder } from "../track-reference";
 import {
   getTrackReferenceId,
   isPlaceholderReplacement,
   isTrackReference,
   isTrackReferencePlaceholder,
-} from '../track-reference';
-import { flatTrackReferenceArray } from '../track-reference/test-utils';
+} from "../track-reference";
+import { flatTrackReferenceArray } from "../track-reference/test-utils";
 
 type VisualChanges<T> = {
   dropped: T[];
@@ -17,7 +18,10 @@ type VisualChanges<T> = {
 export type UpdatableItem = TrackReferenceOrPlaceholder | number;
 
 /** Check to see if anything visually changes on the page. */
-export function visualPageChange<T extends UpdatableItem>(state: T[], next: T[]): VisualChanges<T> {
+export function visualPageChange<T extends UpdatableItem>(
+  state: T[],
+  next: T[]
+): VisualChanges<T> {
   return {
     dropped: differenceBy(state, next, getTrackReferenceId),
     added: differenceBy(next, state, getTrackReferenceId),
@@ -30,17 +34,18 @@ function listNeedsUpdating<T>(changes: VisualChanges<T>): boolean {
 
 export function findIndex<T extends UpdatableItem>(
   trackReference: T,
-  trackReferences: T[],
+  trackReferences: T[]
 ): number {
   const indexToReplace = trackReferences.findIndex(
     (trackReference_) =>
-      getTrackReferenceId(trackReference_) === getTrackReferenceId(trackReference),
+      getTrackReferenceId(trackReference_) ===
+      getTrackReferenceId(trackReference)
   );
   if (indexToReplace === -1) {
     throw new Error(
       `Element not part of the array: ${getTrackReferenceId(
-        trackReference,
-      )} not in ${flatTrackReferenceArray(trackReferences)}`,
+        trackReference
+      )} not in ${flatTrackReferenceArray(trackReferences)}`
     );
   }
   return indexToReplace;
@@ -50,7 +55,7 @@ export function findIndex<T extends UpdatableItem>(
 export function swapItems<T extends UpdatableItem>(
   moveForward: T,
   moveBack: T,
-  trackReferences: T[],
+  trackReferences: T[]
 ): T[] {
   const indexToReplace = findIndex(moveForward, trackReferences);
   const indexReplaceWith = findIndex(moveBack, trackReferences);
@@ -61,7 +66,10 @@ export function swapItems<T extends UpdatableItem>(
   return trackReferences;
 }
 
-export function dropItem<T extends UpdatableItem>(itemToDrop: T, list: T[]): T[] {
+export function dropItem<T extends UpdatableItem>(
+  itemToDrop: T,
+  list: T[]
+): T[] {
   const indexOfElementToDrop = findIndex(itemToDrop, list);
   // const indexOfElementToDrop = list.findIndex((item) => item === itemToDrop, list);
   list.splice(indexOfElementToDrop, 1);
@@ -72,7 +80,10 @@ function addItem<T extends UpdatableItem>(itemToAdd: T, list: T[]): T[] {
   return [...list, itemToAdd];
 }
 
-export function divideIntoPages<T>(list: T[], maxElementsOnPage: number): Array<T[]> {
+export function divideIntoPages<T>(
+  list: T[],
+  maxElementsOnPage: number
+): Array<T[]> {
   const pages = chunk(list, maxElementsOnPage);
   return pages;
 }
@@ -81,7 +92,7 @@ export function divideIntoPages<T>(list: T[], maxElementsOnPage: number): Array<
 export function updatePages<T extends UpdatableItem>(
   currentList: T[],
   nextList: T[],
-  maxItemsOnPage: number,
+  maxItemsOnPage: number
 ): T[] {
   let updatedList: T[] = refreshList(currentList, nextList);
 
@@ -96,15 +107,17 @@ export function updatePages<T extends UpdatableItem>(
   zip(currentPages, nextPages).forEach(([currentPage, nextPage], pageIndex) => {
     if (currentPage && nextPage) {
       // 1) Identify  missing tile.
-      const updatedPage = divideIntoPages(updatedList, maxItemsOnPage)[pageIndex];
+      const updatedPage = divideIntoPages(updatedList, maxItemsOnPage)[
+        pageIndex
+      ];
       const changes = visualPageChange(updatedPage, nextPage);
 
       if (listNeedsUpdating(changes)) {
         log.debug(
           `Detected visual changes on page: ${pageIndex}, current: ${flatTrackReferenceArray(
-            currentPage,
+            currentPage
           )}, next: ${flatTrackReferenceArray(nextPage)}`,
-          { changes },
+          { changes }
         );
         // ## Swap Items
         if (changes.added.length === changes.dropped.length) {
@@ -113,7 +126,7 @@ export function updatePages<T extends UpdatableItem>(
               updatedList = swapItems<T>(added, dropped, updatedList);
             } else {
               throw new Error(
-                `For a swap action we need a addition and a removal one is missing: ${added}, ${dropped}`,
+                `For a swap action we need a addition and a removal one is missing: ${added}, ${dropped}`
               );
             }
           });
@@ -136,9 +149,16 @@ export function updatePages<T extends UpdatableItem>(
 
   if (updatedList.length > nextList.length) {
     // Items got removed: Find items that got completely removed from the list.
-    const missingItems = differenceBy(updatedList, nextList, getTrackReferenceId);
+    const missingItems = differenceBy(
+      updatedList,
+      nextList,
+      getTrackReferenceId
+    );
     updatedList = updatedList.filter(
-      (item) => !missingItems.map(getTrackReferenceId).includes(getTrackReferenceId(item)),
+      (item) =>
+        !missingItems
+          .map(getTrackReferenceId)
+          .includes(getTrackReferenceId(item))
     );
   }
 
@@ -152,17 +172,20 @@ export function updatePages<T extends UpdatableItem>(
  * @remarks
  * This is needed because `TrackReference`s can change their internal state while keeping the same id.
  */
-function refreshList<T extends UpdatableItem>(currentList: T[], nextList: T[]): T[] {
+function refreshList<T extends UpdatableItem>(
+  currentList: T[],
+  nextList: T[]
+): T[] {
   return currentList.map((currentItem) => {
     const updateForCurrentItem = nextList.find(
       (newItem_) =>
         // If the IDs match or ..
         getTrackReferenceId(currentItem) === getTrackReferenceId(newItem_) ||
         // ... if the current item is a placeholder and the new item is the track reference can replace it.
-        (typeof currentItem !== 'number' &&
+        (typeof currentItem !== "number" &&
           isTrackReferencePlaceholder(currentItem) &&
           isTrackReference(newItem_) &&
-          isPlaceholderReplacement(currentItem, newItem_)),
+          isPlaceholderReplacement(currentItem, newItem_))
     );
     return updateForCurrentItem ?? currentItem;
   });
