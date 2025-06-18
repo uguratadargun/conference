@@ -13,9 +13,15 @@ import { useVisualStableUpdate } from './useVisualStableUpdate';
  * ```
  * @alpha
  */
-export function usePagination(itemPerPage: number, trackReferences: TrackReferenceOrPlaceholder[]) {
+export function usePagination(
+  itemPerPage: number,
+  trackReferences: TrackReferenceOrPlaceholder[]
+) {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const totalPageCount = Math.max(Math.ceil(trackReferences.length / itemPerPage), 1);
+  const totalPageCount = Math.max(
+    Math.ceil(trackReferences.length / itemPerPage),
+    1
+  );
   if (currentPage > totalPageCount) {
     setCurrentPage(totalPageCount);
   }
@@ -23,7 +29,7 @@ export function usePagination(itemPerPage: number, trackReferences: TrackReferen
   const firstItemIndex = lastItemIndex - itemPerPage;
 
   const changePage = (direction: 'next' | 'previous') => {
-    setCurrentPage((state) => {
+    setCurrentPage(state => {
       if (direction === 'next') {
         if (state === totalPageCount) {
           return state;
@@ -48,9 +54,15 @@ export function usePagination(itemPerPage: number, trackReferences: TrackReferen
     }
   };
 
-  const updatedTrackReferences = useVisualStableUpdate(trackReferences, itemPerPage);
+  const updatedTrackReferences = useVisualStableUpdate(
+    trackReferences,
+    itemPerPage
+  );
 
-  const tracksOnPage = updatedTrackReferences.slice(firstItemIndex, lastItemIndex);
+  const tracksOnPage = updatedTrackReferences.slice(
+    firstItemIndex,
+    lastItemIndex
+  );
 
   return {
     totalPageCount,

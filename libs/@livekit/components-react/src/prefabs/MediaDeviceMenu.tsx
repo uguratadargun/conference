@@ -1,14 +1,21 @@
-import { computeMenuPosition, wasClickOutside, log } from '@livekit/components-core';
+import {
+  computeMenuPosition,
+  wasClickOutside,
+  log,
+} from '@livekit/components-core';
 import * as React from 'react';
 import { MediaDeviceSelect } from '../components/controls/MediaDeviceSelect';
 import type { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
 
 /** @public */
-export interface MediaDeviceMenuProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface MediaDeviceMenuProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   kind?: MediaDeviceKind;
   initialSelection?: string;
   onActiveDeviceChange?: (kind: MediaDeviceKind, deviceId: string) => void;
-  tracks?: Partial<Record<MediaDeviceKind, LocalAudioTrack | LocalVideoTrack | undefined>>;
+  tracks?: Partial<
+    Record<MediaDeviceKind, LocalAudioTrack | LocalVideoTrack | undefined>
+  >;
   /**
    * this will call getUserMedia if the permissions are not yet given to enumerate the devices with device labels.
    * in some browsers multiple calls to getUserMedia result in multiple permission prompts.
@@ -47,9 +54,13 @@ export function MediaDeviceMenu({
   const [isOpen, setIsOpen] = React.useState(false);
   const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
   const [updateRequired, setUpdateRequired] = React.useState<boolean>(true);
-  const [needPermissions, setNeedPermissions] = React.useState(requestPermissions);
+  const [needPermissions, setNeedPermissions] =
+    React.useState(requestPermissions);
 
-  const handleActiveDeviceChange = (kind: MediaDeviceKind, deviceId: string) => {
+  const handleActiveDeviceChange = (
+    kind: MediaDeviceKind,
+    deviceId: string
+  ) => {
     log.debug('handle device change');
     setIsOpen(false);
     onActiveDeviceChange?.(kind, deviceId);
@@ -69,7 +80,10 @@ export function MediaDeviceMenu({
     if (button.current && tooltip.current && (devices || updateRequired)) {
       cleanup = computeMenuPosition(button.current, tooltip.current, (x, y) => {
         if (tooltip.current) {
-          Object.assign(tooltip.current.style, { left: `${x}px`, top: `${y}px` });
+          Object.assign(tooltip.current.style, {
+            left: `${x}px`,
+            top: `${y}px`,
+          });
         }
       });
     }
@@ -91,7 +105,7 @@ export function MediaDeviceMenu({
         setIsOpen(false);
       }
     },
-    [isOpen, tooltip, button],
+    [isOpen, tooltip, button]
   );
 
   React.useEffect(() => {
@@ -122,7 +136,9 @@ export function MediaDeviceMenu({
           {kind ? (
             <MediaDeviceSelect
               initialSelection={initialSelection}
-              onActiveDeviceChange={(deviceId) => handleActiveDeviceChange(kind, deviceId)}
+              onActiveDeviceChange={deviceId =>
+                handleActiveDeviceChange(kind, deviceId)
+              }
               onDeviceListChange={setDevices}
               kind={kind}
               track={tracks?.[kind]}
@@ -133,7 +149,7 @@ export function MediaDeviceMenu({
               <div className="lk-device-menu-heading">Audio inputs</div>
               <MediaDeviceSelect
                 kind="audioinput"
-                onActiveDeviceChange={(deviceId) =>
+                onActiveDeviceChange={deviceId =>
                   handleActiveDeviceChange('audioinput', deviceId)
                 }
                 onDeviceListChange={setDevices}
@@ -143,7 +159,7 @@ export function MediaDeviceMenu({
               <div className="lk-device-menu-heading">Video inputs</div>
               <MediaDeviceSelect
                 kind="videoinput"
-                onActiveDeviceChange={(deviceId) =>
+                onActiveDeviceChange={deviceId =>
                   handleActiveDeviceChange('videoinput', deviceId)
                 }
                 onDeviceListChange={setDevices}

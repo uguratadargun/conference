@@ -3,7 +3,8 @@ import { useRoomContext } from '../../context';
 import { useStartAudio } from '../../hooks';
 
 /** @public */
-export interface AllowAudioPlaybackProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface AllowAudioPlaybackProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
 }
 
@@ -23,16 +24,20 @@ export interface AllowAudioPlaybackProps extends React.ButtonHTMLAttributes<HTML
  * @public
  */
 export const StartAudio: (
-  props: AllowAudioPlaybackProps & React.RefAttributes<HTMLButtonElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLButtonElement, AllowAudioPlaybackProps>(
-  function StartAudio({ label = 'Allow Audio', ...props }: AllowAudioPlaybackProps, ref) {
-    const room = useRoomContext();
-    const { mergedProps } = useStartAudio({ room, props });
+  props: AllowAudioPlaybackProps & React.RefAttributes<HTMLButtonElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLButtonElement,
+  AllowAudioPlaybackProps
+>(function StartAudio(
+  { label = 'Allow Audio', ...props }: AllowAudioPlaybackProps,
+  ref
+) {
+  const room = useRoomContext();
+  const { mergedProps } = useStartAudio({ room, props });
 
-    return (
-      <button ref={ref} {...mergedProps}>
-        {label}
-      </button>
-    );
-  },
-);
+  return (
+    <button ref={ref} {...mergedProps}>
+      {label}
+    </button>
+  );
+});

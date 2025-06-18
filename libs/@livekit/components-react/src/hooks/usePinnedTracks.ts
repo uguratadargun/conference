@@ -13,10 +13,15 @@ import { useEnsureLayoutContext } from '../context';
  * ```
  * @public
  */
-export function usePinnedTracks(layoutContext?: LayoutContextType): TrackReferenceOrPlaceholder[] {
+export function usePinnedTracks(
+  layoutContext?: LayoutContextType
+): TrackReferenceOrPlaceholder[] {
   layoutContext = useEnsureLayoutContext(layoutContext);
   return React.useMemo(() => {
-    if (layoutContext?.pin.state !== undefined && layoutContext.pin.state.length >= 1) {
+    if (
+      layoutContext?.pin.state !== undefined &&
+      layoutContext.pin.state.length >= 1
+    ) {
       return layoutContext.pin.state;
     }
     return [];

@@ -14,7 +14,7 @@ export function isRemote(p: Participant) {
 
 export const attachIfSubscribed = (
   publication: TrackPublication | undefined,
-  element: HTMLMediaElement | null | undefined,
+  element: HTMLMediaElement | null | undefined
 ) => {
   if (!publication) return;
   const { isSubscribed, track } = publication;
@@ -32,13 +32,15 @@ export const attachIfSubscribed = (
  */
 export function isParticipantTrackReferencePinned(
   trackRef: TrackReference,
-  pinState: PinState | undefined,
+  pinState: PinState | undefined
 ): boolean {
   if (pinState === undefined) {
     return false;
   }
 
-  return pinState.some((pinnedTrackRef) => isEqualTrackRef(pinnedTrackRef, trackRef));
+  return pinState.some(pinnedTrackRef =>
+    isEqualTrackRef(pinnedTrackRef, trackRef)
+  );
 }
 
 /**

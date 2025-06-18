@@ -16,7 +16,10 @@ export type WidgetContextType = {
 };
 
 /** @internal */
-export function chatReducer(state: WidgetState, action: ChatContextAction): WidgetState {
+export function chatReducer(
+  state: WidgetState,
+  action: ChatContextAction
+): WidgetState {
   if (action.msg === 'show_chat') {
     return { ...state, showChat: true, unreadMessages: 0 };
   } else if (action.msg === 'hide_chat') {

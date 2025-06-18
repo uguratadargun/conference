@@ -9,5 +9,9 @@ export function setupStartAudio() {
     await room.startAudio();
   };
   const className: string = prefixClass('start-audio-button');
-  return { className, roomAudioPlaybackAllowedObservable, handleStartAudioPlayback };
+  return {
+    className,
+    roomAudioPlaybackAllowedObservable,
+    handleStartAudioPlayback,
+  };
 }

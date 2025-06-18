@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Track, Participant } from "livekit-client";
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Track, Participant } from 'livekit-client';
 
 // Custom Video Component using refs for track attachment
 const CustomVideoTrack: React.FC<{
@@ -30,17 +30,17 @@ const CustomVideoTrack: React.FC<{
       }
 
       // Remove event listeners after initialization
-      document.removeEventListener("click", initAudioContext);
-      document.removeEventListener("touchstart", initAudioContext);
+      document.removeEventListener('click', initAudioContext);
+      document.removeEventListener('touchstart', initAudioContext);
     };
 
     // Add event listeners for user interaction
-    document.addEventListener("click", initAudioContext);
-    document.addEventListener("touchstart", initAudioContext);
+    document.addEventListener('click', initAudioContext);
+    document.addEventListener('touchstart', initAudioContext);
 
     return () => {
-      document.removeEventListener("click", initAudioContext);
-      document.removeEventListener("touchstart", initAudioContext);
+      document.removeEventListener('click', initAudioContext);
+      document.removeEventListener('touchstart', initAudioContext);
     };
   }, [audioContextInitialized]);
 
@@ -142,8 +142,8 @@ const CustomVideoTrack: React.FC<{
       if (audioElement && document.contains(audioElement)) {
         const playPromise = audioElement.play();
         if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.log("Error playing audio:", err);
+          playPromise.catch(err => {
+            console.log('Error playing audio:', err);
             // If we get an error, we'll try to reattach the track
             if (audioTrackRef.current && document.contains(audioElement)) {
               try {
@@ -174,7 +174,7 @@ const CustomVideoTrack: React.FC<{
               audioTrackRef.current.attach(audioElement);
               safePlayAudio();
             } catch (e) {
-              console.log("Error reattaching audio track:", e);
+              console.log('Error reattaching audio track:', e);
             }
           } else {
             // Just try to play if we don't have the track ref
@@ -186,14 +186,14 @@ const CustomVideoTrack: React.FC<{
 
     // Listen for events that might affect audio playback
     document.addEventListener(
-      "fullscreenchange",
+      'fullscreenchange',
       handleVisibilityOrFullscreenChange
     );
     document.addEventListener(
-      "visibilitychange",
+      'visibilitychange',
       handleVisibilityOrFullscreenChange
     );
-    window.addEventListener("focus", handleVisibilityOrFullscreenChange);
+    window.addEventListener('focus', handleVisibilityOrFullscreenChange);
 
     // Also set up an interval to check audio playback periodically
     const audioCheckInterval = setInterval(() => {
@@ -210,14 +210,14 @@ const CustomVideoTrack: React.FC<{
     return () => {
       // Clean up all event listeners
       document.removeEventListener(
-        "fullscreenchange",
+        'fullscreenchange',
         handleVisibilityOrFullscreenChange
       );
       document.removeEventListener(
-        "visibilitychange",
+        'visibilitychange',
         handleVisibilityOrFullscreenChange
       );
-      window.removeEventListener("focus", handleVisibilityOrFullscreenChange);
+      window.removeEventListener('focus', handleVisibilityOrFullscreenChange);
       clearInterval(audioCheckInterval);
 
       if (audioElement) {
@@ -249,12 +249,12 @@ const CustomVideoTrack: React.FC<{
     };
 
     // Listen for track events
-    participant.on("trackPublished", handleTrackEvent);
-    participant.on("trackSubscribed", handleTrackEvent);
+    participant.on('trackPublished', handleTrackEvent);
+    participant.on('trackSubscribed', handleTrackEvent);
 
     return () => {
-      participant.off("trackPublished", handleTrackEvent);
-      participant.off("trackSubscribed", handleTrackEvent);
+      participant.off('trackPublished', handleTrackEvent);
+      participant.off('trackSubscribed', handleTrackEvent);
     };
   }, [participant, source, trackAttached, attachTrack]);
 
@@ -267,7 +267,7 @@ const CustomVideoTrack: React.FC<{
         playsInline
         muted={participant.isLocal}
         style={{
-          display: participant.isCameraEnabled ? "block" : "none",
+          display: participant.isCameraEnabled ? 'block' : 'none',
         }}
       />
       {!participant.isLocal && (
@@ -275,7 +275,7 @@ const CustomVideoTrack: React.FC<{
           ref={audioRef}
           autoPlay
           playsInline
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
         />
       )}
     </div>

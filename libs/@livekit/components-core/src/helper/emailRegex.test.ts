@@ -43,21 +43,25 @@ const fixturesNot = [
 ];
 
 describe('Email regex tests', () => {
-  test('extract', (t) => {
+  test('extract', t => {
     for (const fixture of fixtures) {
-      t.expect((createEmailRegExp().exec(`foo ${fixture} bar`) || [])[0]).toBe(fixture);
+      t.expect((createEmailRegExp().exec(`foo ${fixture} bar`) || [])[0]).toBe(
+        fixture
+      );
     }
 
-    t.expect(createEmailRegExp().exec('mailto:livekit@gmail.com')?.[0]).toBe('livekit@gmail.com');
+    t.expect(createEmailRegExp().exec('mailto:livekit@gmail.com')?.[0]).toBe(
+      'livekit@gmail.com'
+    );
   });
 
-  test('exact', (t) => {
+  test('exact', t => {
     for (const fixture of fixtures) {
       t.expect(createEmailRegExp({ exact: true }).test(fixture)).toBeTruthy();
     }
   });
 
-  test('failures', (t) => {
+  test('failures', t => {
     for (const fixture of fixturesNot) {
       t.expect(createEmailRegExp({ exact: true }).test(fixture)).toBeFalsy();
     }

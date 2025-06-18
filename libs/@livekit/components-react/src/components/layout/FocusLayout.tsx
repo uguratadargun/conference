@@ -5,7 +5,8 @@ import { ParticipantTile } from '../participant/ParticipantTile';
 import type { ParticipantClickEvent } from '@livekit/components-core';
 
 /** @public */
-export interface FocusLayoutContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface FocusLayoutContainerProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 /**
  * The `FocusLayoutContainer` is a layout component that expects two children:

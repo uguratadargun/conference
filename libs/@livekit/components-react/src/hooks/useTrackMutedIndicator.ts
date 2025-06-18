@@ -23,21 +23,22 @@ interface TrackMutedIndicatorReturnType {
  * @public
  */
 export function useTrackMutedIndicator(
-  trackRef?: TrackReferenceOrPlaceholder,
+  trackRef?: TrackReferenceOrPlaceholder
 ): TrackMutedIndicatorReturnType {
   const trackReference = useEnsureTrackRef(trackRef);
 
   const { className, mediaMutedObserver } = React.useMemo(
     () => setupTrackMutedIndicator(trackReference),
-    [getTrackReferenceId(trackReference)],
+    [getTrackReferenceId(trackReference)]
   );
 
   const isMuted = useObservableState(
     mediaMutedObserver,
     !!(
       trackReference.publication?.isMuted ||
-      trackReference.participant.getTrackPublication(trackReference.source)?.isMuted
-    ),
+      trackReference.participant.getTrackPublication(trackReference.source)
+        ?.isMuted
+    )
   );
 
   return { isMuted, className };

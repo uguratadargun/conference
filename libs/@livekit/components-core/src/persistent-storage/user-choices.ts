@@ -51,7 +51,8 @@ export const defaultUserChoices: LocalUserChoices = {
  * @internal
  */
 type TempStorageType = Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>;
-const { load, save } = createLocalStorageInterface<TempStorageType>(USER_CHOICES_KEY);
+const { load, save } =
+  createLocalStorageInterface<TempStorageType>(USER_CHOICES_KEY);
 
 /**
  * Saves user choices to local storage.
@@ -62,7 +63,7 @@ export function saveUserChoices(
   /**
    * Whether to prevent saving user choices to local storage.
    */
-  preventSave: boolean = false,
+  preventSave: boolean = false
 ): void {
   if (preventSave === true) {
     return;
@@ -83,7 +84,7 @@ export function loadUserChoices(
    * Whether to prevent loading from local storage and return default values instead.
    * @defaultValue false
    */
-  preventLoad: boolean = false,
+  preventLoad: boolean = false
 ): LocalUserChoices {
   const fallback: LocalUserChoices = {
     videoEnabled: defaults?.videoEnabled ?? defaultUserChoices.videoEnabled,

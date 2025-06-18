@@ -31,9 +31,13 @@ export interface UseRemoteParticipantsOptions {
  * ```
  * @public
  */
-export function useRemoteParticipants(options: UseRemoteParticipantsOptions = {}) {
+export function useRemoteParticipants(
+  options: UseRemoteParticipantsOptions = {}
+) {
   const room = useEnsureRoom(options.room);
-  const [participants, setParticipants] = React.useState<RemoteParticipant[]>([]);
+  const [participants, setParticipants] = React.useState<RemoteParticipant[]>(
+    []
+  );
 
   React.useEffect(() => {
     const listener = connectedParticipantsObserver(room, {

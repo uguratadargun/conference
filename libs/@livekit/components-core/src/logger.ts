@@ -18,7 +18,10 @@ type SetLogLevelOptions = {
  * To set the `@livekit-client` log independently, use the `liveKitClientLogLevel` prop on the `options` object.
  * @public
  */
-export function setLogLevel(level: LogLevel, options: SetLogLevelOptions = {}): void {
+export function setLogLevel(
+  level: LogLevel,
+  options: SetLogLevelOptions = {}
+): void {
   log.setLevel(level);
   setClientSdkLogLevel(options.liveKitClientLogLevel ?? level);
 }
@@ -33,7 +36,10 @@ type SetLogExtensionOptions = {
  * To set the `@livekit-client` log extension, use the `liveKitClientLogExtension` prop on the `options` object.
  * @public
  */
-export function setLogExtension(extension: LogExtension, options: SetLogExtensionOptions = {}) {
+export function setLogExtension(
+  extension: LogExtension,
+  options: SetLogExtensionOptions = {}
+) {
   const originalFactory = log.methodFactory;
 
   log.methodFactory = (methodName, configLevel, loggerName) => {

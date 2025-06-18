@@ -1,5 +1,8 @@
 import { describe, test, expect, expectTypeOf } from 'vitest';
-import { mockTrackReferencePlaceholder, mockTrackReferenceSubscribed } from './test-utils';
+import {
+  mockTrackReferencePlaceholder,
+  mockTrackReferenceSubscribed,
+} from './test-utils';
 import type { Participant, TrackPublication } from 'livekit-client';
 import { Track } from 'livekit-client';
 import { isPlaceholderReplacement } from './track-reference.utils';
@@ -28,31 +31,56 @@ describe('Test mocking functions ', () => {
 describe('Test if the current TrackReferencePlaceholder can be replaced with the next TrackReference.', () => {
   test.each([
     {
-      currentTrackRef: mockTrackReferencePlaceholder('Participant_A', Track.Source.Camera),
-      nextTrackRef: mockTrackReferenceSubscribed('Participant_A', Track.Source.Camera, {
-        mockPublication: true,
-      }),
+      currentTrackRef: mockTrackReferencePlaceholder(
+        'Participant_A',
+        Track.Source.Camera
+      ),
+      nextTrackRef: mockTrackReferenceSubscribed(
+        'Participant_A',
+        Track.Source.Camera,
+        {
+          mockPublication: true,
+        }
+      ),
       isReplacement: true,
     },
     {
-      currentTrackRef: mockTrackReferencePlaceholder('Participant_B', Track.Source.Camera),
-      nextTrackRef: mockTrackReferenceSubscribed('Participant_A', Track.Source.Camera, {
-        mockPublication: true,
-      }),
+      currentTrackRef: mockTrackReferencePlaceholder(
+        'Participant_B',
+        Track.Source.Camera
+      ),
+      nextTrackRef: mockTrackReferenceSubscribed(
+        'Participant_A',
+        Track.Source.Camera,
+        {
+          mockPublication: true,
+        }
+      ),
       isReplacement: false,
     },
     {
-      currentTrackRef: mockTrackReferencePlaceholder('Participant_A', Track.Source.ScreenShare),
-      nextTrackRef: mockTrackReferenceSubscribed('Participant_A', Track.Source.Camera, {
-        mockPublication: true,
-      }),
+      currentTrackRef: mockTrackReferencePlaceholder(
+        'Participant_A',
+        Track.Source.ScreenShare
+      ),
+      nextTrackRef: mockTrackReferenceSubscribed(
+        'Participant_A',
+        Track.Source.Camera,
+        {
+          mockPublication: true,
+        }
+      ),
       isReplacement: false,
     },
   ])(
     'Test if the current TrackReference was the placeholder for the next TrackReference.',
-    ({ nextTrackRef: trackRef, currentTrackRef: maybePlaceholder, isReplacement }) => {
+    ({
+      nextTrackRef: trackRef,
+      currentTrackRef: maybePlaceholder,
+      isReplacement,
+    }) => {
       const result = isPlaceholderReplacement(maybePlaceholder, trackRef);
       expect(result).toBe(isReplacement);
-    },
+    }
   );
 });

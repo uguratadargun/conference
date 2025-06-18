@@ -5,7 +5,10 @@ import { DisconnectButton } from '../components/controls/DisconnectButton';
 import { TrackToggle } from '../components/controls/TrackToggle';
 import { ChatIcon, GearIcon, LeaveIcon } from '../assets/icons';
 import { ChatToggle } from '../components/controls/ChatToggle';
-import { useLocalParticipantPermissions, usePersistentUserChoices } from '../hooks';
+import {
+  useLocalParticipantPermissions,
+  usePersistentUserChoices,
+} from '../hooks';
 import { useMediaQuery } from '../hooks/internal';
 import { useMaybeLayoutContext } from '../context';
 import { supportsScreenSharing } from '@livekit/components-core';
@@ -81,7 +84,9 @@ export function ControlBar({
       setIsChatOpen(layoutContext?.widget.state?.showChat);
     }
   }, [layoutContext?.widget.state?.showChat]);
-  const isTooLittleSpace = useMediaQuery(`(max-width: ${isChatOpen ? 1000 : 760}px)`);
+  const isTooLittleSpace = useMediaQuery(
+    `(max-width: ${isChatOpen ? 1000 : 760}px)`
+  );
 
   const defaultVariation = isTooLittleSpace ? 'minimal' : 'verbose';
   variation ??= defaultVariation;
@@ -100,7 +105,9 @@ export function ControlBar({
       return (
         localPermissions.canPublish &&
         (localPermissions.canPublishSources.length === 0 ||
-          localPermissions.canPublishSources.includes(trackSourceToProtocol(source)))
+          localPermissions.canPublishSources.includes(
+            trackSourceToProtocol(source)
+          ))
       );
     };
     visibleControls.camera ??= canPublishSource(Track.Source.Camera);
@@ -111,11 +118,11 @@ export function ControlBar({
 
   const showIcon = React.useMemo(
     () => variation === 'minimal' || variation === 'verbose',
-    [variation],
+    [variation]
   );
   const showText = React.useMemo(
     () => variation === 'textOnly' || variation === 'verbose',
-    [variation],
+    [variation]
   );
 
   const browserSupportsScreenSharing = supportsScreenSharing();
@@ -126,7 +133,7 @@ export function ControlBar({
     (enabled: boolean) => {
       setIsScreenShareEnabled(enabled);
     },
-    [setIsScreenShareEnabled],
+    [setIsScreenShareEnabled]
   );
 
   const htmlProps = mergeProps({ className: 'lk-control-bar' }, props);
@@ -141,13 +148,13 @@ export function ControlBar({
   const microphoneOnChange = React.useCallback(
     (enabled: boolean, isUserInitiated: boolean) =>
       isUserInitiated ? saveAudioInputEnabled(enabled) : null,
-    [saveAudioInputEnabled],
+    [saveAudioInputEnabled]
   );
 
   const cameraOnChange = React.useCallback(
     (enabled: boolean, isUserInitiated: boolean) =>
       isUserInitiated ? saveVideoInputEnabled(enabled) : null,
-    [saveVideoInputEnabled],
+    [saveVideoInputEnabled]
   );
 
   return (
@@ -158,7 +165,9 @@ export function ControlBar({
             source={Track.Source.Microphone}
             showIcon={showIcon}
             onChange={microphoneOnChange}
-            onDeviceError={(error) => onDeviceError?.({ source: Track.Source.Microphone, error })}
+            onDeviceError={error =>
+              onDeviceError?.({ source: Track.Source.Microphone, error })
+            }
           >
             {showText && 'Microphone'}
           </TrackToggle>
@@ -178,7 +187,9 @@ export function ControlBar({
             source={Track.Source.Camera}
             showIcon={showIcon}
             onChange={cameraOnChange}
-            onDeviceError={(error) => onDeviceError?.({ source: Track.Source.Camera, error })}
+            onDeviceError={error =>
+              onDeviceError?.({ source: Track.Source.Camera, error })
+            }
           >
             {showText && 'Camera'}
           </TrackToggle>
@@ -198,9 +209,12 @@ export function ControlBar({
           captureOptions={{ audio: true, selfBrowserSurface: 'include' }}
           showIcon={showIcon}
           onChange={onScreenShareChange}
-          onDeviceError={(error) => onDeviceError?.({ source: Track.Source.ScreenShare, error })}
+          onDeviceError={error =>
+            onDeviceError?.({ source: Track.Source.ScreenShare, error })
+          }
         >
-          {showText && (isScreenShareEnabled ? 'Stop screen share' : 'Share screen')}
+          {showText &&
+            (isScreenShareEnabled ? 'Stop screen share' : 'Share screen')}
         </TrackToggle>
       )}
       {visibleControls.chat && (

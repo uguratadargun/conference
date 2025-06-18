@@ -35,8 +35,12 @@ interface Props {
 }
 
 // taken from: https://stackoverflow.com/questions/51603250/typescript-3-parameter-list-intersection-type/51604379#51604379
-type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V } ? V : never;
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
+  ? V
+  : never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I
+) => void
   ? I
   : never;
 
@@ -48,7 +52,9 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
  * @param args - Multiple sets of props to merge together.
  * @internal
  */
-export function mergeProps<T extends Props[]>(...args: T): UnionToIntersection<TupleTypes<T>> {
+export function mergeProps<T extends Props[]>(
+  ...args: T
+): UnionToIntersection<TupleTypes<T>> {
   // Start with a base clone of the first argument. This is a lot faster than starting
   // with an empty object and adding properties as we go.
   const result: Props = { ...args[0] };

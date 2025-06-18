@@ -54,14 +54,16 @@ export function useTracks<T extends SourcesArray = Track.Source[]>(
     Track.Source.ScreenShareAudio,
     Track.Source.Unknown,
   ] as T,
-  options: UseTracksOptions = {},
+  options: UseTracksOptions = {}
 ): UseTracksHookReturnType<T> {
   const room = useEnsureRoom(options.room);
-  const [trackReferences, setTrackReferences] = React.useState<TrackReference[]>([]);
+  const [trackReferences, setTrackReferences] = React.useState<
+    TrackReference[]
+  >([]);
   const [participants, setParticipants] = React.useState<Participant[]>([]);
 
   const sources_ = React.useMemo(() => {
-    return sources.map((s) => (isSourceWitOptions(s) ? s.source : s));
+    return sources.map(s => (isSourceWitOptions(s) ? s.source : s));
   }, [JSON.stringify(sources)]);
 
   React.useEffect(() => {
@@ -86,20 +88,22 @@ export function useTracks<T extends SourcesArray = Track.Source[]>(
       const requirePlaceholder = requiredPlaceholders(sources, participants);
       const trackReferencesWithPlaceholders: TrackReferenceOrPlaceholder[] =
         Array.from(trackReferences);
-      participants.forEach((participant) => {
+      participants.forEach(participant => {
         if (requirePlaceholder.has(participant.identity)) {
-          const sourcesToAddPlaceholder = requirePlaceholder.get(participant.identity) ?? [];
-          sourcesToAddPlaceholder.forEach((placeholderSource) => {
+          const sourcesToAddPlaceholder =
+            requirePlaceholder.get(participant.identity) ?? [];
+          sourcesToAddPlaceholder.forEach(placeholderSource => {
             if (
               trackReferences.find(
                 ({ participant: p, publication }) =>
-                  participant.identity === p.identity && publication.source === placeholderSource,
+                  participant.identity === p.identity &&
+                  publication.source === placeholderSource
               )
             ) {
               return;
             }
             log.debug(
-              `Add ${placeholderSource} placeholder for participant ${participant.identity}.`,
+              `Add ${placeholderSource} placeholder for participant ${participant.identity}.`
             );
             const placeholder: TrackReferencePlaceholder = {
               participant,
@@ -128,25 +132,34 @@ function difference<T>(setA: Set<T>, setB: Set<T>): Set<T> {
 
 export function requiredPlaceholders<T extends SourcesArray>(
   sources: T,
-  participants: Participant[],
+  participants: Participant[]
 ): Map<Participant['identity'], Track.Source[]> {
   const placeholderMap = new Map<Participant['identity'], Track.Source[]>();
   if (isSourcesWithOptions(sources)) {
     const sourcesThatNeedPlaceholder = sources
-      .filter((sourceWithOption) => sourceWithOption.withPlaceholder)
-      .map((sourceWithOption) => sourceWithOption.source);
+      .filter(sourceWithOption => sourceWithOption.withPlaceholder)
+      .map(sourceWithOption => sourceWithOption.source);
 
-    participants.forEach((participant) => {
+    participants.forEach(participant => {
       const sourcesOfSubscribedTracks = participant
         .getTrackPublications()
-        .map((pub) => pub.track?.source)
-        .filter((trackSource): trackSource is Track.Source => trackSource !== undefined);
+        .map(pub => pub.track?.source)
+        .filter(
+          (trackSource): trackSource is Track.Source =>
+            trackSource !== undefined
+        );
       const placeholderNeededForThisParticipant = Array.from(
-        difference(new Set(sourcesThatNeedPlaceholder), new Set(sourcesOfSubscribedTracks)),
+        difference(
+          new Set(sourcesThatNeedPlaceholder),
+          new Set(sourcesOfSubscribedTracks)
+        )
       );
       // If the participant needs placeholder add it to the placeholder map.
       if (placeholderNeededForThisParticipant.length > 0) {
-        placeholderMap.set(participant.identity, placeholderNeededForThisParticipant);
+        placeholderMap.set(
+          participant.identity,
+          placeholderNeededForThisParticipant
+        );
       }
     });
   }

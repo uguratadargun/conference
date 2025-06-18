@@ -7,17 +7,19 @@ import type { TrackIdentifier } from '../types';
 
 export function setupMediaTrack(trackIdentifier: TrackIdentifier) {
   const initialPub = getTrackByIdentifier(trackIdentifier);
-  const trackObserver = observeParticipantMedia(trackIdentifier.participant).pipe(
+  const trackObserver = observeParticipantMedia(
+    trackIdentifier.participant
+  ).pipe(
     map(() => {
       return getTrackByIdentifier(trackIdentifier);
     }),
-    startWith(initialPub),
+    startWith(initialPub)
   );
   const className: string = prefixClass(
     trackIdentifier.source === Track.Source.Camera ||
       trackIdentifier.source === Track.Source.ScreenShare
       ? 'participant-media-video'
-      : 'participant-media-audio',
+      : 'participant-media-audio'
   );
   return { className, trackObserver };
 }
@@ -30,7 +32,7 @@ export function getTrackByIdentifier(options: TrackIdentifier) {
     if (source && name) {
       return participant
         .getTrackPublications()
-        .find((pub) => pub.source === source && pub.trackName === name);
+        .find(pub => pub.source === source && pub.trackName === name);
     } else if (name) {
       return participant.getTrackPublicationByName(name);
     } else if (source) {

@@ -1,8 +1,8 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup';
 
-import defaults from "../tsup.config";
+import defaults from '../tsup.config';
 
 export default defineConfig({
   ...defaults,
-  external: ["livekit-client"],
+  external: ['livekit-client'],
 });

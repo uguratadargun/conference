@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { ConnectionState, ParticipantKind, Track } from 'livekit-client';
 import type { RemoteParticipant } from 'livekit-client';
-import type { ReceivedTranscriptionSegment, TrackReference } from '@livekit/components-core';
+import type {
+  ReceivedTranscriptionSegment,
+  TrackReference,
+} from '@livekit/components-core';
 import { useRemoteParticipants } from './useRemoteParticipants';
 import { useParticipantTracks } from './useParticipantTracks';
 import { useTrackTranscription } from './useTrackTranscription';
@@ -63,26 +66,29 @@ const state_attribute = 'lk.agent.state';
 export function useVoiceAssistant(): VoiceAssistant {
   const remoteParticipants = useRemoteParticipants();
   const agent = remoteParticipants.find(
-    (p) => p.kind === ParticipantKind.AGENT && !('lk.publish_on_behalf' in p.attributes),
+    p =>
+      p.kind === ParticipantKind.AGENT &&
+      !('lk.publish_on_behalf' in p.attributes)
   );
   const worker = remoteParticipants.find(
-    (p) =>
-      p.kind === ParticipantKind.AGENT && p.attributes['lk.publish_on_behalf'] === agent?.identity,
+    p =>
+      p.kind === ParticipantKind.AGENT &&
+      p.attributes['lk.publish_on_behalf'] === agent?.identity
   );
   const agentTracks = useParticipantTracks(
     [Track.Source.Microphone, Track.Source.Camera],
-    agent?.identity,
+    agent?.identity
   );
   const workerTracks = useParticipantTracks(
     [Track.Source.Microphone, Track.Source.Camera],
-    worker?.identity,
+    worker?.identity
   );
   const audioTrack =
-    agentTracks.find((t) => t.source === Track.Source.Microphone) ??
-    workerTracks.find((t) => t.source === Track.Source.Microphone);
+    agentTracks.find(t => t.source === Track.Source.Microphone) ??
+    workerTracks.find(t => t.source === Track.Source.Microphone);
   const videoTrack =
-    agentTracks.find((t) => t.source === Track.Source.Camera) ??
-    workerTracks.find((t) => t.source === Track.Source.Camera);
+    agentTracks.find(t => t.source === Track.Source.Camera) ??
+    workerTracks.find(t => t.source === Track.Source.Camera);
   const { segments: agentTranscriptions } = useTrackTranscription(audioTrack);
   const connectionState = useConnectionState();
   const { attributes } = useParticipantAttributes({ participant: agent });

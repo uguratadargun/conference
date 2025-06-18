@@ -21,13 +21,14 @@ export interface UseStartVideoProps {
  */
 export function useStartVideo({ room, props }: UseStartVideoProps) {
   const roomEnsured = useEnsureRoom(room);
-  const { className, roomVideoPlaybackAllowedObservable, handleStartVideoPlayback } = React.useMemo(
-    () => setupStartVideo(),
-    [],
-  );
+  const {
+    className,
+    roomVideoPlaybackAllowedObservable,
+    handleStartVideoPlayback,
+  } = React.useMemo(() => setupStartVideo(), []);
   const observable = React.useMemo(
     () => roomVideoPlaybackAllowedObservable(roomEnsured),
-    [roomEnsured, roomVideoPlaybackAllowedObservable],
+    [roomEnsured, roomVideoPlaybackAllowedObservable]
   );
   const { canPlayVideo } = useObservableState(observable, {
     canPlayVideo: roomEnsured.canPlaybackVideo,
@@ -42,7 +43,7 @@ export function useStartVideo({ room, props }: UseStartVideoProps) {
         },
         style: { display: canPlayVideo ? 'none' : 'block' },
       }),
-    [props, className, canPlayVideo, handleStartVideoPlayback, roomEnsured],
+    [props, className, canPlayVideo, handleStartVideoPlayback, roomEnsured]
   );
 
   return { mergedProps, canPlayVideo };

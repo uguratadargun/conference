@@ -13,12 +13,17 @@ import { useObservableState } from './internal';
  * ```
  * @public
  */
-export function useLocalParticipantPermissions(): ParticipantPermission | undefined {
+export function useLocalParticipantPermissions():
+  | ParticipantPermission
+  | undefined {
   const room = useRoomContext();
   const permissionObserver = React.useMemo(
     () => participantPermissionObserver(room.localParticipant),
-    [room],
+    [room]
   );
-  const permissions = useObservableState(permissionObserver, room.localParticipant.permissions);
+  const permissions = useObservableState(
+    permissionObserver,
+    room.localParticipant.permissions
+  );
   return permissions;
 }

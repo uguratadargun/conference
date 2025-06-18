@@ -1,1 +1,1 @@
-export * from "./livekit-token";
+export * from './livekit-token';

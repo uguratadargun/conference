@@ -24,7 +24,7 @@ export interface UseTokenOptions {
 export function useToken(
   tokenEndpoint: string | undefined,
   roomName: string,
-  options: UseTokenOptions = {},
+  options: UseTokenOptions = {}
 ) {
   const [token, setToken] = React.useState<string | undefined>(undefined);
 
@@ -41,7 +41,7 @@ export function useToken(
       const res = await fetch(`${tokenEndpoint}?${params.toString()}`);
       if (!res.ok) {
         log.error(
-          `Could not fetch token. Server responded with status ${res.status}: ${res.statusText}`,
+          `Could not fetch token. Server responded with status ${res.status}: ${res.statusText}`
         );
         return;
       }

@@ -1,5 +1,13 @@
-import { createMediaDeviceObserver, setupDeviceSelector, log } from '@livekit/components-core';
-import { Room, type LocalAudioTrack, type LocalVideoTrack } from 'livekit-client';
+import {
+  createMediaDeviceObserver,
+  setupDeviceSelector,
+  log,
+} from '@livekit/components-core';
+import {
+  Room,
+  type LocalAudioTrack,
+  type LocalVideoTrack,
+} from 'livekit-client';
 import * as React from 'react';
 import { useMaybeRoomContext } from '../context';
 import { useObservableState } from './internal';
@@ -47,25 +55,29 @@ export function useMediaDeviceSelect({
 }: UseMediaDeviceSelectProps) {
   const roomContext = useMaybeRoomContext();
 
-  const roomFallback = React.useMemo(() => room ?? roomContext ?? new Room(), [room, roomContext]);
+  const roomFallback = React.useMemo(
+    () => room ?? roomContext ?? new Room(),
+    [room, roomContext]
+  );
 
   // List of all devices.
   const deviceObserver = React.useMemo(
     () => createMediaDeviceObserver(kind, onError, requestPermissions),
-    [kind, requestPermissions, onError],
+    [kind, requestPermissions, onError]
   );
   const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[]);
   // Active device management.
   const [currentDeviceId, setCurrentDeviceId] = React.useState<string>(
-    roomFallback?.getActiveDevice(kind) ?? 'default',
+    roomFallback?.getActiveDevice(kind) ?? 'default'
   );
-  const { className, activeDeviceObservable, setActiveMediaDevice } = React.useMemo(
-    () => setupDeviceSelector(kind, roomFallback),
-    [kind, roomFallback, track],
-  );
+  const { className, activeDeviceObservable, setActiveMediaDevice } =
+    React.useMemo(
+      () => setupDeviceSelector(kind, roomFallback),
+      [kind, roomFallback, track]
+    );
 
   React.useEffect(() => {
-    const listener = activeDeviceObservable.subscribe((deviceId) => {
+    const listener = activeDeviceObservable.subscribe(deviceId => {
       if (!deviceId) {
         return;
       }
@@ -77,5 +89,10 @@ export function useMediaDeviceSelect({
     };
   }, [activeDeviceObservable]);
 
-  return { devices, className, activeDeviceId: currentDeviceId, setActiveMediaDevice };
+  return {
+    devices,
+    className,
+    activeDeviceId: currentDeviceId,
+    setActiveMediaDevice,
+  };
 }

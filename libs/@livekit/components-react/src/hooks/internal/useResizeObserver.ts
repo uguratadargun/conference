@@ -18,7 +18,7 @@ const useLatest = <T>(current: T) => {
  */
 export function useResizeObserver<T extends HTMLElement>(
   target: React.RefObject<T>,
-  callback: UseResizeObserverCallback,
+  callback: UseResizeObserverCallback
 ) {
   const resizeObserver = getResizeObserver();
   const storedCallback = useLatest(callback);
@@ -55,23 +55,25 @@ function createResizeObserver() {
     return;
   }
 
-  const observer = new ResizeObserver((entries: ResizeObserverEntry[], obs: ResizeObserver) => {
-    allEntries = allEntries.concat(entries);
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const triggered = new Set<Element>();
-        for (let i = 0; i < allEntries.length; i++) {
-          if (triggered.has(allEntries[i].target)) continue;
-          triggered.add(allEntries[i].target);
-          const cbs = callbacks.get(allEntries[i].target);
-          cbs?.forEach((cb) => cb(allEntries[i], obs));
-        }
-        allEntries = [];
-        ticking = false;
-      });
+  const observer = new ResizeObserver(
+    (entries: ResizeObserverEntry[], obs: ResizeObserver) => {
+      allEntries = allEntries.concat(entries);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const triggered = new Set<Element>();
+          for (let i = 0; i < allEntries.length; i++) {
+            if (triggered.has(allEntries[i].target)) continue;
+            triggered.add(allEntries[i].target);
+            const cbs = callbacks.get(allEntries[i].target);
+            cbs?.forEach(cb => cb(allEntries[i], obs));
+          }
+          allEntries = [];
+          ticking = false;
+        });
+      }
+      ticking = true;
     }
-    ticking = true;
-  });
+  );
 
   return {
     observer,
@@ -98,11 +100,13 @@ function createResizeObserver() {
 let _resizeObserver: ReturnType<typeof createResizeObserver>;
 
 const getResizeObserver = () =>
-  !_resizeObserver ? (_resizeObserver = createResizeObserver()) : _resizeObserver;
+  !_resizeObserver
+    ? (_resizeObserver = createResizeObserver())
+    : _resizeObserver;
 
 export type UseResizeObserverCallback = (
   entry: ResizeObserverEntry,
-  observer: ResizeObserver,
+  observer: ResizeObserver
 ) => unknown;
 
 export const useSize = (target: React.RefObject<HTMLDivElement>) => {
@@ -116,7 +120,7 @@ export const useSize = (target: React.RefObject<HTMLDivElement>) => {
 
   const resizeCallback = React.useCallback(
     (entry: ResizeObserverEntry) => setSize(entry.contentRect),
-    [],
+    []
   );
   // Where the magic happens
   useResizeObserver(target, resizeCallback);

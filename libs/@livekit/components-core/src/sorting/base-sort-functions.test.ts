@@ -39,10 +39,13 @@ describe.concurrent('Test sorting participants by isSpeaking:', () => {
         { isSpeaking: false, id: 'A' },
       ],
     },
-  ])('Test that the last speaker is ahead of the previous speaker.', ({ unsorted, expected }) => {
-    unsorted.sort(sortParticipantsByIsSpeaking);
-    expect(unsorted).toStrictEqual(expected);
-  });
+  ])(
+    'Test that the last speaker is ahead of the previous speaker.',
+    ({ unsorted, expected }) => {
+      unsorted.sort(sortParticipantsByIsSpeaking);
+      expect(unsorted).toStrictEqual(expected);
+    }
+  );
 });
 
 describe.concurrent('Test sorting participants by lastSpokenAt:', () => {
@@ -91,10 +94,13 @@ describe.concurrent('Test sorting participants by lastSpokenAt:', () => {
         { lastSpokeAt: undefined, id: 'C' },
       ],
     },
-  ])('Test that the last speaker is ahead of the previous speaker.', ({ unsorted, expected }) => {
-    unsorted.sort(sortParticipantsByLastSpokenAT);
-    expect(unsorted).toStrictEqual(expected);
-  });
+  ])(
+    'Test that the last speaker is ahead of the previous speaker.',
+    ({ unsorted, expected }) => {
+      unsorted.sort(sortParticipantsByLastSpokenAT);
+      expect(unsorted).toStrictEqual(expected);
+    }
+  );
 });
 
 describe.concurrent('Test sorting participants by audioLevel.', () => {
@@ -116,7 +122,7 @@ describe.concurrent('Test sorting participants by audioLevel.', () => {
     ({ unsorted, expected }) => {
       unsorted.sort(sortParticipantsByAudioLevel);
       expect(unsorted).toStrictEqual(expected);
-    },
+    }
   );
 
   test.each([
@@ -140,10 +146,13 @@ describe.concurrent('Test sorting participants by audioLevel.', () => {
         { audioLevel: 1, id: 'B' },
       ],
     },
-  ])("Test that equal audio levels don't change the order", ({ unsorted, expected }) => {
-    unsorted.sort(sortParticipantsByAudioLevel);
-    expect(unsorted).toStrictEqual(expected);
-  });
+  ])(
+    "Test that equal audio levels don't change the order",
+    ({ unsorted, expected }) => {
+      unsorted.sort(sortParticipantsByAudioLevel);
+      expect(unsorted).toStrictEqual(expected);
+    }
+  );
 });
 
 describe.concurrent('Test sorting track bundles by type.', () => {
@@ -188,10 +197,15 @@ describe.concurrent('Test sorting track bundles by type.', () => {
         mockTrackReferenceSubscribed('B', Track.Source.ScreenShare),
       ],
     },
-  ])('TrackReference should be for TrackReferencePlaceholders', ({ unsorted, expected }) => {
-    unsorted.sort(sortTrackReferencesByType);
-    expect(flatTrackReferenceArray(unsorted)).toStrictEqual(flatTrackReferenceArray(expected));
-  });
+  ])(
+    'TrackReference should be for TrackReferencePlaceholders',
+    ({ unsorted, expected }) => {
+      unsorted.sort(sortTrackReferencesByType);
+      expect(flatTrackReferenceArray(unsorted)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
+    }
+  );
 });
 
 describe.concurrent('Test sorting participants by joinedAt:', () => {
@@ -223,7 +237,7 @@ describe.concurrent('Test sorting participants by joinedAt:', () => {
     ({ unsorted, expected }) => {
       unsorted.sort(sortParticipantsByJoinedAt);
       expect(unsorted).toStrictEqual(expected);
-    },
+    }
   );
 
   test.each([
@@ -252,7 +266,7 @@ describe.concurrent('Test sorting participants by joinedAt:', () => {
     ({ unsorted, expected }) => {
       unsorted.sort(sortParticipantsByJoinedAt);
       expect(unsorted).toStrictEqual(expected);
-    },
+    }
   );
 });
 
@@ -260,18 +274,31 @@ describe.concurrent('Test sorting track bundles by source.', () => {
   test.each([
     {
       unsorted: [
-        mockTrackReferenceSubscribed('A', Track.Source.Camera, { mockPublication: true }),
-        mockTrackReferenceSubscribed('B', Track.Source.ScreenShare, { mockPublication: true }),
+        mockTrackReferenceSubscribed('A', Track.Source.Camera, {
+          mockPublication: true,
+        }),
+        mockTrackReferenceSubscribed('B', Track.Source.ScreenShare, {
+          mockPublication: true,
+        }),
       ],
       expected: [
-        mockTrackReferenceSubscribed('B', Track.Source.ScreenShare, { mockPublication: true }),
-        mockTrackReferenceSubscribed('A', Track.Source.Camera, { mockPublication: true }),
+        mockTrackReferenceSubscribed('B', Track.Source.ScreenShare, {
+          mockPublication: true,
+        }),
+        mockTrackReferenceSubscribed('A', Track.Source.Camera, {
+          mockPublication: true,
+        }),
       ],
     },
-  ])('ScreenShare should come before Camera sources.', ({ unsorted, expected }) => {
-    unsorted.sort(sortTrackReferencesByScreenShare);
-    expect(flatTrackReferenceArray(unsorted)).toStrictEqual(flatTrackReferenceArray(expected));
-  });
+  ])(
+    'ScreenShare should come before Camera sources.',
+    ({ unsorted, expected }) => {
+      unsorted.sort(sortTrackReferencesByScreenShare);
+      expect(flatTrackReferenceArray(unsorted)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
+    }
+  );
 });
 
 describe.concurrent('Test sorting track bundles by isCameraEnabled.', () => {
@@ -311,6 +338,6 @@ describe.concurrent('Test sorting track bundles by isCameraEnabled.', () => {
     ({ unsorted, expected }) => {
       unsorted.sort(sortTrackRefsByIsCameraEnabled);
       expect(unsorted).toStrictEqual(expected);
-    },
+    }
   );
 });

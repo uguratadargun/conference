@@ -47,7 +47,9 @@ export function sortParticipants(participants: Participant[]): Participant[] {
     // joinedAt
     return sortParticipantsByJoinedAt(a, b);
   });
-  const localParticipant = sortedParticipants.find((p) => p.isLocal) as LocalParticipant;
+  const localParticipant = sortedParticipants.find(
+    p => p.isLocal
+  ) as LocalParticipant;
   if (localParticipant) {
     const localIdx = sortedParticipants.indexOf(localParticipant);
     if (localIdx >= 0) {

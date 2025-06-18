@@ -5,7 +5,8 @@ import { useTrackMutedIndicator } from '../../hooks';
 import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
 
 /** @public */
-export interface TrackMutedIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TrackMutedIndicatorProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   trackRef: TrackReferenceOrPlaceholder;
   show?: 'always' | 'muted' | 'unmuted';
 }
@@ -21,33 +22,36 @@ export interface TrackMutedIndicatorProps extends React.HTMLAttributes<HTMLDivEl
  * @public
  */
 export const TrackMutedIndicator: (
-  props: TrackMutedIndicatorProps & React.RefAttributes<HTMLDivElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLDivElement, TrackMutedIndicatorProps>(
-  function TrackMutedIndicator(
-    { trackRef, show = 'always', ...props }: TrackMutedIndicatorProps,
-    ref,
-  ) {
-    const { className, isMuted } = useTrackMutedIndicator(trackRef);
+  props: TrackMutedIndicatorProps & React.RefAttributes<HTMLDivElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLDivElement,
+  TrackMutedIndicatorProps
+>(function TrackMutedIndicator(
+  { trackRef, show = 'always', ...props }: TrackMutedIndicatorProps,
+  ref
+) {
+  const { className, isMuted } = useTrackMutedIndicator(trackRef);
 
-    const showIndicator =
-      show === 'always' || (show === 'muted' && isMuted) || (show === 'unmuted' && !isMuted);
+  const showIndicator =
+    show === 'always' ||
+    (show === 'muted' && isMuted) ||
+    (show === 'unmuted' && !isMuted);
 
-    const htmlProps = React.useMemo(
-      () =>
-        mergeProps(props, {
-          className,
-        }),
-      [className, props],
-    );
+  const htmlProps = React.useMemo(
+    () =>
+      mergeProps(props, {
+        className,
+      }),
+    [className, props]
+  );
 
-    if (!showIndicator) {
-      return null;
-    }
+  if (!showIndicator) {
+    return null;
+  }
 
-    return (
-      <div ref={ref} {...htmlProps} data-lk-muted={isMuted}>
-        {props.children ?? getSourceIcon(trackRef.source, !isMuted)}
-      </div>
-    );
-  },
-);
+  return (
+    <div ref={ref} {...htmlProps} data-lk-muted={isMuted}>
+      {props.children ?? getSourceIcon(trackRef.source, !isMuted)}
+    </div>
+  );
+});

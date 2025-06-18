@@ -1,7 +1,20 @@
 /* eslint-disable camelcase */
-import type { Participant, Room, ChatMessage, SendTextOptions } from 'livekit-client';
+import type {
+  Participant,
+  Room,
+  ChatMessage,
+  SendTextOptions,
+} from 'livekit-client';
 import { compareVersions, RoomEvent } from 'livekit-client';
-import { BehaviorSubject, Subject, scan, map, takeUntil, from, filter } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  scan,
+  map,
+  takeUntil,
+  from,
+  filter,
+} from 'rxjs';
 import {
   DataTopic,
   LegacyDataTopic,
@@ -47,14 +60,21 @@ export type ChatOptions = {
   updateChannelTopic?: string;
 };
 
-const topicSubjectMap: WeakMap<Room, Map<string, Subject<ReceivedChatMessage>>> = new WeakMap();
+const topicSubjectMap: WeakMap<
+  Room,
+  Map<string, Subject<ReceivedChatMessage>>
+> = new WeakMap();
 
-function isIgnorableChatMessage(msg: ReceivedChatMessage | LegacyReceivedChatMessage) {
+function isIgnorableChatMessage(
+  msg: ReceivedChatMessage | LegacyReceivedChatMessage
+) {
   return (msg as LegacyChatMessage).ignoreLegacy == true;
 }
 
 const decodeLegacyMsg = (message: Uint8Array) =>
-  JSON.parse(new TextDecoder().decode(message)) as LegacyReceivedChatMessage | ReceivedChatMessage;
+  JSON.parse(new TextDecoder().decode(message)) as
+    | LegacyReceivedChatMessage
+    | ReceivedChatMessage;
 
 const encodeLegacyMsg = (message: LegacyReceivedChatMessage) =>
   new TextEncoder().encode(JSON.stringify(message));
@@ -62,7 +82,8 @@ const encodeLegacyMsg = (message: LegacyReceivedChatMessage) =>
 export function setupChat(room: Room, options?: ChatOptions) {
   const serverSupportsDataStreams = () =>
     room.serverInfo?.edition === 1 ||
-    (!!room.serverInfo?.version && compareVersions(room.serverInfo?.version, '1.8.2') > 0);
+    (!!room.serverInfo?.version &&
+      compareVersions(room.serverInfo?.version, '1.8.2') > 0);
 
   const onDestroyObservable = new Subject<void>();
 
@@ -73,8 +94,11 @@ export function setupChat(room: Room, options?: ChatOptions) {
   if (!topicSubjectMap.has(room)) {
     needsSetup = true;
   }
-  const topicMap = topicSubjectMap.get(room) ?? new Map<string, Subject<ReceivedChatMessage>>();
-  const messageSubject = topicMap.get(topic) ?? new Subject<ReceivedChatMessage>();
+  const topicMap =
+    topicSubjectMap.get(room) ??
+    new Map<string, Subject<ReceivedChatMessage>>();
+  const messageSubject =
+    topicMap.get(topic) ?? new Subject<ReceivedChatMessage>();
   topicMap.set(topic, messageSubject);
   topicSubjectMap.set(room, topicMap);
 
@@ -94,10 +118,10 @@ export function setupChat(room: Room, options?: ChatOptions) {
             from: room.getParticipantByIdentity(participantInfo.identity),
             // editTimestamp: type === 'update' ? timestamp : undefined,
           } as ReceivedChatMessage;
-        }),
+        })
       );
       streamObservable.subscribe({
-        next: (value) => messageSubject.next(value),
+        next: value => messageSubject.next(value),
       });
     });
 
@@ -105,16 +129,19 @@ export function setupChat(room: Room, options?: ChatOptions) {
     const { messageObservable } = setupDataMessageHandler(room, [legacyTopic]);
     messageObservable
       .pipe(
-        map((msg) => {
+        map(msg => {
           const parsedMessage = finalMessageDecoder(msg.payload);
           if (isIgnorableChatMessage(parsedMessage)) {
             return undefined;
           }
-          const newMessage: ReceivedChatMessage = { ...parsedMessage, from: msg.from };
+          const newMessage: ReceivedChatMessage = {
+            ...parsedMessage,
+            from: msg.from,
+          };
           return newMessage;
         }),
-        filter((msg) => !!msg),
-        takeUntil(onDestroyObservable),
+        filter(msg => !!msg),
+        takeUntil(onDestroyObservable)
       )
       .subscribe(messageSubject);
   }
@@ -124,9 +151,12 @@ export function setupChat(room: Room, options?: ChatOptions) {
     scan<ReceivedChatMessage, ReceivedChatMessage[]>((acc, value) => {
       if (
         'id' in value &&
-        acc.find((msg) => msg.from?.identity === value.from?.identity && msg.id === value.id)
+        acc.find(
+          msg =>
+            msg.from?.identity === value.from?.identity && msg.id === value.id
+        )
       ) {
-        const replaceIndex = acc.findIndex((msg) => msg.id === value.id);
+        const replaceIndex = acc.findIndex(msg => msg.id === value.id);
         if (replaceIndex > -1) {
           const originalMsg = acc[replaceIndex];
           acc[replaceIndex] = {
@@ -139,7 +169,7 @@ export function setupChat(room: Room, options?: ChatOptions) {
       }
       return [...acc, value];
     }, []),
-    takeUntil(onDestroyObservable),
+    takeUntil(onDestroyObservable)
   );
 
   const isSending$ = new BehaviorSubject<boolean>(false);

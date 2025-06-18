@@ -31,16 +31,22 @@ export interface RoomAudioRendererProps {
  */
 export function RoomAudioRenderer({ volume, muted }: RoomAudioRendererProps) {
   const tracks = useTracks(
-    [Track.Source.Microphone, Track.Source.ScreenShareAudio, Track.Source.Unknown],
+    [
+      Track.Source.Microphone,
+      Track.Source.ScreenShareAudio,
+      Track.Source.Unknown,
+    ],
     {
       updateOnlyOn: [],
       onlySubscribed: true,
-    },
-  ).filter((ref) => !ref.participant.isLocal && ref.publication.kind === Track.Kind.Audio);
+    }
+  ).filter(
+    ref => !ref.participant.isLocal && ref.publication.kind === Track.Kind.Audio
+  );
 
   return (
     <div style={{ display: 'none' }}>
-      {tracks.map((trackRef) => (
+      {tracks.map(trackRef => (
         <AudioTrack
           key={getTrackReferenceId(trackRef)}
           trackRef={trackRef}

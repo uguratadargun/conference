@@ -16,7 +16,10 @@ import type { Room } from 'livekit-client';
 export function useIsRecording(room?: Room) {
   const r = useEnsureRoom(room);
   const connectionState = useConnectionState(r);
-  const observable = React.useMemo(() => recordingStatusObservable(r), [r, connectionState]);
+  const observable = React.useMemo(
+    () => recordingStatusObservable(r),
+    [r, connectionState]
+  );
   const isRecording = useObservableState(observable, r.isRecording);
 
   return isRecording;

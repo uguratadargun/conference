@@ -9,7 +9,9 @@ import { ChatToggle } from '../components';
 import ChatCloseIcon from '../assets/icons/ChatCloseIcon';
 
 /** @public */
-export interface ChatProps extends React.HTMLAttributes<HTMLDivElement>, ChatOptions {
+export interface ChatProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    ChatOptions {
   messageFormatter?: MessageFormatter;
 }
 
@@ -88,11 +90,14 @@ export function Chat({
     }
 
     const unreadMessageCount = chatMessages.filter(
-      (msg) => !lastReadMsgAt.current || msg.timestamp > lastReadMsgAt.current,
+      msg => !lastReadMsgAt.current || msg.timestamp > lastReadMsgAt.current
     ).length;
 
     const { widget } = layoutContext;
-    if (unreadMessageCount > 0 && widget.state?.unreadMessages !== unreadMessageCount) {
+    if (
+      unreadMessageCount > 0 &&
+      widget.state?.unreadMessages !== unreadMessageCount
+    ) {
       widget.dispatch?.({ msg: 'unread_msg', count: unreadMessageCount });
     }
   }, [chatMessages, layoutContext?.widget]);
@@ -115,12 +120,13 @@ export function Chat({
                 entry: msg,
                 key: msg.id ?? idx,
                 messageFormatter,
-              }),
+              })
             )
           : chatMessages.map((msg, idx, allMsg) => {
               const hideName = idx >= 1 && allMsg[idx - 1].from === msg.from;
               // If the time delta between two messages is bigger than 60s show timestamp.
-              const hideTimestamp = idx >= 1 && msg.timestamp - allMsg[idx - 1].timestamp < 60_000;
+              const hideTimestamp =
+                idx >= 1 && msg.timestamp - allMsg[idx - 1].timestamp < 60_000;
 
               return (
                 <ChatEntry
@@ -140,11 +146,15 @@ export function Chat({
           ref={inputRef}
           type="text"
           placeholder="Enter a message..."
-          onInput={(ev) => ev.stopPropagation()}
-          onKeyDown={(ev) => ev.stopPropagation()}
-          onKeyUp={(ev) => ev.stopPropagation()}
+          onInput={ev => ev.stopPropagation()}
+          onKeyDown={ev => ev.stopPropagation()}
+          onKeyUp={ev => ev.stopPropagation()}
         />
-        <button type="submit" className="lk-button lk-chat-form-button" disabled={isSending}>
+        <button
+          type="submit"
+          className="lk-button lk-chat-form-button"
+          disabled={isSending}
+        >
           Send
         </button>
       </form>

@@ -1,5 +1,5 @@
-import { AccessToken } from "livekit-server-sdk";
-import { LIVEKIT_CONFIG } from "../config/livekit";
+import { AccessToken } from 'livekit-server-sdk';
+import { LIVEKIT_CONFIG } from '../config/livekit';
 
 export const generateToken = async (): Promise<{
   url: string;
@@ -10,7 +10,7 @@ export const generateToken = async (): Promise<{
 
   // Use crypto.getRandomValues if available for better randomness
   let randomPart: string;
-  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     randomPart = array[0].toString(36);

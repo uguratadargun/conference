@@ -14,7 +14,13 @@ import { useObservableState } from './internal';
  */
 export function useSpeakingParticipants() {
   const room = useRoomContext();
-  const speakerObserver = React.useMemo(() => activeSpeakerObserver(room), [room]);
-  const activeSpeakers = useObservableState(speakerObserver, room.activeSpeakers);
+  const speakerObserver = React.useMemo(
+    () => activeSpeakerObserver(room),
+    [room]
+  );
+  const activeSpeakers = useObservableState(
+    speakerObserver,
+    room.activeSpeakers
+  );
   return activeSpeakers;
 }

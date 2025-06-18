@@ -24,7 +24,7 @@ export function useAudioPlayback(room?: Room): {
 
   const observable = React.useMemo(
     () => roomAudioPlaybackAllowedObservable(roomEnsured),
-    [roomEnsured],
+    [roomEnsured]
   );
   const { canPlayAudio } = useObservableState(observable, {
     canPlayAudio: roomEnsured.canPlaybackAudio,

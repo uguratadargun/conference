@@ -19,7 +19,8 @@ export type VoiceAssistantControlBarControls = {
 };
 
 /** @beta */
-export interface VoiceAssistantControlBarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface VoiceAssistantControlBarProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   onDeviceError?: (error: { source: Track.Source; error: Error }) => void;
   controls?: VoiceAssistantControlBarControls;
   /**
@@ -66,9 +67,10 @@ export function VoiceAssistantControlBar({
 
   const htmlProps = mergeProps({ className: 'lk-agent-control-bar' }, props);
 
-  const { saveAudioInputEnabled, saveAudioInputDeviceId } = usePersistentUserChoices({
-    preventSave: !saveUserChoices,
-  });
+  const { saveAudioInputEnabled, saveAudioInputDeviceId } =
+    usePersistentUserChoices({
+      preventSave: !saveUserChoices,
+    });
 
   const microphoneOnChange = React.useCallback(
     (enabled: boolean, isUserInitiated: boolean) => {
@@ -76,7 +78,7 @@ export function VoiceAssistantControlBar({
         saveAudioInputEnabled(enabled);
       }
     },
-    [saveAudioInputEnabled],
+    [saveAudioInputEnabled]
   );
 
   return (
@@ -87,9 +89,15 @@ export function VoiceAssistantControlBar({
             source={Track.Source.Microphone}
             showIcon={true}
             onChange={microphoneOnChange}
-            onDeviceError={(error) => onDeviceError?.({ source: Track.Source.Microphone, error })}
+            onDeviceError={error =>
+              onDeviceError?.({ source: Track.Source.Microphone, error })
+            }
           >
-            <BarVisualizer trackRef={micTrackRef} barCount={7} options={{ minHeight: 5 }} />
+            <BarVisualizer
+              trackRef={micTrackRef}
+              barCount={7}
+              options={{ minHeight: 5 }}
+            />
           </TrackToggle>
           <div className="lk-button-group-menu">
             <MediaDeviceMenu
@@ -102,7 +110,9 @@ export function VoiceAssistantControlBar({
         </div>
       )}
 
-      {visibleControls.leave && <DisconnectButton>{'Disconnect'}</DisconnectButton>}
+      {visibleControls.leave && (
+        <DisconnectButton>{'Disconnect'}</DisconnectButton>
+      )}
       <StartMediaButton />
     </div>
   );

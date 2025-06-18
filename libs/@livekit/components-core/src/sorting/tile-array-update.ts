@@ -1,14 +1,14 @@
 // @ts-nocheck
-import { differenceBy, chunk, zip } from "../helper/array-helper";
-import { log } from "../logger";
-import type { TrackReferenceOrPlaceholder } from "../track-reference";
+import { differenceBy, chunk, zip } from '../helper/array-helper';
+import { log } from '../logger';
+import type { TrackReferenceOrPlaceholder } from '../track-reference';
 import {
   getTrackReferenceId,
   isPlaceholderReplacement,
   isTrackReference,
   isTrackReferencePlaceholder,
-} from "../track-reference";
-import { flatTrackReferenceArray } from "../track-reference/test-utils";
+} from '../track-reference';
+import { flatTrackReferenceArray } from '../track-reference/test-utils';
 
 type VisualChanges<T> = {
   dropped: T[];
@@ -37,7 +37,7 @@ export function findIndex<T extends UpdatableItem>(
   trackReferences: T[]
 ): number {
   const indexToReplace = trackReferences.findIndex(
-    (trackReference_) =>
+    trackReference_ =>
       getTrackReferenceId(trackReference_) ===
       getTrackReferenceId(trackReference)
   );
@@ -133,13 +133,13 @@ export function updatePages<T extends UpdatableItem>(
         }
         // ## Handle Drop Items
         if (changes.added.length === 0 && changes.dropped.length > 0) {
-          changes.dropped.forEach((item) => {
+          changes.dropped.forEach(item => {
             updatedList = dropItem<T>(item, updatedList);
           });
         }
         // ## Handle Item added
         if (changes.added.length > 0 && changes.dropped.length === 0) {
-          changes.added.forEach((item) => {
+          changes.added.forEach(item => {
             updatedList = addItem<T>(item, updatedList);
           });
         }
@@ -155,7 +155,7 @@ export function updatePages<T extends UpdatableItem>(
       getTrackReferenceId
     );
     updatedList = updatedList.filter(
-      (item) =>
+      item =>
         !missingItems
           .map(getTrackReferenceId)
           .includes(getTrackReferenceId(item))
@@ -176,13 +176,13 @@ function refreshList<T extends UpdatableItem>(
   currentList: T[],
   nextList: T[]
 ): T[] {
-  return currentList.map((currentItem) => {
+  return currentList.map(currentItem => {
     const updateForCurrentItem = nextList.find(
-      (newItem_) =>
+      newItem_ =>
         // If the IDs match or ..
         getTrackReferenceId(currentItem) === getTrackReferenceId(newItem_) ||
         // ... if the current item is a placeholder and the new item is the track reference can replace it.
-        (typeof currentItem !== "number" &&
+        (typeof currentItem !== 'number' &&
           isTrackReferencePlaceholder(currentItem) &&
           isTrackReference(newItem_) &&
           isPlaceholderReplacement(currentItem, newItem_))

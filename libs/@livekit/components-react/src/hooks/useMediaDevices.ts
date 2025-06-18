@@ -21,7 +21,7 @@ export function useMediaDevices({
 }) {
   const deviceObserver = React.useMemo(
     () => createMediaDeviceObserver(kind, onError),
-    [kind, onError],
+    [kind, onError]
   );
   const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[]);
   return devices;

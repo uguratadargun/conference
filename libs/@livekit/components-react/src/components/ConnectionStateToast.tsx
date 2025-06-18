@@ -6,7 +6,8 @@ import { useConnectionState } from '../hooks';
 import { Toast } from './Toast';
 
 /** @public */
-export interface ConnectionStateToastProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ConnectionStateToastProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   room?: Room;
 }
 
@@ -16,7 +17,9 @@ export interface ConnectionStateToastProps extends React.HTMLAttributes<HTMLDivE
  * @public
  */
 export function ConnectionStateToast(props: ConnectionStateToastProps) {
-  const [notification, setNotification] = React.useState<React.ReactElement | undefined>(undefined);
+  const [notification, setNotification] = React.useState<
+    React.ReactElement | undefined
+  >(undefined);
   const state = useConnectionState(props.room);
 
   React.useEffect(() => {
@@ -25,14 +28,14 @@ export function ConnectionStateToast(props: ConnectionStateToastProps) {
         setNotification(
           <>
             <SpinnerIcon className="lk-spinner" /> Reconnecting
-          </>,
+          </>
         );
         break;
       case ConnectionState.Connecting:
         setNotification(
           <>
             <SpinnerIcon className="lk-spinner" /> Connecting
-          </>,
+          </>
         );
         break;
       case ConnectionState.Disconnected:
@@ -43,5 +46,9 @@ export function ConnectionStateToast(props: ConnectionStateToastProps) {
         break;
     }
   }, [state]);
-  return notification ? <Toast className="lk-toast-connection-state">{notification}</Toast> : <></>;
+  return notification ? (
+    <Toast className="lk-toast-connection-state">{notification}</Toast>
+  ) : (
+    <></>
+  );
 }

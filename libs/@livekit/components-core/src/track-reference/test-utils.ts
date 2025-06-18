@@ -4,21 +4,32 @@
  * @internal
  */
 
-import { Participant, RemoteTrackPublication, Track, TrackPublication } from 'livekit-client';
+import {
+  Participant,
+  RemoteTrackPublication,
+  Track,
+  TrackPublication,
+} from 'livekit-client';
 import type { UpdatableItem } from '../sorting/tile-array-update';
-import type { TrackReference, TrackReferencePlaceholder } from './track-reference.types';
+import type {
+  TrackReference,
+  TrackReferencePlaceholder,
+} from './track-reference.types';
 import { getTrackReferenceId } from './track-reference.utils';
 import { TrackInfo } from '@livekit/protocol';
 
 // Test function:
 export const mockTrackReferencePlaceholder = (
   id: string,
-  source: Track.Source,
+  source: Track.Source
 ): TrackReferencePlaceholder => {
   return { participant: new Participant(`${id}`, `${id}`), source };
 };
 
-export const mockTrackReferencePublished = (id: string, source: Track.Source): TrackReference => {
+export const mockTrackReferencePublished = (
+  id: string,
+  source: Track.Source
+): TrackReference => {
   const kind = [Track.Source.Camera, Track.Source.ScreenShare].includes(source)
     ? Track.Kind.Video
     : Track.Kind.Audio;
@@ -43,7 +54,7 @@ type mockTrackReferenceSubscribedOptions = {
 export const mockTrackReferenceSubscribed = (
   id: string,
   source: Track.Source,
-  options: mockTrackReferenceSubscribedOptions = {},
+  options: mockTrackReferenceSubscribedOptions = {}
 ): TrackReference => {
   const kind = [Track.Source.Camera, Track.Source.ScreenShare].includes(source)
     ? Track.Kind.Video
@@ -61,7 +72,11 @@ export const mockTrackReferenceSubscribed = (
       ? (mockParticipant(id, options.mockIsLocal ?? false) as Participant)
       : new Participant(`${id}`, `${id}`),
     publication: options.mockPublication
-      ? (mockTrackPublication(`publicationId(${id})`, kind, source) as TrackPublication)
+      ? (mockTrackPublication(
+          `publicationId(${id})`,
+          kind,
+          source
+        ) as TrackPublication)
       : publication,
     source,
   };
@@ -70,7 +85,7 @@ export const mockTrackReferenceSubscribed = (
 const mockTrackPublication = (
   id: string,
   kind: Track.Kind,
-  source: Track.Source,
+  source: Track.Source
 ): Pick<TrackPublication, 'kind' | 'trackSid' | 'trackName' | 'source'> => {
   return {
     kind,
@@ -82,7 +97,7 @@ const mockTrackPublication = (
 
 function mockParticipant(
   id: string,
-  isLocal: boolean,
+  isLocal: boolean
 ): Pick<Participant, 'sid' | 'identity' | 'isLocal'> {
   return {
     sid: `${id}_sid`,
@@ -91,8 +106,10 @@ function mockParticipant(
   };
 }
 
-export function flatTrackReferenceArray<T extends UpdatableItem>(list: T[]): string[] {
-  return list.map((item) => {
+export function flatTrackReferenceArray<T extends UpdatableItem>(
+  list: T[]
+): string[] {
+  return list.map(item => {
     if (typeof item === 'string' || typeof item === 'number') {
       return `${item}`;
     } else {

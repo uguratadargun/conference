@@ -61,4 +61,5 @@ The application is built with:
 ## License
 
 MIT
+
 # conference

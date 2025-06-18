@@ -11,7 +11,8 @@ import { useWarnAboutMissingStyles } from '../hooks/useWarnAboutMissingStyles';
 import { Track } from 'livekit-client';
 
 /** @public */
-export interface AudioConferenceProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface AudioConferenceProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 /**
  * This component is the default setup of a classic LiveKit audio conferencing app.
@@ -48,7 +49,12 @@ export function AudioConference({ ...props }: AudioConferenceProps) {
           </TrackLoop>
         </div>
         <ControlBar
-          controls={{ microphone: true, screenShare: false, camera: false, chat: true }}
+          controls={{
+            microphone: true,
+            screenShare: false,
+            camera: false,
+            chat: true,
+          }}
         />
         {widgetState.showChat && <Chat />}
       </div>

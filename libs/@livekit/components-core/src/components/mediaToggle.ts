@@ -12,19 +12,20 @@ import { Subject, map, startWith } from 'rxjs';
 import { observeParticipantMedia } from '../observables/participant';
 import { prefixClass } from '../styles-interface';
 
-export type CaptureOptionsBySource<T extends ToggleSource> = T extends Track.Source.Camera
-  ? VideoCaptureOptions
-  : T extends Track.Source.Microphone
-    ? AudioCaptureOptions
-    : T extends Track.Source.ScreenShare
-      ? ScreenShareCaptureOptions
-      : never;
+export type CaptureOptionsBySource<T extends ToggleSource> =
+  T extends Track.Source.Camera
+    ? VideoCaptureOptions
+    : T extends Track.Source.Microphone
+      ? AudioCaptureOptions
+      : T extends Track.Source.ScreenShare
+        ? ScreenShareCaptureOptions
+        : never;
 
 export type MediaToggleType<T extends ToggleSource> = {
   pendingObserver: Observable<boolean>;
   toggle: (
     forceState?: boolean,
-    captureOptions?: CaptureOptionsBySource<T>,
+    captureOptions?: CaptureOptionsBySource<T>
   ) => Promise<boolean | undefined>;
   className: string;
   enabledObserver: Observable<boolean>;
@@ -40,11 +41,14 @@ export function setupMediaToggle<T extends ToggleSource>(
   room: Room,
   options?: CaptureOptionsBySource<T>,
   publishOptions?: TrackPublishOptions,
-  onError?: (error: Error) => void,
+  onError?: (error: Error) => void
 ): MediaToggleType<T> {
   const { localParticipant } = room;
 
-  const getSourceEnabled = (source: ToggleSource, localParticipant: LocalParticipant) => {
+  const getSourceEnabled = (
+    source: ToggleSource,
+    localParticipant: LocalParticipant
+  ) => {
     let isEnabled = false;
     switch (source) {
       case Track.Source.Camera:
@@ -63,14 +67,17 @@ export function setupMediaToggle<T extends ToggleSource>(
   };
 
   const enabledObserver = observeParticipantMedia(localParticipant).pipe(
-    map((media) => {
+    map(media => {
       return getSourceEnabled(source, media.participant as LocalParticipant);
     }),
-    startWith(getSourceEnabled(source, localParticipant)),
+    startWith(getSourceEnabled(source, localParticipant))
   );
 
   const pendingSubject = new Subject<boolean>();
-  const toggle = async (forceState?: boolean, captureOptions?: CaptureOptionsBySource<T>) => {
+  const toggle = async (
+    forceState?: boolean,
+    captureOptions?: CaptureOptionsBySource<T>
+  ) => {
     try {
       captureOptions ??= options;
       // trigger observable update
@@ -80,21 +87,21 @@ export function setupMediaToggle<T extends ToggleSource>(
           await localParticipant.setCameraEnabled(
             forceState ?? !localParticipant.isCameraEnabled,
             captureOptions as VideoCaptureOptions,
-            publishOptions,
+            publishOptions
           );
           return localParticipant.isCameraEnabled;
         case Track.Source.Microphone:
           await localParticipant.setMicrophoneEnabled(
             forceState ?? !localParticipant.isMicrophoneEnabled,
             captureOptions as AudioCaptureOptions,
-            publishOptions,
+            publishOptions
           );
           return localParticipant.isMicrophoneEnabled;
         case Track.Source.ScreenShare:
           await localParticipant.setScreenShareEnabled(
             forceState ?? !localParticipant.isScreenShareEnabled,
             captureOptions as ScreenShareCaptureOptions,
-            publishOptions,
+            publishOptions
           );
           return localParticipant.isScreenShareEnabled;
         default:

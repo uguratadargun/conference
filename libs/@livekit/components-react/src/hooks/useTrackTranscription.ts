@@ -40,28 +40,32 @@ const TRACK_TRANSCRIPTION_DEFAULTS = {
  */
 export function useTrackTranscription(
   trackRef: TrackReferenceOrPlaceholder | undefined,
-  options?: TrackTranscriptionOptions,
+  options?: TrackTranscriptionOptions
 ) {
   const opts = { ...TRACK_TRANSCRIPTION_DEFAULTS, ...options };
-  const [segments, setSegments] = React.useState<Array<ReceivedTranscriptionSegment>>([]);
+  const [segments, setSegments] = React.useState<
+    Array<ReceivedTranscriptionSegment>
+  >([]);
 
   const syncTimestamps = useTrackSyncTime(trackRef);
   const handleSegmentMessage = (newSegments: TranscriptionSegment[]) => {
     opts.onTranscription?.(newSegments);
-    setSegments((prevSegments) =>
+    setSegments(prevSegments =>
       dedupeSegments(
         prevSegments,
         // when first receiving a segment, add the current media timestamp to it
-        newSegments.map((s) => addTimestampsToTranscription(s, syncTimestamps)),
-        opts.bufferSize,
-      ),
+        newSegments.map(s => addTimestampsToTranscription(s, syncTimestamps)),
+        opts.bufferSize
+      )
     );
   };
   React.useEffect(() => {
     if (!trackRef?.publication) {
       return;
     }
-    const subscription = trackTranscriptionObserver(trackRef.publication).subscribe((evt) => {
+    const subscription = trackTranscriptionObserver(
+      trackRef.publication
+    ).subscribe(evt => {
       handleSegmentMessage(...evt);
     });
     return () => {

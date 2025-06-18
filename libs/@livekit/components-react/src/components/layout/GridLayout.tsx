@@ -36,7 +36,7 @@ export function GridLayout({ tracks, ...props }: GridLayoutProps) {
 
   const elementProps = React.useMemo(
     () => mergeProps(props, { className: 'lk-grid-layout' }),
-    [props],
+    [props]
   );
   const { layout } = useGridLayout(gridEl, tracks.length);
   const pagination = usePagination(layout.maxTiles, tracks);
@@ -47,7 +47,11 @@ export function GridLayout({ tracks, ...props }: GridLayoutProps) {
   });
 
   return (
-    <div ref={gridEl} data-lk-pagination={pagination.totalPageCount > 1} {...elementProps}>
+    <div
+      ref={gridEl}
+      data-lk-pagination={pagination.totalPageCount > 1}
+      {...elementProps}
+    >
       <TrackLoop tracks={pagination.tracks}>{props.children}</TrackLoop>
       {tracks.length > layout.maxTiles && (
         <>

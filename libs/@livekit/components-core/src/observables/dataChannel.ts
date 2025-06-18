@@ -25,7 +25,7 @@ export const LegacyDataTopic = {
 export async function sendMessage(
   localParticipant: LocalParticipant,
   payload: Uint8Array,
-  options: DataPublishOptions = {},
+  options: DataPublishOptions = {}
 ) {
   const { reliable, destinationIdentities, topic } = options;
 
@@ -49,14 +49,15 @@ export interface ReceivedDataMessage<T extends string | undefined = string>
 export function setupDataMessageHandler<T extends string>(
   room: Room,
   topic?: T | [T, ...T[]],
-  onMessage?: (msg: ReceivedDataMessage<T>) => void,
+  onMessage?: (msg: ReceivedDataMessage<T>) => void
 ) {
   const topics = Array.isArray(topic) ? topic : [topic];
   /** Setup a Observable that returns all data messages belonging to a topic. */
   const messageObservable = createDataObserver(room).pipe(
     filter(
       ([, , , messageTopic]) =>
-        topic === undefined || (messageTopic !== undefined && topics.includes(messageTopic as T)),
+        topic === undefined ||
+        (messageTopic !== undefined && topics.includes(messageTopic as T))
     ),
     map(([payload, participant, , messageTopic]) => {
       const msg = {
@@ -66,18 +67,24 @@ export function setupDataMessageHandler<T extends string>(
       } satisfies ReceivedDataMessage<T>;
       onMessage?.(msg);
       return msg;
-    }),
+    })
   );
 
   let isSendingSubscriber: Subscriber<boolean>;
-  const isSendingObservable = new Observable<boolean>((subscriber) => {
+  const isSendingObservable = new Observable<boolean>(subscriber => {
     isSendingSubscriber = subscriber;
   });
 
-  const send = async (payload: Uint8Array, options: DataPublishOptions = {}) => {
+  const send = async (
+    payload: Uint8Array,
+    options: DataPublishOptions = {}
+  ) => {
     isSendingSubscriber.next(true);
     try {
-      await sendMessage(room.localParticipant, payload, { topic: topics[0], ...options });
+      await sendMessage(room.localParticipant, payload, {
+        topic: topics[0],
+        ...options,
+      });
     } finally {
       isSendingSubscriber.next(false);
     }
@@ -89,10 +96,17 @@ export function setupDataMessageHandler<T extends string>(
 export function setupChatMessageHandler(room: Room) {
   const chatObservable = createChatObserver(room);
 
-  const send = async (text: string, options: SendTextOptions): Promise<ReceivedChatMessage> => {
+  const send = async (
+    text: string,
+    options: SendTextOptions
+  ): Promise<ReceivedChatMessage> => {
     const msg = await room.localParticipant.sendChatMessage(text, options);
     await room.localParticipant.sendText(text, options);
-    return { ...msg, from: room.localParticipant, attachedFiles: options.attachments };
+    return {
+      ...msg,
+      from: room.localParticipant,
+      attachedFiles: options.attachments,
+    };
   };
 
   const edit = async (text: string, originalMsg: ChatMessage) => {

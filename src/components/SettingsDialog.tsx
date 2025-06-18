@@ -1,7 +1,7 @@
-import React from "react";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
-import { useMediaDeviceSelect } from "@livekit/components-react";
+import React from 'react';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import { useMediaDeviceSelect } from '@livekit/components-react';
 
 // Settings Dialog Component
 const SettingsDialog: React.FC<{
@@ -12,19 +12,19 @@ const SettingsDialog: React.FC<{
     devices: audioInputs,
     activeDeviceId: activeAudioInput,
     setActiveMediaDevice: setAudioInput,
-  } = useMediaDeviceSelect({ kind: "audioinput" });
+  } = useMediaDeviceSelect({ kind: 'audioinput' });
 
   const {
     devices: videoInputs,
     activeDeviceId: activeVideoInput,
     setActiveMediaDevice: setVideoInput,
-  } = useMediaDeviceSelect({ kind: "videoinput" });
+  } = useMediaDeviceSelect({ kind: 'videoinput' });
 
   const {
     devices: audioOutputs,
     activeDeviceId: activeAudioOutput,
     setActiveMediaDevice: setAudioOutput,
-  } = useMediaDeviceSelect({ kind: "audiooutput" });
+  } = useMediaDeviceSelect({ kind: 'audiooutput' });
 
   return (
     <Dialog
@@ -32,7 +32,7 @@ const SettingsDialog: React.FC<{
       onHide={onHide}
       className="settings-dialog"
       header="Device Settings"
-      style={{ width: "600px" }}
+      style={{ width: '600px' }}
     >
       <div className="settings-content">
         <div className="device-section">
@@ -42,10 +42,10 @@ const SettingsDialog: React.FC<{
           </h4>
           <select
             className="device-select"
-            value={activeAudioInput || ""}
-            onChange={(e) => setAudioInput(e.target.value)}
+            value={activeAudioInput || ''}
+            onChange={e => setAudioInput(e.target.value)}
           >
-            {audioInputs.map((device) => (
+            {audioInputs.map(device => (
               <option key={device.deviceId} value={device.deviceId}>
                 {device.label}
               </option>
@@ -60,10 +60,10 @@ const SettingsDialog: React.FC<{
           </h4>
           <select
             className="device-select"
-            value={activeVideoInput || ""}
-            onChange={(e) => setVideoInput(e.target.value)}
+            value={activeVideoInput || ''}
+            onChange={e => setVideoInput(e.target.value)}
           >
-            {videoInputs.map((device) => (
+            {videoInputs.map(device => (
               <option key={device.deviceId} value={device.deviceId}>
                 {device.label}
               </option>
@@ -78,10 +78,10 @@ const SettingsDialog: React.FC<{
           </h4>
           <select
             className="device-select"
-            value={activeAudioOutput || ""}
-            onChange={(e) => setAudioOutput(e.target.value)}
+            value={activeAudioOutput || ''}
+            onChange={e => setAudioOutput(e.target.value)}
           >
-            {audioOutputs.map((device) => (
+            {audioOutputs.map(device => (
               <option key={device.deviceId} value={device.deviceId}>
                 {device.label}
               </option>

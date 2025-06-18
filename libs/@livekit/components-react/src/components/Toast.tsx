@@ -13,6 +13,9 @@ import { mergeProps } from '../utils';
  * @public
  */
 export function Toast(props: React.HTMLAttributes<HTMLDivElement>) {
-  const htmlProps = React.useMemo(() => mergeProps(props, { className: 'lk-toast' }), [props]);
+  const htmlProps = React.useMemo(
+    () => mergeProps(props, { className: 'lk-toast' }),
+    [props]
+  );
   return <div {...htmlProps}>{props.children}</div>;
 }

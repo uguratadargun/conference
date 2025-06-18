@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
-import { Participant } from "livekit-client";
-import { Button } from "primereact/button";
+import React, { useRef } from 'react';
+import { Participant } from 'livekit-client';
+import { Button } from 'primereact/button';
 
 interface ParticipantListSidebarProps {
   visible: boolean;
@@ -10,16 +10,16 @@ interface ParticipantListSidebarProps {
 
 // Helper function to get display name
 const getDisplayName = (participant: Participant): string => {
-  if (!participant.name) return "Anonymous";
+  if (!participant.name) return 'Anonymous';
 
   // If it's a full name with spaces, return as is
-  if (participant.name.includes(" ")) return participant.name;
+  if (participant.name.includes(' ')) return participant.name;
 
   // If it's a simple name, return as is
   if (participant.name.length < 15) return participant.name;
 
   // If it's a long string (like an ID), try to make it shorter
-  return participant.name.substring(0, 12) + "...";
+  return participant.name.substring(0, 12) + '...';
 };
 
 const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
@@ -58,7 +58,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           <div className="participant-section">
             <div className="section-title">In this call</div>
             <div className="participant-list">
-              {participants.map((participant) => {
+              {participants.map(participant => {
                 const displayName = getDisplayName(participant);
                 const initial = displayName.charAt(0).toUpperCase();
 
@@ -72,20 +72,20 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
                       <span
                         className={`material-icons status-icon ${
                           participant.isMicrophoneEnabled
-                            ? "active"
-                            : "inactive"
+                            ? 'active'
+                            : 'inactive'
                         }`}
                       >
-                        {participant.isMicrophoneEnabled ? "mic" : "mic_off"}
+                        {participant.isMicrophoneEnabled ? 'mic' : 'mic_off'}
                       </span>
                       <span
                         className={`material-icons status-icon ${
-                          participant.isCameraEnabled ? "active" : "inactive"
+                          participant.isCameraEnabled ? 'active' : 'inactive'
                         }`}
                       >
                         {participant.isCameraEnabled
-                          ? "videocam"
-                          : "videocam_off"}
+                          ? 'videocam'
+                          : 'videocam_off'}
                       </span>
                     </div>
                   </div>

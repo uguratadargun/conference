@@ -13,21 +13,42 @@ export { useGridLayout } from './useGridLayout';
 export { type UseIsMutedOptions, useIsMuted } from './useIsMuted';
 export { useIsSpeaking } from './useIsSpeaking';
 export { useLiveKitRoom } from './useLiveKitRoom';
-export { type UseLocalParticipantOptions, useLocalParticipant } from './useLocalParticipant';
+export {
+  type UseLocalParticipantOptions,
+  useLocalParticipant,
+} from './useLocalParticipant';
 export { useLocalParticipantPermissions } from './useLocalParticipantPermissions';
-export { type UseMediaDeviceSelectProps, useMediaDeviceSelect } from './useMediaDeviceSelect';
+export {
+  type UseMediaDeviceSelectProps,
+  useMediaDeviceSelect,
+} from './useMediaDeviceSelect';
 export { useMediaDevices } from './useMediaDevices';
 export { usePagination } from './usePagination';
-export { type UseParticipantInfoOptions, useParticipantInfo } from './useParticipantInfo';
+export {
+  type UseParticipantInfoOptions,
+  useParticipantInfo,
+} from './useParticipantInfo';
 export {
   type UseParticipantPermissionsOptions,
   useParticipantPermissions,
 } from './useParticipantPermissions';
-export { type UseParticipantTileProps, useParticipantTile } from './useParticipantTile';
-export { type UseParticipantsOptions, useParticipants } from './useParticipants';
+export {
+  type UseParticipantTileProps,
+  useParticipantTile,
+} from './useParticipantTile';
+export {
+  type UseParticipantsOptions,
+  useParticipants,
+} from './useParticipants';
 export { usePinnedTracks } from './usePinnedTracks';
-export { type UseRemoteParticipantOptions, useRemoteParticipant } from './useRemoteParticipant';
-export { type UseRemoteParticipantsOptions, useRemoteParticipants } from './useRemoteParticipants';
+export {
+  type UseRemoteParticipantOptions,
+  useRemoteParticipant,
+} from './useRemoteParticipant';
+export {
+  type UseRemoteParticipantsOptions,
+  useRemoteParticipants,
+} from './useRemoteParticipants';
 export { type UseRoomInfoOptions, useRoomInfo } from './useRoomInfo';
 export { useSortedParticipants } from './useSortedParticipants';
 export { useSpeakingParticipants } from './useSpeakingParticipants';
@@ -38,8 +59,15 @@ export { type UseChatToggleProps, useChatToggle } from './useChatToggle';
 export { type UseTokenOptions, type UserInfo, useToken } from './useToken';
 export { useTrackMutedIndicator } from './useTrackMutedIndicator';
 export { type UseTrackToggleProps, useTrackToggle } from './useTrackToggle';
-export { type UseTracksHookReturnType, type UseTracksOptions, useTracks } from './useTracks';
-export { type UseVisualStableUpdateOptions, useVisualStableUpdate } from './useVisualStableUpdate';
+export {
+  type UseTracksHookReturnType,
+  type UseTracksOptions,
+  useTracks,
+} from './useTracks';
+export {
+  type UseVisualStableUpdateOptions,
+  useVisualStableUpdate,
+} from './useVisualStableUpdate';
 // export { UseTrackOptions, useTrack } from './useTrack';
 export { useTrackByName } from './useTrackByName';
 export { useChat } from './useChat';

@@ -10,12 +10,16 @@ type FeatureContext<T extends boolean = false> = T extends true
   : FeatureFlags | undefined;
 
 /** @internal */
-export const LKFeatureContext = React.createContext<FeatureFlags | undefined>(undefined);
+export const LKFeatureContext = React.createContext<FeatureFlags | undefined>(
+  undefined
+);
 
 /**
  * @internal
  */
-export function useFeatureContext<T extends boolean>(require?: T): FeatureContext<T> {
+export function useFeatureContext<T extends boolean>(
+  require?: T
+): FeatureContext<T> {
   const ctx = React.useContext(LKFeatureContext) as FeatureContext<T>;
   if (require === true) {
     if (ctx) {

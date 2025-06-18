@@ -22,13 +22,14 @@ export interface UseStartAudioProps {
  */
 export function useStartAudio({ room, props }: UseStartAudioProps) {
   const roomEnsured = useEnsureRoom(room);
-  const { className, roomAudioPlaybackAllowedObservable, handleStartAudioPlayback } = React.useMemo(
-    () => setupStartAudio(),
-    [],
-  );
+  const {
+    className,
+    roomAudioPlaybackAllowedObservable,
+    handleStartAudioPlayback,
+  } = React.useMemo(() => setupStartAudio(), []);
   const observable = React.useMemo(
     () => roomAudioPlaybackAllowedObservable(roomEnsured),
-    [roomEnsured, roomAudioPlaybackAllowedObservable],
+    [roomEnsured, roomAudioPlaybackAllowedObservable]
   );
   const { canPlayAudio } = useObservableState(observable, {
     canPlayAudio: roomEnsured.canPlaybackAudio,
@@ -43,7 +44,7 @@ export function useStartAudio({ room, props }: UseStartAudioProps) {
         },
         style: { display: canPlayAudio ? 'none' : 'block' },
       }),
-    [props, className, canPlayAudio, handleStartAudioPlayback, roomEnsured],
+    [props, className, canPlayAudio, handleStartAudioPlayback, roomEnsured]
   );
 
   return { mergedProps, canPlayAudio };

@@ -35,7 +35,7 @@ type UseDataChannelReturnType<T extends string | undefined = undefined> = {
  */
 export function useDataChannel<T extends string>(
   topic: T,
-  onMessage?: (msg: ReceivedDataMessage<T>) => void,
+  onMessage?: (msg: ReceivedDataMessage<T>) => void
 ): UseDataChannelReturnType<T>;
 
 /**
@@ -44,22 +44,24 @@ export function useDataChannel<T extends string>(
  * @public
  */
 export function useDataChannel(
-  onMessage?: (msg: ReceivedDataMessage) => void,
+  onMessage?: (msg: ReceivedDataMessage) => void
 ): UseDataChannelReturnType;
 /**
  * @internal
  */
 export function useDataChannel<T extends string>(
   topicOrCallback?: T | ((msg: ReceivedDataMessage) => void),
-  callback?: (msg: ReceivedDataMessage<T>) => void,
+  callback?: (msg: ReceivedDataMessage<T>) => void
 ) {
-  const onMessage = typeof topicOrCallback === 'function' ? topicOrCallback : callback;
+  const onMessage =
+    typeof topicOrCallback === 'function' ? topicOrCallback : callback;
 
-  const topic = typeof topicOrCallback === 'string' ? topicOrCallback : undefined;
+  const topic =
+    typeof topicOrCallback === 'string' ? topicOrCallback : undefined;
   const room = useRoomContext();
   const { send, messageObservable, isSendingObservable } = React.useMemo(
     () => setupDataMessageHandler(room, topic, onMessage),
-    [room, topic, onMessage],
+    [room, topic, onMessage]
   );
 
   const message = useObservableState(messageObservable, undefined);

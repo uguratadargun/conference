@@ -28,7 +28,11 @@ npm install @livekit/components-react
 ```tsx
 import { LiveKitRoom } from '@livekit/components-react';
 
-<LiveKitRoom token="<livekit-token>" serverUrl="<url-to-livekit-server>" connect={true} />;
+<LiveKitRoom
+  token="<livekit-token>"
+  serverUrl="<url-to-livekit-server>"
+  connect={true}
+/>;
 ```
 
 ## Architecture Overview

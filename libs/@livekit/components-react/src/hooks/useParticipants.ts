@@ -37,6 +37,6 @@ export function useParticipants(options: UseParticipantsOptions = {}) {
 
   return React.useMemo(
     () => [localParticipant, ...remoteParticipants],
-    [localParticipant, remoteParticipants],
+    [localParticipant, remoteParticipants]
   );
 }

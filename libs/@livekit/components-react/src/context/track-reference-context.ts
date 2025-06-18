@@ -5,9 +5,9 @@ import * as React from 'react';
  * This context provides a `TrackReferenceOrPlaceholder` to all child components.
  * @public
  */
-export const TrackRefContext = React.createContext<TrackReferenceOrPlaceholder | undefined>(
-  undefined,
-);
+export const TrackRefContext = React.createContext<
+  TrackReferenceOrPlaceholder | undefined
+>(undefined);
 
 /**
  * Ensures that a track reference is provided via context.
@@ -17,7 +17,9 @@ export const TrackRefContext = React.createContext<TrackReferenceOrPlaceholder |
 export function useTrackRefContext() {
   const trackReference = React.useContext(TrackRefContext);
   if (!trackReference) {
-    throw Error('tried to access track context outside of track context provider');
+    throw Error(
+      'tried to access track context outside of track context provider'
+    );
   }
   return trackReference;
 }
@@ -40,7 +42,7 @@ export function useEnsureTrackRef(trackRef?: TrackReferenceOrPlaceholder) {
   const ref = trackRef ?? context;
   if (!ref) {
     throw new Error(
-      'No TrackRef, make sure you are inside a TrackRefContext or pass the TrackRef explicitly',
+      'No TrackRef, make sure you are inside a TrackRefContext or pass the TrackRef explicitly'
     );
   }
   return ref;

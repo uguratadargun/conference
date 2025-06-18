@@ -3,7 +3,7 @@ import {
   RemoteParticipant,
   LocalParticipant,
   ConnectionQuality,
-} from "livekit-client";
+} from 'livekit-client';
 
 export interface Participant {
   id: string;
@@ -43,7 +43,7 @@ export interface MediaDevice {
 }
 
 export interface ErrorState {
-  type: "connection" | "general";
+  type: 'connection' | 'general';
   message: string;
 }
 

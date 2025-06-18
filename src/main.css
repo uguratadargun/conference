@@ -103,7 +103,7 @@
 
 /* Material Icons */
 .material-icons {
-  font-family: "Material Icons";
+  font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
   font-size: inherit;
@@ -114,8 +114,8 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  -webkit-font-feature-settings: "liga";
-  font-feature-settings: "liga";
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
   will-change: auto;
 }
@@ -292,7 +292,7 @@
   contain: layout style;
   will-change: contents;
   transition: width var(--transition-fast);
-  background-image: url("./images/call-bg.png");
+  background-image: url('./images/call-bg.png');
 }
 
 .participants-grid.grid-scroll {
@@ -434,7 +434,8 @@
   justify-content: center;
   position: relative;
   box-shadow: 0 4px 32px var(--shadow-participant);
-  transition: border-color var(--transition-fast),
+  transition:
+    border-color var(--transition-fast),
     transform var(--transition-fast);
   cursor: pointer;
 }
@@ -1117,7 +1118,7 @@
   contain: layout style;
   will-change: contents;
   overflow: hidden;
-  background-image: url("./images/call-bg.png");
+  background-image: url('./images/call-bg.png');
 }
 
 /* Layout toggle button */

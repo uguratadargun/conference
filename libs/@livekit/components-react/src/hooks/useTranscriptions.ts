@@ -27,17 +27,19 @@ export function useTranscriptions(opts?: UseTranscriptionsOptions) {
   const filteredMessages = React.useMemo(
     () =>
       textStreams
-        .filter((stream) =>
+        .filter(stream =>
           participantIdentities
             ? participantIdentities.includes(stream.participantInfo.identity)
-            : true,
+            : true
         )
-        .filter((stream) =>
+        .filter(stream =>
           trackSids
-            ? trackSids.includes(stream.streamInfo.attributes?.['lk.transcribed_track_id'] ?? '')
-            : true,
+            ? trackSids.includes(
+                stream.streamInfo.attributes?.['lk.transcribed_track_id'] ?? ''
+              )
+            : true
         ),
-    [textStreams, participantIdentities, trackSids],
+    [textStreams, participantIdentities, trackSids]
   );
 
   return filteredMessages;

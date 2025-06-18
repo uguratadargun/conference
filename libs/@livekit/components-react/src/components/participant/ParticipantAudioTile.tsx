@@ -22,46 +22,53 @@ import { BarVisualizer } from './BarVisualizer';
  * @public
  */
 export const ParticipantAudioTile: (
-  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLDivElement, ParticipantTileProps>(
-  function ParticipantAudioTile(
-    {
-      children,
-      disableSpeakingIndicator,
-      onParticipantClick,
-      trackRef,
-      ...htmlProps
-    }: ParticipantTileProps,
-    ref,
-  ) {
-    const trackReference = useEnsureTrackRef(trackRef);
-    const { elementProps } = useParticipantTile({
-      trackRef: trackReference,
-      htmlProps,
-      disableSpeakingIndicator,
-      onParticipantClick,
-    });
+  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLDivElement,
+  ParticipantTileProps
+>(function ParticipantAudioTile(
+  {
+    children,
+    disableSpeakingIndicator,
+    onParticipantClick,
+    trackRef,
+    ...htmlProps
+  }: ParticipantTileProps,
+  ref
+) {
+  const trackReference = useEnsureTrackRef(trackRef);
+  const { elementProps } = useParticipantTile({
+    trackRef: trackReference,
+    htmlProps,
+    disableSpeakingIndicator,
+    onParticipantClick,
+  });
 
-    return (
-      <div ref={ref} style={{ position: 'relative', minHeight: '160px' }} {...elementProps}>
-        <TrackRefContext.Provider value={trackReference}>
-          {children ?? (
-            <>
-              {isTrackReference(trackReference) && (
-                <AudioTrack trackRef={trackReference}></AudioTrack>
-              )}
-              <BarVisualizer barCount={7} options={{ minHeight: 8 }} />
-              <div className="lk-participant-metadata">
-                <div className="lk-participant-metadata-item">
-                  <TrackMutedIndicator trackRef={trackReference}></TrackMutedIndicator>
-                  <ParticipantName />
-                </div>
-                <ConnectionQualityIndicator className="lk-participant-metadata-item" />
+  return (
+    <div
+      ref={ref}
+      style={{ position: 'relative', minHeight: '160px' }}
+      {...elementProps}
+    >
+      <TrackRefContext.Provider value={trackReference}>
+        {children ?? (
+          <>
+            {isTrackReference(trackReference) && (
+              <AudioTrack trackRef={trackReference}></AudioTrack>
+            )}
+            <BarVisualizer barCount={7} options={{ minHeight: 8 }} />
+            <div className="lk-participant-metadata">
+              <div className="lk-participant-metadata-item">
+                <TrackMutedIndicator
+                  trackRef={trackReference}
+                ></TrackMutedIndicator>
+                <ParticipantName />
               </div>
-            </>
-          )}
-        </TrackRefContext.Provider>
-      </div>
-    );
-  },
-);
+              <ConnectionQualityIndicator className="lk-participant-metadata-item" />
+            </div>
+          </>
+        )}
+      </TrackRefContext.Provider>
+    </div>
+  );
+});

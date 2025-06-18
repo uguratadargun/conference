@@ -6,7 +6,7 @@ import type { AgentState } from '../../../hooks';
 export const useBarAnimator = (
   state: AgentState | undefined,
   columns: number,
-  interval: number,
+  interval: number
 ): number[] => {
   const [index, setIndex] = useState(0);
   const [sequence, setSequence] = useState<number[][]>([[]]);
@@ -35,7 +35,7 @@ export const useBarAnimator = (
       const timeElapsed = time - startTime;
 
       if (timeElapsed >= interval) {
-        setIndex((prev) => prev + 1);
+        setIndex(prev => prev + 1);
         startTime = time;
       }
 

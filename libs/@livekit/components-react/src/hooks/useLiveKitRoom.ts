@@ -26,7 +26,7 @@ const defaultRoomProps: Partial<LiveKitRoomProps> = {
  * @public
  */
 export function useLiveKitRoom<T extends HTMLElement>(
-  props: LiveKitRoomProps,
+  props: LiveKitRoomProps
 ): {
   room: Room | undefined;
   htmlProps: HTMLAttributes<T>;
@@ -51,7 +51,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
   } = { ...defaultRoomProps, ...props };
   if (options && passedRoom) {
     log.warn(
-      'when using a manually created room, the options object will be ignored. set the desired options directly when creating the room instead.',
+      'when using a manually created room, the options object will be ignored. set the desired options directly when creating the room instead.'
     );
   }
 
@@ -75,10 +75,19 @@ export function useLiveKitRoom<T extends HTMLElement>(
 
       log.debug('trying to publish local tracks');
       Promise.all([
-        localP.setMicrophoneEnabled(!!audio, typeof audio !== 'boolean' ? audio : undefined),
-        localP.setCameraEnabled(!!video, typeof video !== 'boolean' ? video : undefined),
-        localP.setScreenShareEnabled(!!screen, typeof screen !== 'boolean' ? screen : undefined),
-      ]).catch((e) => {
+        localP.setMicrophoneEnabled(
+          !!audio,
+          typeof audio !== 'boolean' ? audio : undefined
+        ),
+        localP.setCameraEnabled(
+          !!video,
+          typeof video !== 'boolean' ? video : undefined
+        ),
+        localP.setScreenShareEnabled(
+          !!screen,
+          typeof screen !== 'boolean' ? screen : undefined
+        ),
+      ]).catch(e => {
         log.warn(e);
         onError?.(e as Error);
       });
@@ -153,7 +162,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
         onError?.(Error('no livekit url provided'));
         return;
       }
-      room.connect(serverUrl, token, connectOptions).catch((e) => {
+      room.connect(serverUrl, token, connectOptions).catch(e => {
         log.warn(e);
         if (shouldConnect.current === true) {
           onError?.(e as Error);

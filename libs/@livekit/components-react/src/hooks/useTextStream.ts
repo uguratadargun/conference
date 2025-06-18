@@ -21,10 +21,16 @@ export function useTextStream(topic: string) {
   const connectionState = useConnectionState(room);
   const isDisconnected = connectionState === ConnectionState.Disconnected;
 
-  const textStreamData = React.useMemo(() => setupTextStream(room, topic), [room, topic]);
+  const textStreamData = React.useMemo(
+    () => setupTextStream(room, topic),
+    [room, topic]
+  );
   const textStreamObservable = isDisconnected ? undefined : textStreamData;
 
-  const textStreams = useObservableState<TextStreamData[]>(textStreamObservable, []);
+  const textStreams = useObservableState<TextStreamData[]>(
+    textStreamObservable,
+    []
+  );
 
   return { textStreams };
 }

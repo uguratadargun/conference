@@ -1,31 +1,31 @@
-import React, { useState } from "react";
-import { Participant } from "livekit-client";
-import CustomParticipantTile from "./CustomParticipantTile";
-import { Button } from "primereact/button";
+import React, { useState } from 'react';
+import { Participant } from 'livekit-client';
+import CustomParticipantTile from './CustomParticipantTile';
+import { Button } from 'primereact/button';
 
 interface OneToOneCallViewProps {
   remoteParticipant: Participant;
   localParticipant: Participant;
 }
 
-type LayoutType = "standard" | "focus" | "no-video";
+type LayoutType = 'standard' | 'focus' | 'no-video';
 
 const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   remoteParticipant,
   localParticipant,
 }) => {
-  const [layout, setLayout] = useState<LayoutType>("standard");
+  const [layout, setLayout] = useState<LayoutType>('standard');
   // State to track if participants are swapped
   const [isSwapped, setIsSwapped] = useState(false);
 
   const toggleLayout = () => {
     // Cycle through layouts: standard -> focus -> no-video -> standard
-    if (layout === "standard") {
-      setLayout("focus");
-    } else if (layout === "focus") {
-      setLayout("no-video");
+    if (layout === 'standard') {
+      setLayout('focus');
+    } else if (layout === 'focus') {
+      setLayout('no-video');
     } else {
-      setLayout("standard");
+      setLayout('standard');
     }
   };
 
@@ -41,7 +41,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   // Return different layouts based on the selected type
   const renderLayout = () => {
     switch (layout) {
-      case "focus":
+      case 'focus':
         return (
           <div className="one-to-one-focus">
             <div className="one-to-one-focus-remote">
@@ -60,7 +60,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
             </div>
           </div>
         );
-      case "no-video":
+      case 'no-video':
         return (
           <div className="one-to-one-no-video">
             <div className="one-to-one-remote-only">
@@ -72,7 +72,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
             </div>
           </div>
         );
-      case "standard":
+      case 'standard':
       default:
         return (
           <>
@@ -105,13 +105,13 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
         onClick={toggleLayout}
         className="layout-toggle-button"
         tooltip={
-          layout === "standard"
-            ? "Change to focus layout"
-            : layout === "focus"
-            ? "Change to no-video layout"
-            : "Change to standard layout"
+          layout === 'standard'
+            ? 'Change to focus layout'
+            : layout === 'focus'
+              ? 'Change to no-video layout'
+              : 'Change to standard layout'
         }
-        tooltipOptions={{ position: "left" }}
+        tooltipOptions={{ position: 'left' }}
       />
     </div>
   );

@@ -28,11 +28,17 @@ export interface ParticipantLoopProps {
  * ```
  * @public
  */
-export function ParticipantLoop({ participants, ...props }: ParticipantLoopProps) {
+export function ParticipantLoop({
+  participants,
+  ...props
+}: ParticipantLoopProps) {
   return (
     <>
-      {participants.map((participant) => (
-        <ParticipantContext.Provider value={participant} key={participant.identity}>
+      {participants.map(participant => (
+        <ParticipantContext.Provider
+          value={participant}
+          key={participant.identity}
+        >
           {cloneSingleChild(props.children)}
         </ParticipantContext.Provider>
       ))}

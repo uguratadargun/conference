@@ -7,7 +7,13 @@ import type { SVGProps } from 'react';
  * @internal
  */
 const SvgLeaveIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="none" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={16}
+    height={16}
+    fill="none"
+    {...props}
+  >
     <path
       fill="currentColor"
       fillRule="evenodd"

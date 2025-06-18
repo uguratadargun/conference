@@ -26,9 +26,10 @@ export function PaginationControl({
       | ReturnType<ReturnType<typeof createInteractingObservable>['subscribe']>
       | undefined;
     if (connectedElement) {
-      subscription = createInteractingObservable(connectedElement.current, 2000).subscribe(
-        setInteractive,
-      );
+      subscription = createInteractingObservable(
+        connectedElement.current,
+        2000
+      ).subscribe(setInteractive);
     }
     return () => {
       if (subscription) {
@@ -38,7 +39,10 @@ export function PaginationControl({
   }, [connectedElement]);
 
   return (
-    <div className="lk-pagination-control" data-lk-user-interaction={interactive}>
+    <div
+      className="lk-pagination-control"
+      data-lk-user-interaction={interactive}
+    >
       <button className="lk-button" onClick={prevPage}>
         <SvgChevron />
       </button>

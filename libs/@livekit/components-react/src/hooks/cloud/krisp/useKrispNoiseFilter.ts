@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { LocalAudioTrack } from 'livekit-client';
 import { log } from '@livekit/components-core';
-import type { KrispNoiseFilterProcessor, NoiseFilterOptions } from '@livekit/krisp-noise-filter';
+import type {
+  KrispNoiseFilterProcessor,
+  NoiseFilterOptions,
+} from '@livekit/krisp-noise-filter';
 import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
 import { useLocalParticipant } from '../../..';
 
@@ -65,7 +68,7 @@ export function useKrispNoiseFilter(options: useKrispNoiseFilterOptions = {}) {
         setKrispProcessor(KrispNoiseFilter(options.filterOptions));
       }
     }
-    setShouldEnable((prev) => {
+    setShouldEnable(prev => {
       if (prev !== enable) {
         setIsNoiseFilterPending(true);
       }
@@ -74,14 +77,23 @@ export function useKrispNoiseFilter(options: useKrispNoiseFilterOptions = {}) {
   }, []);
 
   React.useEffect(() => {
-    if (micPublication && micPublication.track instanceof LocalAudioTrack && krispProcessor) {
+    if (
+      micPublication &&
+      micPublication.track instanceof LocalAudioTrack &&
+      krispProcessor
+    ) {
       const currentProcessor = micPublication.track.getProcessor();
-      if (currentProcessor && currentProcessor.name === 'livekit-noise-filter') {
+      if (
+        currentProcessor &&
+        currentProcessor.name === 'livekit-noise-filter'
+      ) {
         setIsNoiseFilterPending(true);
-        (currentProcessor as KrispNoiseFilterProcessor).setEnabled(shouldEnable).finally(() => {
-          setIsNoiseFilterPending(false);
-          setIsNoiseFilterEnabled(shouldEnable);
-        });
+        (currentProcessor as KrispNoiseFilterProcessor)
+          .setEnabled(shouldEnable)
+          .finally(() => {
+            setIsNoiseFilterPending(false);
+            setIsNoiseFilterEnabled(shouldEnable);
+          });
       } else if (!currentProcessor && shouldEnable) {
         setIsNoiseFilterPending(true);
         micPublication?.track

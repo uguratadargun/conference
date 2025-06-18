@@ -1,5 +1,8 @@
 import * as React from 'react';
-import type { ChatOptions, ReceivedChatMessage } from '@livekit/components-core';
+import type {
+  ChatOptions,
+  ReceivedChatMessage,
+} from '@livekit/components-core';
 import { setupChat } from '@livekit/components-core';
 import { ConnectionState } from 'livekit-client';
 import { useRoomContext } from '../context';
@@ -44,14 +47,17 @@ export function useChat(options?: ChatOptions) {
   const connectionState = useConnectionState(room);
   const isDisconnected = React.useMemo(
     () => connectionState === ConnectionState.Disconnected,
-    [connectionState],
+    [connectionState]
   ); // used to reset the messages on room disconnect
   const setup = React.useMemo<ReturnType<typeof setupChat>>(
     () => setupChat(room, options),
-    [room, options, isDisconnected],
+    [room, options, isDisconnected]
   );
   const isSending = useObservableState(setup.isSendingObservable, false);
-  const chatMessages = useObservableState<ReceivedChatMessage[]>(setup.messageObservable, []);
+  const chatMessages = useObservableState<ReceivedChatMessage[]>(
+    setup.messageObservable,
+    []
+  );
 
   return { send: setup.send, chatMessages, isSending };
 }

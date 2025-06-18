@@ -21,15 +21,18 @@ import {
  * 7. remote tracks sorted by joinedAt
  */
 export function sortTrackReferences(
-  tracks: TrackReferenceOrPlaceholder[],
+  tracks: TrackReferenceOrPlaceholder[]
 ): TrackReferenceOrPlaceholder[] {
   const localTracks: TrackReferenceOrPlaceholder[] = [];
   const screenShareTracks: TrackReferenceOrPlaceholder[] = [];
   const cameraTracks: TrackReferenceOrPlaceholder[] = [];
   const undefinedTracks: TrackReferenceOrPlaceholder[] = [];
 
-  tracks.forEach((trackRef) => {
-    if (trackRef.participant.isLocal && trackRef.source === Track.Source.Camera) {
+  tracks.forEach(trackRef => {
+    if (
+      trackRef.participant.isLocal &&
+      trackRef.source === Track.Source.Camera
+    ) {
       localTracks.push(trackRef);
     } else if (trackRef.source === Track.Source.ScreenShare) {
       screenShareTracks.push(trackRef);
@@ -43,7 +46,12 @@ export function sortTrackReferences(
   const sortedScreenShareTracks = sortScreenShareTracks(screenShareTracks);
   const sortedCameraTracks = sortCameraTracks(cameraTracks);
 
-  return [...localTracks, ...sortedScreenShareTracks, ...sortedCameraTracks, ...undefinedTracks];
+  return [
+    ...localTracks,
+    ...sortedScreenShareTracks,
+    ...sortedCameraTracks,
+    ...undefinedTracks,
+  ];
 }
 
 /**
@@ -54,12 +62,12 @@ export function sortTrackReferences(
  * Secondary sorting by participant's joining time.
  */
 function sortScreenShareTracks(
-  screenShareTracks: TrackReferenceOrPlaceholder[],
+  screenShareTracks: TrackReferenceOrPlaceholder[]
 ): TrackReferenceOrPlaceholder[] {
   const localScreenShares: TrackReferenceOrPlaceholder[] = [];
   const remoteScreenShares: TrackReferenceOrPlaceholder[] = [];
 
-  screenShareTracks.forEach((trackRef) => {
+  screenShareTracks.forEach(trackRef => {
     if (trackRef.participant.isLocal) {
       localScreenShares.push(trackRef);
     } else {
@@ -67,20 +75,27 @@ function sortScreenShareTracks(
     }
   });
 
-  localScreenShares.sort((a, b) => sortParticipantsByJoinedAt(a.participant, b.participant));
-  remoteScreenShares.sort((a, b) => sortParticipantsByJoinedAt(a.participant, b.participant));
+  localScreenShares.sort((a, b) =>
+    sortParticipantsByJoinedAt(a.participant, b.participant)
+  );
+  remoteScreenShares.sort((a, b) =>
+    sortParticipantsByJoinedAt(a.participant, b.participant)
+  );
 
-  const sortedScreenShareTrackRefs = [...remoteScreenShares, ...localScreenShares];
+  const sortedScreenShareTrackRefs = [
+    ...remoteScreenShares,
+    ...localScreenShares,
+  ];
   return sortedScreenShareTrackRefs;
 }
 
 function sortCameraTracks(
-  cameraTrackReferences: TrackReferenceOrPlaceholder[],
+  cameraTrackReferences: TrackReferenceOrPlaceholder[]
 ): TrackReferenceOrPlaceholder[] {
   const localCameraTracks: TrackReferenceOrPlaceholder[] = [];
   const remoteCameraTracks: TrackReferenceOrPlaceholder[] = [];
 
-  cameraTrackReferences.forEach((trackRef) => {
+  cameraTrackReferences.forEach(trackRef => {
     if (trackRef.participant.isLocal) {
       localCameraTracks.push(trackRef);
     } else {

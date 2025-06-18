@@ -28,25 +28,27 @@ export interface UsePersistentUserChoicesOptions {
  * selected media devices and their current state (on or off), as well as the user name.
  * @alpha
  */
-export function usePersistentUserChoices(options: UsePersistentUserChoicesOptions = {}) {
+export function usePersistentUserChoices(
+  options: UsePersistentUserChoicesOptions = {}
+) {
   const [userChoices, setSettings] = React.useState<LocalUserChoices>(
-    loadUserChoices(options.defaults, options.preventLoad ?? false),
+    loadUserChoices(options.defaults, options.preventLoad ?? false)
   );
 
   const saveAudioInputEnabled = React.useCallback((isEnabled: boolean) => {
-    setSettings((prev) => ({ ...prev, audioEnabled: isEnabled }));
+    setSettings(prev => ({ ...prev, audioEnabled: isEnabled }));
   }, []);
   const saveVideoInputEnabled = React.useCallback((isEnabled: boolean) => {
-    setSettings((prev) => ({ ...prev, videoEnabled: isEnabled }));
+    setSettings(prev => ({ ...prev, videoEnabled: isEnabled }));
   }, []);
   const saveAudioInputDeviceId = React.useCallback((deviceId: string) => {
-    setSettings((prev) => ({ ...prev, audioDeviceId: deviceId }));
+    setSettings(prev => ({ ...prev, audioDeviceId: deviceId }));
   }, []);
   const saveVideoInputDeviceId = React.useCallback((deviceId: string) => {
-    setSettings((prev) => ({ ...prev, videoDeviceId: deviceId }));
+    setSettings(prev => ({ ...prev, videoDeviceId: deviceId }));
   }, []);
   const saveUsername = React.useCallback((username: string) => {
-    setSettings((prev) => ({ ...prev, username: username }));
+    setSettings(prev => ({ ...prev, username: username }));
   }, []);
 
   React.useEffect(() => {

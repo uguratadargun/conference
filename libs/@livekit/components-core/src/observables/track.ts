@@ -23,25 +23,28 @@ export function trackObservable(track: TrackPublication) {
     TrackEvent.Muted,
     TrackEvent.Unmuted,
     TrackEvent.Subscribed,
-    TrackEvent.Unsubscribed,
+    TrackEvent.Unsubscribed
   );
 
   return trackObserver;
 }
 
-export function observeTrackEvents(track: TrackPublication, ...events: TrackEvent[]) {
-  const observable = new Observable<TrackPublication>((subscribe) => {
+export function observeTrackEvents(
+  track: TrackPublication,
+  ...events: TrackEvent[]
+) {
+  const observable = new Observable<TrackPublication>(subscribe => {
     const onTrackUpdate = () => {
       subscribe.next(track);
     };
 
-    events.forEach((evt) => {
+    events.forEach(evt => {
       // @ts-expect-error type of `TrackEvent` and `PublicationCallbacks` are congruent
       track.on(evt, onTrackUpdate);
     });
 
     const unsubscribe = () => {
-      events.forEach((evt) => {
+      events.forEach(evt => {
         // @ts-expect-error type of `TrackEvent` and `PublicationCallbacks` are congruent
         track.off(evt, onTrackUpdate);
       });
@@ -58,22 +61,25 @@ export function observeTrackEvents(track: TrackPublication, ...events: TrackEven
 function getTrackReferences(
   room: Room,
   sources: Track.Source[],
-  onlySubscribedTracks = true,
+  onlySubscribedTracks = true
 ): { trackReferences: TrackReference[]; participants: Participant[] } {
   const localParticipant = room.localParticipant;
-  const allParticipants = [localParticipant, ...Array.from(room.remoteParticipants.values())];
+  const allParticipants = [
+    localParticipant,
+    ...Array.from(room.remoteParticipants.values()),
+  ];
   const trackReferences: TrackReference[] = [];
 
-  allParticipants.forEach((participant) => {
-    sources.forEach((source) => {
-      const sourceReferences = Array.from<RemoteTrackPublication | LocalTrackPublication>(
-        participant.trackPublications.values(),
-      )
+  allParticipants.forEach(participant => {
+    sources.forEach(source => {
+      const sourceReferences = Array.from<
+        RemoteTrackPublication | LocalTrackPublication
+      >(participant.trackPublications.values())
         .filter(
-          (track) =>
+          track =>
             track.source === source &&
             // either return all or only the ones that are subscribed
-            (!onlySubscribedTracks || track.track),
+            (!onlySubscribedTracks || track.track)
         )
         .map((track): TrackReference => {
           return {
@@ -96,17 +102,17 @@ function getTrackReferences(
 function getParticipantTrackRefs(
   participant: Participant,
   identifier: ParticipantTrackIdentifier,
-  onlySubscribedTracks = false,
+  onlySubscribedTracks = false
 ): TrackReference[] {
   const { sources, kind, name } = identifier;
   const sourceReferences = Array.from(participant.trackPublications.values())
     .filter(
-      (pub) =>
+      pub =>
         (!sources || sources.includes(pub.source)) &&
         (!kind || pub.kind === kind) &&
         (!name || pub.trackName === name) &&
         // either return all or only the ones that are subscribed
-        (!onlySubscribedTracks || pub.track),
+        (!onlySubscribedTracks || pub.track)
     )
     .map((track): TrackReference => {
       return {
@@ -127,9 +133,13 @@ type TrackReferencesObservableOptions = {
 export function trackReferencesObservable(
   room: Room,
   sources: Track.Source[],
-  options: TrackReferencesObservableOptions,
-): Observable<{ trackReferences: TrackReference[]; participants: Participant[] }> {
-  const additionalRoomEvents = options.additionalRoomEvents ?? allParticipantRoomEvents;
+  options: TrackReferencesObservableOptions
+): Observable<{
+  trackReferences: TrackReference[];
+  participants: Participant[];
+}> {
+  const additionalRoomEvents =
+    options.additionalRoomEvents ?? allParticipantRoomEvents;
   const onlySubscribedTracks: boolean = options.onlySubscribed ?? true;
   const roomEvents = Array.from(
     new Set([
@@ -142,16 +152,19 @@ export function trackReferencesObservable(
       RoomEvent.TrackUnpublished,
       RoomEvent.TrackSubscriptionStatusChanged,
       ...additionalRoomEvents,
-    ]).values(),
+    ]).values()
   );
 
   const observable = observeRoomEvents(room, ...roomEvents).pipe(
-    map((room) => {
+    map(room => {
       const data = getTrackReferences(room, sources, onlySubscribedTracks);
-      log.debug(`TrackReference[] was updated. (length ${data.trackReferences.length})`, data);
+      log.debug(
+        `TrackReference[] was updated. (length ${data.trackReferences.length})`,
+        data
+      );
       return data;
     }),
-    startWith(getTrackReferences(room, sources, onlySubscribedTracks)),
+    startWith(getTrackReferences(room, sources, onlySubscribedTracks))
   );
 
   return observable;
@@ -159,15 +172,18 @@ export function trackReferencesObservable(
 
 export function participantTracksObservable(
   participant: Participant,
-  trackIdentifier: ParticipantTrackIdentifier,
+  trackIdentifier: ParticipantTrackIdentifier
 ): Observable<TrackReference[]> {
-  const observable = observeParticipantEvents(participant, ...participantTrackEvents).pipe(
-    map((participant) => {
+  const observable = observeParticipantEvents(
+    participant,
+    ...participantTrackEvents
+  ).pipe(
+    map(participant => {
       const data = getParticipantTrackRefs(participant, trackIdentifier);
       log.debug(`TrackReference[] was updated. (length ${data.length})`, data);
       return data;
     }),
-    startWith(getParticipantTrackRefs(participant, trackIdentifier)),
+    startWith(getParticipantTrackRefs(participant, trackIdentifier))
   );
 
   return observable;
@@ -175,13 +191,17 @@ export function participantTracksObservable(
 
 export function trackEventSelector<T extends TrackEvent>(
   publication: TrackPublication | Track,
-  event: T,
+  event: T
 ) {
   const observable = new Observable<
-    Parameters<PublicationEventCallbacks[Extract<T, keyof PublicationEventCallbacks>]>
-  >((subscribe) => {
+    Parameters<
+      PublicationEventCallbacks[Extract<T, keyof PublicationEventCallbacks>]
+    >
+  >(subscribe => {
     const update = (
-      ...params: Parameters<PublicationEventCallbacks[Extract<T, keyof PublicationEventCallbacks>]>
+      ...params: Parameters<
+        PublicationEventCallbacks[Extract<T, keyof PublicationEventCallbacks>]
+      >
     ) => {
       subscribe.next(params);
     };
@@ -204,6 +224,6 @@ export function trackTranscriptionObserver(publication: TrackPublication) {
 
 export function trackSyncTimeObserver(track: Track) {
   return trackEventSelector(track, TrackEvent.TimeSyncUpdate).pipe(
-    map(([timeUpdate]) => timeUpdate),
+    map(([timeUpdate]) => timeUpdate)
   );
 }

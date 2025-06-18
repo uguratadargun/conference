@@ -15,7 +15,12 @@ export {
   useParticipantContext,
 } from './participant-context';
 export {} from './pin-context';
-export { RoomContext, useEnsureRoom, useMaybeRoomContext, useRoomContext } from './room-context';
+export {
+  RoomContext,
+  useEnsureRoom,
+  useMaybeRoomContext,
+  useRoomContext,
+} from './room-context';
 export {
   TrackRefContext,
   useEnsureTrackRef,
@@ -23,4 +28,8 @@ export {
   useTrackRefContext,
 } from './track-reference-context';
 
-export { type FeatureFlags, useFeatureContext, LKFeatureContext } from './feature-context';
+export {
+  type FeatureFlags,
+  useFeatureContext,
+  LKFeatureContext,
+} from './feature-context';

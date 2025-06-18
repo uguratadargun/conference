@@ -18,7 +18,7 @@ function saveToLocalStorage<T extends JsonValue>(key: string, value: T): void {
   try {
     if (value) {
       const nonEmptySettings = Object.fromEntries(
-        Object.entries(value).filter(([, value]) => value !== ''),
+        Object.entries(value).filter(([, value]) => value !== '')
       );
       localStorage.setItem(key, JSON.stringify(nonEmptySettings));
     }
@@ -55,7 +55,7 @@ function loadFromLocalStorage<T extends JsonValue>(key: string): T | undefined {
  * @internal
  */
 export function createLocalStorageInterface<T extends JsonValue>(
-  key: string,
+  key: string
 ): { load: () => T | undefined; save: (value: T) => void } {
   return {
     load: () => loadFromLocalStorage<T>(key),

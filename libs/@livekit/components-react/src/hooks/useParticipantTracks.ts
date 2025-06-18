@@ -12,7 +12,7 @@ import { useMaybeParticipantContext, useRoomContext } from '../context';
  */
 export function useParticipantTracks(
   sources: Track.Source[],
-  participantIdentity?: string,
+  participantIdentity?: string
 ): TrackReference[] {
   const room = useRoomContext();
   const participantContext = useMaybeParticipantContext();
@@ -21,7 +21,7 @@ export function useParticipantTracks(
     : participantContext;
   const observable = React.useMemo(
     () => (p ? participantTracksObservable(p, { sources }) : undefined),
-    [p?.sid, p?.identity, JSON.stringify(sources)],
+    [p?.sid, p?.identity, JSON.stringify(sources)]
   );
 
   const trackRefs = useObservableState(observable, [] as TrackReference[]);

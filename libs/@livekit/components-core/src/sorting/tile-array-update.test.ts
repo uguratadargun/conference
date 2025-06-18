@@ -5,7 +5,12 @@ import {
   mockTrackReferencePlaceholder,
   mockTrackReferenceSubscribed,
 } from '../track-reference/test-utils';
-import { divideIntoPages, swapItems, updatePages, visualPageChange } from './tile-array-update';
+import {
+  divideIntoPages,
+  swapItems,
+  updatePages,
+  visualPageChange,
+} from './tile-array-update';
 import type { TrackReferenceOrPlaceholder } from '../track-reference';
 
 const stateNextExpectedString = (text: string) =>
@@ -16,29 +21,57 @@ describe('Test visualPageChange function.', () => {
     { state: [], next: [], expected: { dropped: [], added: [] } },
     { state: [1, 2, 3], next: [1, 2, 3], expected: { dropped: [], added: [] } },
     { state: [1, 2], next: [2, 1], expected: { dropped: [], added: [] } },
-  ])('Arrays with the same members should not tigger a update.', ({ state, next, expected }) => {
-    const result = visualPageChange(state, next);
-    expect(result).toStrictEqual(expected);
-  });
+  ])(
+    'Arrays with the same members should not tigger a update.',
+    ({ state, next, expected }) => {
+      const result = visualPageChange(state, next);
+      expect(result).toStrictEqual(expected);
+    }
+  );
 
   test.each([
-    { state: [1, 2, 3], next: [1, 2, 4], expected: { dropped: [3], added: [4] } },
-    { state: [1, 2, 3], next: [1, 9, 3], expected: { dropped: [2], added: [9] } },
+    {
+      state: [1, 2, 3],
+      next: [1, 2, 4],
+      expected: { dropped: [3], added: [4] },
+    },
+    {
+      state: [1, 2, 3],
+      next: [1, 9, 3],
+      expected: { dropped: [2], added: [9] },
+    },
     { state: [], next: [1, 2, 3], expected: { dropped: [], added: [1, 2, 3] } },
     { state: [1, 2, 3], next: [], expected: { dropped: [1, 2, 3], added: [] } },
-    { state: [1, 2, 3], next: [4, 5, 6], expected: { dropped: [1, 2, 3], added: [4, 5, 6] } },
-  ])('Arrays with different members should trigger a update.', ({ state, next, expected }) => {
-    const result = visualPageChange(state, next);
-    expect(result).toStrictEqual(expected);
-  });
+    {
+      state: [1, 2, 3],
+      next: [4, 5, 6],
+      expected: { dropped: [1, 2, 3], added: [4, 5, 6] },
+    },
+  ])(
+    'Arrays with different members should trigger a update.',
+    ({ state, next, expected }) => {
+      const result = visualPageChange(state, next);
+      expect(result).toStrictEqual(expected);
+    }
+  );
 });
 
 describe('Test swapping items', () => {
   test.each([
     { moveForward: 1, moveBack: 3, list: [1, 2, 3], expected: [3, 2, 1] },
     { moveForward: 2, moveBack: 1, list: [1, 2, 3], expected: [2, 1, 3] },
-    { moveForward: 2, moveBack: 1, list: [1, 2, 3, 4, 5], expected: [2, 1, 3, 4, 5] },
-    { moveForward: 4, moveBack: 2, list: [1, 2, 3, 4, 5], expected: [1, 4, 3, 2, 5] },
+    {
+      moveForward: 2,
+      moveBack: 1,
+      list: [1, 2, 3, 4, 5],
+      expected: [2, 1, 3, 4, 5],
+    },
+    {
+      moveForward: 4,
+      moveBack: 2,
+      list: [1, 2, 3, 4, 5],
+      expected: [1, 4, 3, 2, 5],
+    },
   ])('', ({ moveForward, moveBack, list, expected }) => {
     const result = swapItems<number>(moveForward, moveBack, list);
     expect(result).toStrictEqual(expected);
@@ -122,10 +155,13 @@ describe('Test updating the list based while considering pages.', () => {
       expected: [3, 2, 4],
       itemsOnPage: 2,
     },
-  ])('Test removing exactly one items from list:', ({ state, next, itemsOnPage, expected }) => {
-    const result = updatePages<number>(state, next, itemsOnPage);
-    expect(result).toStrictEqual(expected);
-  });
+  ])(
+    'Test removing exactly one items from list:',
+    ({ state, next, itemsOnPage, expected }) => {
+      const result = updatePages<number>(state, next, itemsOnPage);
+      expect(result).toStrictEqual(expected);
+    }
+  );
 
   test.each([
     {
@@ -160,8 +196,10 @@ describe('Test updating the list based while considering pages.', () => {
     'Test removing exactly one items from list: (trackReference version)',
     ({ state, next, itemsOnPage, expected }) => {
       const result = updatePages(state, next, itemsOnPage);
-      expect(flatTrackReferenceArray(result)).toStrictEqual(flatTrackReferenceArray(expected));
-    },
+      expect(flatTrackReferenceArray(result)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
+    }
   );
 
   test.each([
@@ -188,7 +226,7 @@ describe('Test updating the list based while considering pages.', () => {
     ({ state, next, itemsOnPage, expected }) => {
       const result = updatePages(state, next, itemsOnPage);
       expect(result).toStrictEqual(expected);
-    },
+    }
   );
 
   test.each([
@@ -241,8 +279,10 @@ describe('Test updating the list based while considering pages.', () => {
     'Test removing more than one item from the list (trackReference version): ',
     ({ state, next, itemsOnPage, expected }) => {
       const result = updatePages(state, next, itemsOnPage);
-      expect(flatTrackReferenceArray(result)).toStrictEqual(flatTrackReferenceArray(expected));
-    },
+      expect(flatTrackReferenceArray(result)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
+    }
   );
 
   test.each([
@@ -294,7 +334,7 @@ describe('Test updating the list based while considering pages.', () => {
       const result = updatePages(state, next, itemsOnPage);
       expect(result).toHaveLength(next.length);
       expect(result).toStrictEqual(expected);
-    },
+    }
   );
 
   test.each([
@@ -335,7 +375,9 @@ describe('Test updating the list based while considering pages.', () => {
   ])('Test adding items:', ({ state, next, itemsOnPage, expected }) => {
     const result = updatePages(state, next, itemsOnPage);
     expect(result).toHaveLength(next.length);
-    expect(flatTrackReferenceArray(result)).toStrictEqual(flatTrackReferenceArray(expected));
+    expect(flatTrackReferenceArray(result)).toStrictEqual(
+      flatTrackReferenceArray(expected)
+    );
   });
 
   // FIXME: mute for implementation unmute before production.
@@ -343,9 +385,15 @@ describe('Test updating the list based while considering pages.', () => {
     {
       state: [mockTrackReferencePlaceholder('A', Track.Source.Camera)],
       next: [
-        mockTrackReferenceSubscribed('A', Track.Source.Camera, { mockPublication: true }),
+        mockTrackReferenceSubscribed('A', Track.Source.Camera, {
+          mockPublication: true,
+        }),
       ] as TrackReferenceOrPlaceholder[],
-      expected: [mockTrackReferenceSubscribed('A', Track.Source.Camera, { mockPublication: true })],
+      expected: [
+        mockTrackReferenceSubscribed('A', Track.Source.Camera, {
+          mockPublication: true,
+        }),
+      ],
       itemsOnPage: 1,
     },
   ])(
@@ -353,8 +401,10 @@ describe('Test updating the list based while considering pages.', () => {
     ({ state, next, itemsOnPage, expected }) => {
       const result = updatePages(state, next, itemsOnPage);
       expect(result).toHaveLength(next.length);
-      expect(flatTrackReferenceArray(result)).toStrictEqual(flatTrackReferenceArray(expected));
+      expect(flatTrackReferenceArray(result)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
       expect(result[0].publication).toBeDefined();
-    },
+    }
   );
 });

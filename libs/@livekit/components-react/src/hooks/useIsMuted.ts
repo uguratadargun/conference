@@ -35,17 +35,19 @@ export interface UseIsMutedOptions {
 export function useIsMuted(trackRef: TrackReferenceOrPlaceholder): boolean;
 export function useIsMuted(
   sourceOrTrackRef: TrackReferenceOrPlaceholder | Track.Source,
-  options: UseIsMutedOptions = {},
+  options: UseIsMutedOptions = {}
 ) {
   const passedParticipant =
-    typeof sourceOrTrackRef === 'string' ? options.participant : sourceOrTrackRef.participant;
+    typeof sourceOrTrackRef === 'string'
+      ? options.participant
+      : sourceOrTrackRef.participant;
   const p = useEnsureParticipant(passedParticipant);
   const ref =
     typeof sourceOrTrackRef === 'string'
       ? { participant: p, source: sourceOrTrackRef }
       : sourceOrTrackRef;
   const [isMuted, setIsMuted] = React.useState(
-    !!(ref.publication?.isMuted || p.getTrackPublication(ref.source)?.isMuted),
+    !!(ref.publication?.isMuted || p.getTrackPublication(ref.source)?.isMuted)
   );
 
   React.useEffect(() => {

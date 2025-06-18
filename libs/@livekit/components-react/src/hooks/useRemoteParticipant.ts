@@ -29,7 +29,7 @@ export interface UseRemoteParticipantOptions {
  */
 export function useRemoteParticipant(
   identifier: ParticipantIdentifier,
-  options?: UseRemoteParticipantOptions,
+  options?: UseRemoteParticipantOptions
 ): RemoteParticipant | undefined;
 /**
  * The `useRemoteParticipant` hook returns the first RemoteParticipant by either identity or based on the participant kind.
@@ -44,11 +44,11 @@ export function useRemoteParticipant(
  */
 export function useRemoteParticipant(
   identity: string,
-  options?: UseRemoteParticipantOptions,
+  options?: UseRemoteParticipantOptions
 ): RemoteParticipant | undefined;
 export function useRemoteParticipant(
   identityOrIdentifier: string | ParticipantIdentifier,
-  options: UseRemoteParticipantOptions = {},
+  options: UseRemoteParticipantOptions = {}
 ): RemoteParticipant | undefined {
   const room = useRoomContext();
   const [updateOnlyOn] = React.useState(options.updateOnlyOn);
@@ -71,7 +71,7 @@ export function useRemoteParticipant(
     p: undefined as RemoteParticipant | undefined,
   });
   React.useEffect(() => {
-    const listener = observable.subscribe((p) => setParticipantWrapper({ p }));
+    const listener = observable.subscribe(p => setParticipantWrapper({ p }));
     return () => listener.unsubscribe();
   }, [observable]);
 

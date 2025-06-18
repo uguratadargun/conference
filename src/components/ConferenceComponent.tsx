@@ -1,30 +1,30 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   RoomAudioRenderer,
   useLocalParticipant,
   useParticipants,
   useConnectionState,
   useRoomContext,
-} from "@livekit/components-react";
-import { ConnectionState } from "livekit-client";
-import { Button } from "primereact/button";
-import CustomParticipantTile from "./CustomParticipantTile";
-import SettingsDialog from "./SettingsDialog";
-import ParticipantListSidebar from "./ParticipantListSidebar";
-import ControlBar from "./ControlBar";
-import OneToOneCallView from "./OneToOneCallView";
+} from '@livekit/components-react';
+import { ConnectionState } from 'livekit-client';
+import { Button } from 'primereact/button';
+import CustomParticipantTile from './CustomParticipantTile';
+import SettingsDialog from './SettingsDialog';
+import ParticipantListSidebar from './ParticipantListSidebar';
+import ControlBar from './ControlBar';
+import OneToOneCallView from './OneToOneCallView';
 
 // Grid layout helpers
 const getGridClassName = (count: number) => {
-  if (count === 1) return "grid-1";
-  if (count === 2) return "grid-2";
-  if (count === 3) return "grid-3";
-  if (count === 4) return "grid-4";
-  if (count <= 6) return "grid-6";
-  if (count <= 9) return "grid-9";
-  if (count <= 12) return "grid-12";
-  if (count <= 15) return "grid-default";
-  return "grid-scroll";
+  if (count === 1) return 'grid-1';
+  if (count === 2) return 'grid-2';
+  if (count === 3) return 'grid-3';
+  if (count === 4) return 'grid-4';
+  if (count <= 6) return 'grid-6';
+  if (count <= 9) return 'grid-9';
+  if (count <= 12) return 'grid-12';
+  if (count <= 15) return 'grid-default';
+  return 'grid-scroll';
 };
 
 // Main Room Component that uses LiveKit hooks
@@ -56,15 +56,15 @@ const ConferenceComponent: React.FC = () => {
   // ESC key listener for exiting fullscreen
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && fullScreenParticipant) {
+      if (event.key === 'Escape' && fullScreenParticipant) {
         exitFullScreen();
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [fullScreenParticipant, exitFullScreen]);
 
@@ -99,21 +99,21 @@ const ConferenceComponent: React.FC = () => {
 
   const gridClassName = getGridClassName(participants.length);
   const fullscreenParticipant = participants.find(
-    (p) => p.identity === fullScreenParticipant
+    p => p.identity === fullScreenParticipant
   );
   const otherParticipants = participants.filter(
-    (p) => p.identity !== fullScreenParticipant
+    p => p.identity !== fullScreenParticipant
   );
 
   // Get remote participant in one-to-one view
-  const remoteParticipant = participants.find((p) => !p.isLocal);
+  const remoteParticipant = participants.find(p => !p.isLocal);
   // Get local participant in one-to-one view
-  const localParticipantObj = participants.find((p) => p.isLocal);
+  const localParticipantObj = participants.find(p => p.isLocal);
 
   return (
     <div
       className={`conference-container ${
-        showParticipantList ? "sidebar-open" : ""
+        showParticipantList ? 'sidebar-open' : ''
       }`}
     >
       {/* Top Status Bar */}
@@ -121,28 +121,28 @@ const ConferenceComponent: React.FC = () => {
         <div
           className={`status-item connection-status ${
             connectionState === ConnectionState.Connected
-              ? "connected"
+              ? 'connected'
               : connectionState === ConnectionState.Connecting ||
-                connectionState === ConnectionState.Reconnecting
-              ? "connecting"
-              : "disconnected"
+                  connectionState === ConnectionState.Reconnecting
+                ? 'connecting'
+                : 'disconnected'
           }`}
         >
           <span className="material-icons">
             {connectionState === ConnectionState.Connected
-              ? "wifi"
+              ? 'wifi'
               : connectionState === ConnectionState.Connecting ||
-                connectionState === ConnectionState.Reconnecting
-              ? "sync"
-              : "wifi_off"}
+                  connectionState === ConnectionState.Reconnecting
+                ? 'sync'
+                : 'wifi_off'}
           </span>
           <span>
             {connectionState === ConnectionState.Connected
-              ? "Connected"
+              ? 'Connected'
               : connectionState === ConnectionState.Connecting ||
-                connectionState === ConnectionState.Reconnecting
-              ? "Connecting..."
-              : "Disconnected"}
+                  connectionState === ConnectionState.Reconnecting
+                ? 'Connecting...'
+                : 'Disconnected'}
           </span>
         </div>
 
@@ -153,9 +153,9 @@ const ConferenceComponent: React.FC = () => {
               icon={<span className="material-icons">people_alt</span>}
               onClick={() => setShowParticipantList(true)}
               className="p-button-text"
-              tooltipOptions={{ position: "bottom" }}
+              tooltipOptions={{ position: 'bottom' }}
               label={`${participants.length} participant${
-                participants.length !== 1 ? "s" : ""
+                participants.length !== 1 ? 's' : ''
               }`}
             />
           </div>

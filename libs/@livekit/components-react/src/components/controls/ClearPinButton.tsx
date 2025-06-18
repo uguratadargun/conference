@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useClearPinButton } from '../../hooks';
 
 /** @public */
-export interface ClearPinButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface ClearPinButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 /**
  * The `ClearPinButton` is a basic html button with the added ability to signal
@@ -19,14 +20,15 @@ export interface ClearPinButtonProps extends React.ButtonHTMLAttributes<HTMLButt
  * @public
  */
 export const ClearPinButton: (
-  props: ClearPinButtonProps & React.RefAttributes<HTMLButtonElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLButtonElement, ClearPinButtonProps>(
-  function ClearPinButton(props: ClearPinButtonProps, ref) {
-    const { buttonProps } = useClearPinButton(props);
-    return (
-      <button ref={ref} {...buttonProps}>
-        {props.children}
-      </button>
-    );
-  },
-);
+  props: ClearPinButtonProps & React.RefAttributes<HTMLButtonElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLButtonElement,
+  ClearPinButtonProps
+>(function ClearPinButton(props: ClearPinButtonProps, ref) {
+  const { buttonProps } = useClearPinButton(props);
+  return (
+    <button ref={ref} {...buttonProps}>
+      {props.children}
+    </button>
+  );
+});

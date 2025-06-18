@@ -6,7 +6,8 @@ import { RemoteAudioTrack, RemoteTrackPublication } from 'livekit-client';
 import { useEnsureTrackRef } from '../../context';
 
 /** @public */
-export interface AudioTrackProps extends React.AudioHTMLAttributes<HTMLAudioElement> {
+export interface AudioTrackProps
+  extends React.AudioHTMLAttributes<HTMLAudioElement> {
   /** The track reference of the track from which the audio is to be rendered. */
   trackRef?: TrackReference;
 
@@ -37,53 +38,54 @@ export interface AudioTrackProps extends React.AudioHTMLAttributes<HTMLAudioElem
  * @public
  */
 export const AudioTrack: (
-  props: AudioTrackProps & React.RefAttributes<HTMLAudioElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLAudioElement, AudioTrackProps>(
-  function AudioTrack(
-    { trackRef, onSubscriptionStatusChanged, volume, ...props }: AudioTrackProps,
-    ref,
-  ) {
-    const trackReference = useEnsureTrackRef(trackRef);
+  props: AudioTrackProps & React.RefAttributes<HTMLAudioElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLAudioElement,
+  AudioTrackProps
+>(function AudioTrack(
+  { trackRef, onSubscriptionStatusChanged, volume, ...props }: AudioTrackProps,
+  ref
+) {
+  const trackReference = useEnsureTrackRef(trackRef);
 
-    const mediaEl = React.useRef<HTMLAudioElement>(null);
-    React.useImperativeHandle(ref, () => mediaEl.current as HTMLAudioElement);
+  const mediaEl = React.useRef<HTMLAudioElement>(null);
+  React.useImperativeHandle(ref, () => mediaEl.current as HTMLAudioElement);
 
-    const {
-      elementProps,
-      isSubscribed,
-      track,
-      publication: pub,
-    } = useMediaTrackBySourceOrName(trackReference, {
-      element: mediaEl,
-      props,
-    });
+  const {
+    elementProps,
+    isSubscribed,
+    track,
+    publication: pub,
+  } = useMediaTrackBySourceOrName(trackReference, {
+    element: mediaEl,
+    props,
+  });
 
-    React.useEffect(() => {
-      onSubscriptionStatusChanged?.(!!isSubscribed);
-    }, [isSubscribed, onSubscriptionStatusChanged]);
+  React.useEffect(() => {
+    onSubscriptionStatusChanged?.(!!isSubscribed);
+  }, [isSubscribed, onSubscriptionStatusChanged]);
 
-    React.useEffect(() => {
-      if (track === undefined || volume === undefined) {
-        return;
-      }
-      if (track instanceof RemoteAudioTrack) {
-        track.setVolume(volume);
-      } else {
-        log.warn('Volume can only be set on remote audio tracks.');
-      }
-    }, [volume, track]);
+  React.useEffect(() => {
+    if (track === undefined || volume === undefined) {
+      return;
+    }
+    if (track instanceof RemoteAudioTrack) {
+      track.setVolume(volume);
+    } else {
+      log.warn('Volume can only be set on remote audio tracks.');
+    }
+  }, [volume, track]);
 
-    React.useEffect(() => {
-      if (pub === undefined || props.muted === undefined) {
-        return;
-      }
-      if (pub instanceof RemoteTrackPublication) {
-        pub.setEnabled(!props.muted);
-      } else {
-        log.warn('Can only call setEnabled on remote track publications.');
-      }
-    }, [props.muted, pub, track]);
+  React.useEffect(() => {
+    if (pub === undefined || props.muted === undefined) {
+      return;
+    }
+    if (pub instanceof RemoteTrackPublication) {
+      pub.setEnabled(!props.muted);
+    } else {
+      log.warn('Can only call setEnabled on remote track publications.');
+    }
+  }, [props.muted, pub, track]);
 
-    return <audio ref={mediaEl} {...elementProps} />;
-  },
-);
+  return <audio ref={mediaEl} {...elementProps} />;
+});

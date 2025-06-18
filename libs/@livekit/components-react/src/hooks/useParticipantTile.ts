@@ -1,4 +1,7 @@
-import type { ParticipantClickEvent, TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import type {
+  ParticipantClickEvent,
+  TrackReferenceOrPlaceholder,
+} from '@livekit/components-core';
 import { setupParticipantTile } from '@livekit/components-core';
 import * as React from 'react';
 import { useEnsureTrackRef } from '../context';
@@ -9,7 +12,8 @@ import { useIsSpeaking } from './useIsSpeaking';
 import { Track } from 'livekit-client';
 
 /** @public */
-export interface UseParticipantTileProps<T extends HTMLElement> extends React.HTMLAttributes<T> {
+export interface UseParticipantTileProps<T extends HTMLElement>
+  extends React.HTMLAttributes<T> {
   /** The track reference to display. */
   trackRef?: TrackReferenceOrPlaceholder;
   disableSpeakingIndicator?: boolean;
@@ -42,8 +46,13 @@ export function useParticipantTile<T extends HTMLElement>({
         if (typeof onParticipantClick === 'function') {
           const track =
             trackReference.publication ??
-            trackReference.participant.getTrackPublication(trackReference.source);
-          onParticipantClick({ participant: trackReference.participant, track });
+            trackReference.participant.getTrackPublication(
+              trackReference.source
+            );
+          onParticipantClick({
+            participant: trackReference.participant,
+            track,
+          });
         }
       },
     });
@@ -55,7 +64,9 @@ export function useParticipantTile<T extends HTMLElement>({
     trackReference.participant,
   ]);
 
-  const micTrack = trackReference.participant.getTrackPublication(Track.Source.Microphone);
+  const micTrack = trackReference.participant.getTrackPublication(
+    Track.Source.Microphone
+  );
   const micRef = React.useMemo(() => {
     return {
       participant: trackReference.participant,
@@ -71,7 +82,8 @@ export function useParticipantTile<T extends HTMLElement>({
     elementProps: {
       'data-lk-audio-muted': isAudioMuted,
       'data-lk-video-muted': isVideoMuted,
-      'data-lk-speaking': disableSpeakingIndicator === true ? false : isSpeaking,
+      'data-lk-speaking':
+        disableSpeakingIndicator === true ? false : isSpeaking,
       'data-lk-local-participant': trackReference.participant.isLocal,
       'data-lk-source': trackReference.source,
       'data-lk-facing-mode': facingMode,

@@ -41,7 +41,7 @@ This directory contains the refactored LiveKit context implementation, broken do
 The public API remains the same:
 
 ```tsx
-import { useLiveKit } from "./context/LiveKitContext";
+import { useLiveKit } from './context/LiveKitContext';
 
 const Component = () => {
   const { roomState, connect, toggleVideo, toggleAudio } = useLiveKit();

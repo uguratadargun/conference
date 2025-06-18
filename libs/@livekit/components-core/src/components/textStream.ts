@@ -10,7 +10,8 @@ export interface TextStreamData {
 }
 
 // Singleton getters for lazy initialization
-let observableCacheInstance: Map<string, Observable<TextStreamData[]>> | null = null;
+let observableCacheInstance: Map<string, Observable<TextStreamData[]>> | null =
+  null;
 let roomInstanceMapInstance: WeakMap<Room, string> | null = null;
 let nextRoomId = 0;
 
@@ -44,7 +45,10 @@ function getCacheKey(room: Room, topic: string): string {
   return `${roomId}:${topic}`;
 }
 
-export function setupTextStream(room: Room, topic: string): Observable<TextStreamData[]> {
+export function setupTextStream(
+  room: Room,
+  topic: string
+): Observable<TextStreamData[]> {
   const cacheKey = getCacheKey(room, topic);
   const observableCache = getObservableCache();
 
@@ -64,20 +68,20 @@ export function setupTextStream(room: Room, topic: string): Observable<TextStrea
     const streamObservable = from(reader).pipe(
       scan((acc: string, chunk: string) => {
         return acc + chunk;
-      }, ''),
+      }, '')
     );
 
     const isTranscription = !!reader.info.attributes?.[segmentAttribute];
 
     // Subscribe to the stream and update our array when new chunks arrive
-    streamObservable.subscribe((accumulatedText) => {
+    streamObservable.subscribe(accumulatedText => {
       // Find and update the stream in our array
       const index = textStreams.findIndex(
-        (stream) =>
+        stream =>
           stream.streamInfo.id === reader.info.id ||
           (isTranscription &&
             stream.streamInfo.attributes?.[segmentAttribute] ===
-              reader.info.attributes?.[segmentAttribute]),
+              reader.info.attributes?.[segmentAttribute])
       );
       if (index !== -1) {
         textStreams[index] = {

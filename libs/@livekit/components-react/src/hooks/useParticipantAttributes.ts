@@ -19,13 +19,16 @@ export interface UseParticipantAttributesOptions {
 }
 
 /** @public */
-export function useParticipantAttributes(props: UseParticipantAttributesOptions = {}) {
+export function useParticipantAttributes(
+  props: UseParticipantAttributesOptions = {}
+) {
   const participantContext = useMaybeParticipantContext();
   const p = props.participant ?? participantContext;
   const attributeObserver = React.useMemo(
     // weird typescript constraint
-    () => (p ? participantAttributesObserver(p) : participantAttributesObserver(p)),
-    [p],
+    () =>
+      p ? participantAttributesObserver(p) : participantAttributesObserver(p),
+    [p]
   );
   const attributeState = useObservableState(attributeObserver, {
     attributes: p?.attributes,
@@ -46,7 +49,7 @@ export function useParticipantAttributes(props: UseParticipantAttributesOptions 
  */
 export function useParticipantAttribute(
   attributeKey: string,
-  options: UseParticipantAttributesOptions = {},
+  options: UseParticipantAttributesOptions = {}
 ) {
   const p = useEnsureParticipant(options.participant);
   const [attribute, setAttribute] = React.useState(p.attributes[attributeKey]);
@@ -55,7 +58,7 @@ export function useParticipantAttribute(
     if (!p) {
       return;
     }
-    const subscription = participantAttributesObserver(p).subscribe((val) => {
+    const subscription = participantAttributesObserver(p).subscribe(val => {
       if (val.changed[attributeKey] !== undefined) {
         setAttribute(val.attributes[attributeKey]);
       }

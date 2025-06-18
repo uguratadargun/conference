@@ -1,6 +1,6 @@
-import React from "react";
-import { Button } from "primereact/button";
-import { Participant } from "livekit-client";
+import React from 'react';
+import { Button } from 'primereact/button';
+import { Participant } from 'livekit-client';
 
 interface ControlBarProps {
   localParticipant: Participant | undefined;
@@ -31,14 +31,14 @@ const ControlBar: React.FC<ControlBarProps> = ({
             }
             onClick={toggleAudio}
             className={`control-button audio-button ${
-              !localParticipant?.isMicrophoneEnabled ? "disabled" : ""
+              !localParticipant?.isMicrophoneEnabled ? 'disabled' : ''
             }`}
             tooltip={
               localParticipant?.isMicrophoneEnabled
-                ? "Mute Audio"
-                : "Unmute Audio"
+                ? 'Mute Audio'
+                : 'Unmute Audio'
             }
-            tooltipOptions={{ position: "top" }}
+            tooltipOptions={{ position: 'top' }}
           />
         </div>
 
@@ -53,14 +53,14 @@ const ControlBar: React.FC<ControlBarProps> = ({
             }
             onClick={toggleVideo}
             className={`control-button video-button ${
-              !localParticipant?.isCameraEnabled ? "disabled" : ""
+              !localParticipant?.isCameraEnabled ? 'disabled' : ''
             }`}
             tooltip={
               localParticipant?.isCameraEnabled
-                ? "Turn Off Camera"
-                : "Turn On Camera"
+                ? 'Turn Off Camera'
+                : 'Turn On Camera'
             }
-            tooltipOptions={{ position: "top" }}
+            tooltipOptions={{ position: 'top' }}
           />
         </div>
 
@@ -70,7 +70,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             onClick={disconnect}
             className="control-button hang-up-button"
             tooltip="Leave Call"
-            tooltipOptions={{ position: "top" }}
+            tooltipOptions={{ position: 'top' }}
           />
         </div>
 
@@ -80,7 +80,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             onClick={openSettings}
             className="control-button settings-button"
             tooltip="Settings"
-            tooltipOptions={{ position: "top" }}
+            tooltipOptions={{ position: 'top' }}
           />
         </div>
       </div>

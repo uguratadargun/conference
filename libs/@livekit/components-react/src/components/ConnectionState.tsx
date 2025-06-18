@@ -3,7 +3,8 @@ import * as React from 'react';
 import { useConnectionState } from '../hooks';
 
 /** @public */
-export interface ConnectionStatusProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ConnectionStatusProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * The room from which the connection status should be displayed.
    */
@@ -23,14 +24,15 @@ export interface ConnectionStatusProps extends React.HTMLAttributes<HTMLDivEleme
  * @public
  */
 export const ConnectionState: (
-  props: ConnectionStatusProps & React.RefAttributes<HTMLDivElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLDivElement, ConnectionStatusProps>(
-  function ConnectionState({ room, ...props }: ConnectionStatusProps, ref) {
-    const connectionState = useConnectionState(room);
-    return (
-      <div ref={ref} {...props}>
-        {connectionState}
-      </div>
-    );
-  },
-);
+  props: ConnectionStatusProps & React.RefAttributes<HTMLDivElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLDivElement,
+  ConnectionStatusProps
+>(function ConnectionState({ room, ...props }: ConnectionStatusProps, ref) {
+  const connectionState = useConnectionState(room);
+  return (
+    <div ref={ref} {...props}>
+      {connectionState}
+    </div>
+  );
+});

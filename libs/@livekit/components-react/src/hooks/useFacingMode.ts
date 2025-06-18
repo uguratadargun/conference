@@ -1,5 +1,8 @@
 import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { LocalTrackPublication, facingModeFromLocalTrack } from 'livekit-client';
+import {
+  LocalTrackPublication,
+  facingModeFromLocalTrack,
+} from 'livekit-client';
 
 /**
  * Try to determine the `facingMode` of a local participant video track.
@@ -9,7 +12,7 @@ import { LocalTrackPublication, facingModeFromLocalTrack } from 'livekit-client'
  * @alpha
  */
 export function useFacingMode(
-  trackReference: TrackReferenceOrPlaceholder,
+  trackReference: TrackReferenceOrPlaceholder
 ): 'user' | 'environment' | 'left' | 'right' | 'undefined' {
   if (trackReference.publication instanceof LocalTrackPublication) {
     const localTrack = trackReference.publication.track;

@@ -1,5 +1,5 @@
-import * as React from "react";
-import type { Observable } from "rxjs";
+import * as React from 'react';
+import type { Observable } from 'rxjs';
 
 /**
  * @internal
@@ -15,7 +15,7 @@ export function useObservableState<T>(
       setState(startWith);
     }
     // observable state doesn't run in SSR
-    if (typeof window === "undefined" || !observable) return;
+    if (typeof window === 'undefined' || !observable) return;
     const subscription = observable.subscribe(setState);
     return () => subscription.unsubscribe();
   }, [observable, resetWhenObservableChanges]);

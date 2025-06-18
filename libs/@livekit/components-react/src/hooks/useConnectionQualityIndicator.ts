@@ -20,15 +20,20 @@ export interface ConnectionQualityIndicatorOptions {
  * ```
  * @public
  */
-export function useConnectionQualityIndicator(options: ConnectionQualityIndicatorOptions = {}) {
+export function useConnectionQualityIndicator(
+  options: ConnectionQualityIndicatorOptions = {}
+) {
   const p = useEnsureParticipant(options.participant);
 
   const { className, connectionQualityObserver } = React.useMemo(
     () => setupConnectionQualityIndicator(p),
-    [p],
+    [p]
   );
 
-  const quality = useObservableState(connectionQualityObserver, ConnectionQuality.Unknown);
+  const quality = useObservableState(
+    connectionQualityObserver,
+    ConnectionQuality.Unknown
+  );
 
   return { className, quality };
 }

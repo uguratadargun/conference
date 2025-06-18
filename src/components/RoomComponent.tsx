@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { LiveKitRoom } from "@livekit/components-react";
-import { useLiveKit } from "../context/LiveKitContext";
-import ConferenceComponent from "./ConferenceComponent";
-import { Button } from "primereact/button";
+import React, { useEffect, useState } from 'react';
+import { LiveKitRoom } from '@livekit/components-react';
+import { useLiveKit } from '../context/LiveKitContext';
+import ConferenceComponent from './ConferenceComponent';
+import { Button } from 'primereact/button';
 
 // Main ConferenceCall Component with LiveKitRoom wrapper
 const RoomComponent: React.FC = () => {
@@ -22,8 +22,8 @@ const RoomComponent: React.FC = () => {
         const data = await generateToken();
         setConnectionData(data);
       } catch (err) {
-        console.error("Failed to get connection data:", err);
-        setError("Failed to connect to the room. Please try again.");
+        console.error('Failed to get connection data:', err);
+        setError('Failed to connect to the room. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -48,7 +48,7 @@ const RoomComponent: React.FC = () => {
       <div className="conference-container">
         <div className="error-container">
           <span className="material-icons">error</span>
-          <span>{error || "Failed to get connection data"}</span>
+          <span>{error || 'Failed to get connection data'}</span>
           <Button
             label="Retry"
             onClick={() => window.location.reload()}
@@ -68,7 +68,7 @@ const RoomComponent: React.FC = () => {
       }}
       options={{
         publishDefaults: {
-          videoCodec: "h264",
+          videoCodec: 'h264',
         },
       }}
     >

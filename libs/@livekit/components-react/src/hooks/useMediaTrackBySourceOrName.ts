@@ -19,15 +19,21 @@ export interface UseMediaTrackOptions {
  */
 export function useMediaTrackBySourceOrName(
   observerOptions: TrackIdentifier,
-  options: UseMediaTrackOptions = {},
+  options: UseMediaTrackOptions = {}
 ) {
-  const [publication, setPublication] = React.useState(getTrackByIdentifier(observerOptions));
+  const [publication, setPublication] = React.useState(
+    getTrackByIdentifier(observerOptions)
+  );
 
   const [isMuted, setMuted] = React.useState(publication?.isMuted);
-  const [isSubscribed, setSubscribed] = React.useState(publication?.isSubscribed);
+  const [isSubscribed, setSubscribed] = React.useState(
+    publication?.isSubscribed
+  );
 
   const [track, setTrack] = React.useState(publication?.track);
-  const [orientation, setOrientation] = React.useState<'landscape' | 'portrait'>('landscape');
+  const [orientation, setOrientation] = React.useState<
+    'landscape' | 'portrait'
+  >('landscape');
   const previousElement = React.useRef<HTMLMediaElement | undefined | null>();
 
   const { className, trackObserver } = React.useMemo(() => {
@@ -39,7 +45,7 @@ export function useMediaTrackBySourceOrName(
   ]);
 
   React.useEffect(() => {
-    const subscription = trackObserver.subscribe((publication) => {
+    const subscription = trackObserver.subscribe(publication => {
       log.debug('update track', publication);
       setPublication(publication);
       setMuted(publication?.isMuted);
@@ -77,7 +83,9 @@ export function useMediaTrackBySourceOrName(
       typeof publication?.dimensions?.height === 'number'
     ) {
       const orientation_ =
-        publication.dimensions.width > publication.dimensions.height ? 'landscape' : 'portrait';
+        publication.dimensions.width > publication.dimensions.height
+          ? 'landscape'
+          : 'portrait';
       setOrientation(orientation_);
     }
   }, [publication]);
@@ -91,7 +99,9 @@ export function useMediaTrackBySourceOrName(
       className,
       'data-lk-local-participant': observerOptions.participant.isLocal,
       'data-lk-source': publication?.source,
-      ...(publication?.kind === 'video' && { 'data-lk-orientation': orientation }),
+      ...(publication?.kind === 'video' && {
+        'data-lk-orientation': orientation,
+      }),
     }),
   };
 }

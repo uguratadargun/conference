@@ -9,6 +9,8 @@ type UnprefixedClassNames = ComponentNoPrefixClasses | PrefabNoPrefixClasses;
  * Only classes defined in the styles module are valid, any other class produces a ts error.
  * @internal
  */
-export function prefixClass<T extends UnprefixedClassNames>(unprefixedClassName: T) {
+export function prefixClass<T extends UnprefixedClassNames>(
+  unprefixedClassName: T
+) {
   return `${cssPrefix}-${unprefixedClassName}` as const;
 }

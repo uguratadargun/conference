@@ -3,7 +3,8 @@ import { useRoomContext } from '../../context';
 import { useStartAudio, useStartVideo } from '../../hooks';
 
 /** @public */
-export interface AllowMediaPlaybackProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface AllowMediaPlaybackProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
 }
 
@@ -23,19 +24,26 @@ export interface AllowMediaPlaybackProps extends React.ButtonHTMLAttributes<HTML
  * @public
  */
 export const StartMediaButton: (
-  props: AllowMediaPlaybackProps & React.RefAttributes<HTMLButtonElement>,
-) => React.ReactNode = /* @__PURE__ */ React.forwardRef<HTMLButtonElement, AllowMediaPlaybackProps>(
-  function StartMediaButton({ label, ...props }: AllowMediaPlaybackProps, ref) {
-    const room = useRoomContext();
-    const { mergedProps: audioProps, canPlayAudio } = useStartAudio({ room, props });
-    const { mergedProps, canPlayVideo } = useStartVideo({ room, props: audioProps });
-    const { style, ...restProps } = mergedProps;
-    style.display = canPlayAudio && canPlayVideo ? 'none' : 'block';
+  props: AllowMediaPlaybackProps & React.RefAttributes<HTMLButtonElement>
+) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
+  HTMLButtonElement,
+  AllowMediaPlaybackProps
+>(function StartMediaButton({ label, ...props }: AllowMediaPlaybackProps, ref) {
+  const room = useRoomContext();
+  const { mergedProps: audioProps, canPlayAudio } = useStartAudio({
+    room,
+    props,
+  });
+  const { mergedProps, canPlayVideo } = useStartVideo({
+    room,
+    props: audioProps,
+  });
+  const { style, ...restProps } = mergedProps;
+  style.display = canPlayAudio && canPlayVideo ? 'none' : 'block';
 
-    return (
-      <button ref={ref} style={style} {...restProps}>
-        {label ?? `Start ${!canPlayAudio ? 'Audio' : 'Video'}`}
-      </button>
-    );
-  },
-);
+  return (
+    <button ref={ref} style={style} {...restProps}>
+      {label ?? `Start ${!canPlayAudio ? 'Audio' : 'Video'}`}
+    </button>
+  );
+});

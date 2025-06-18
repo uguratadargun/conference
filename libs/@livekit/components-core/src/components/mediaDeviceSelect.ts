@@ -21,37 +21,51 @@ export type SetMediaDeviceOptions = {
 export function setupDeviceSelector(
   kind: MediaDeviceKind,
   room: Room,
-  localTrack?: LocalAudioTrack | LocalVideoTrack,
+  localTrack?: LocalAudioTrack | LocalVideoTrack
 ) {
-  const activeDeviceSubject = new BehaviorSubject<string | undefined>(undefined);
+  const activeDeviceSubject = new BehaviorSubject<string | undefined>(
+    undefined
+  );
 
   const activeDeviceObservable = createActiveDeviceObservable(room, kind);
 
-  const setActiveMediaDevice = async (id: string, options: SetMediaDeviceOptions = {}) => {
+  const setActiveMediaDevice = async (
+    id: string,
+    options: SetMediaDeviceOptions = {}
+  ) => {
     if (localTrack) {
       await localTrack.setDeviceId(options.exact ? { exact: id } : id);
       const actualId = await localTrack.getDeviceId(false);
       activeDeviceSubject.next(
-        id === 'default' && localTrack.mediaStreamTrack.label.startsWith('Default') ? id : actualId,
+        id === 'default' &&
+          localTrack.mediaStreamTrack.label.startsWith('Default')
+          ? id
+          : actualId
       );
     } else if (room) {
       log.debug(`Switching active device of kind "${kind}" with id ${id}.`);
       await room.switchActiveDevice(kind, id, options.exact);
-      const actualDeviceId: string | undefined = room.getActiveDevice(kind) ?? id;
+      const actualDeviceId: string | undefined =
+        room.getActiveDevice(kind) ?? id;
       if (actualDeviceId !== id && id !== 'default') {
         log.info(
-          `We tried to select the device with id (${id}), but the browser decided to select the device with id (${actualDeviceId}) instead.`,
+          `We tried to select the device with id (${id}), but the browser decided to select the device with id (${actualDeviceId}) instead.`
         );
       }
       let targetTrack: LocalTrack | undefined = undefined;
       if (kind === 'audioinput')
-        targetTrack = room.localParticipant.getTrackPublication(Track.Source.Microphone)?.track;
+        targetTrack = room.localParticipant.getTrackPublication(
+          Track.Source.Microphone
+        )?.track;
       else if (kind === 'videoinput') {
-        targetTrack = room.localParticipant.getTrackPublication(Track.Source.Camera)?.track;
+        targetTrack = room.localParticipant.getTrackPublication(
+          Track.Source.Camera
+        )?.track;
       }
       const useDefault =
         (id === 'default' && !targetTrack) ||
-        (id === 'default' && targetTrack?.mediaStreamTrack.label.startsWith('Default'));
+        (id === 'default' &&
+          targetTrack?.mediaStreamTrack.label.startsWith('Default'));
       activeDeviceSubject.next(useDefault ? id : actualDeviceId);
     }
   };

@@ -1,5 +1,9 @@
 import * as React from 'react';
-import type { LocalAudioTrack, RemoteAudioTrack, AudioAnalyserOptions } from 'livekit-client';
+import type {
+  LocalAudioTrack,
+  RemoteAudioTrack,
+  AudioAnalyserOptions,
+} from 'livekit-client';
 import { Track, createAudioAnalyser } from 'livekit-client';
 import {
   type TrackReference,
@@ -13,10 +17,12 @@ import {
  */
 export function useTrackVolume(
   trackOrTrackReference?: LocalAudioTrack | RemoteAudioTrack | TrackReference,
-  options: AudioAnalyserOptions = { fftSize: 32, smoothingTimeConstant: 0 },
+  options: AudioAnalyserOptions = { fftSize: 32, smoothingTimeConstant: 0 }
 ) {
   const track = isTrackReference(trackOrTrackReference)
-    ? <LocalAudioTrack | RemoteAudioTrack | undefined>trackOrTrackReference.publication.track
+    ? <LocalAudioTrack | RemoteAudioTrack | undefined>(
+        trackOrTrackReference.publication.track
+      )
     : trackOrTrackReference;
   const [volume, setVolume] = React.useState(0);
   React.useEffect(() => {
@@ -61,7 +67,7 @@ const normalizeFrequencies = (frequencies: Float32Array) => {
   };
 
   // Normalize all frequency values
-  return frequencies.map((value) => {
+  return frequencies.map(value => {
     if (value === -Infinity) {
       return 0;
     }
@@ -105,23 +111,31 @@ const multibandDefaults = {
  * @alpha
  */
 export function useMultibandTrackVolume(
-  trackOrTrackReference?: LocalAudioTrack | RemoteAudioTrack | TrackReferenceOrPlaceholder,
-  options: MultiBandTrackVolumeOptions = {},
+  trackOrTrackReference?:
+    | LocalAudioTrack
+    | RemoteAudioTrack
+    | TrackReferenceOrPlaceholder,
+  options: MultiBandTrackVolumeOptions = {}
 ) {
   const track =
     trackOrTrackReference instanceof Track
       ? trackOrTrackReference
-      : <LocalAudioTrack | RemoteAudioTrack | undefined>trackOrTrackReference?.publication?.track;
+      : <LocalAudioTrack | RemoteAudioTrack | undefined>(
+          trackOrTrackReference?.publication?.track
+        );
   const opts = { ...multibandDefaults, ...options };
   const [frequencyBands, setFrequencyBands] = React.useState<Array<number>>(
-    new Array(opts.bands).fill(0),
+    new Array(opts.bands).fill(0)
   );
 
   React.useEffect(() => {
     if (!track || !track?.mediaStream) {
       return;
     }
-    const { analyser, cleanup } = createAudioAnalyser(track, opts.analyserOptions);
+    const { analyser, cleanup } = createAudioAnalyser(
+      track,
+      opts.analyserOptions
+    );
 
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Float32Array(bufferLength);
@@ -177,13 +191,18 @@ const waveformDefaults = {
  * @alpha
  */
 export function useAudioWaveform(
-  trackOrTrackReference?: LocalAudioTrack | RemoteAudioTrack | TrackReferenceOrPlaceholder,
-  options: AudioWaveformOptions = {},
+  trackOrTrackReference?:
+    | LocalAudioTrack
+    | RemoteAudioTrack
+    | TrackReferenceOrPlaceholder,
+  options: AudioWaveformOptions = {}
 ) {
   const track =
     trackOrTrackReference instanceof Track
       ? trackOrTrackReference
-      : <LocalAudioTrack | RemoteAudioTrack | undefined>trackOrTrackReference?.publication?.track;
+      : <LocalAudioTrack | RemoteAudioTrack | undefined>(
+          trackOrTrackReference?.publication?.track
+        );
   const opts = { ...waveformDefaults, ...options };
 
   const aggregateWave = React.useRef(new Float32Array());
@@ -194,9 +213,11 @@ export function useAudioWaveform(
   const onUpdate = React.useCallback((wave: Float32Array) => {
     setBars(
       Array.from(
-        filterData(wave, opts.barCount).map((v) => Math.sqrt(v) * opts.volMultiplier),
+        filterData(wave, opts.barCount).map(
+          v => Math.sqrt(v) * opts.volMultiplier
+        )
         // wave.slice(0, opts.barCount).map((v) => sigmoid(v * opts.volMultiplier, 0.08, 0.2)),
-      ),
+      )
     );
   }, []);
 
@@ -218,7 +239,7 @@ export function useAudioWaveform(
       updates.current += 1;
 
       if (performance.now() - timeRef.current >= opts.updateInterval) {
-        const newData = dataArray.map((v) => v / updates.current);
+        const newData = dataArray.map(v => v / updates.current);
         onUpdate(newData);
         timeRef.current = performance.now();
         updates.current = 0;

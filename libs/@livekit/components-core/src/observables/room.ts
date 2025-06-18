@@ -5,18 +5,21 @@ import { concat, filter, map, Observable, startWith } from 'rxjs';
 // @ts-ignore some module resolutions (other than 'node') choke on this
 import type { RoomEventCallbacks } from 'livekit-client/dist/src/room/Room';
 import { log } from '../logger';
-export function observeRoomEvents(room: Room, ...events: RoomEvent[]): Observable<Room> {
-  const observable = new Observable<Room>((subscribe) => {
+export function observeRoomEvents(
+  room: Room,
+  ...events: RoomEvent[]
+): Observable<Room> {
+  const observable = new Observable<Room>(subscribe => {
     const onRoomUpdate = () => {
       subscribe.next(room);
     };
 
-    events.forEach((evt) => {
+    events.forEach(evt => {
       room.on(evt, onRoomUpdate);
     });
 
     const unsubscribe = () => {
-      events.forEach((evt) => {
+      events.forEach(evt => {
         room.off(evt, onRoomUpdate);
       });
     };
@@ -27,17 +30,19 @@ export function observeRoomEvents(room: Room, ...events: RoomEvent[]): Observabl
 }
 
 export function roomEventSelector<T extends RoomEvent>(room: Room, event: T) {
-  const observable = new Observable<Parameters<RoomEventCallbacks[T]>>((subscribe) => {
-    const update = (...params: Parameters<RoomEventCallbacks[T]>) => {
-      subscribe.next(params);
-    };
-    room.on(event as keyof RoomEventCallbacks, update);
+  const observable = new Observable<Parameters<RoomEventCallbacks[T]>>(
+    subscribe => {
+      const update = (...params: Parameters<RoomEventCallbacks[T]>) => {
+        subscribe.next(params);
+      };
+      room.on(event as keyof RoomEventCallbacks, update);
 
-    const unsubscribe = () => {
-      room.off(event as keyof RoomEventCallbacks, update);
-    };
-    return unsubscribe;
-  });
+      const unsubscribe = () => {
+        room.off(event as keyof RoomEventCallbacks, update);
+      };
+      return unsubscribe;
+    }
+  );
 
   return observable;
 }
@@ -53,7 +58,7 @@ export function roomObserver(room: Room) {
     RoomEvent.LocalTrackPublished,
     RoomEvent.LocalTrackUnpublished,
     RoomEvent.AudioPlaybackStatusChanged,
-    RoomEvent.ConnectionStateChanged,
+    RoomEvent.ConnectionStateChanged
   );
 
   return observable;
@@ -62,7 +67,7 @@ export function roomObserver(room: Room) {
 export function connectionStateObserver(room: Room) {
   return roomEventSelector(room, RoomEvent.ConnectionStateChanged).pipe(
     map(([connectionState]) => connectionState),
-    startWith(room.state),
+    startWith(room.state)
   );
 }
 export type ScreenShareTrackMap = Array<{
@@ -74,32 +79,37 @@ export function screenShareObserver(room: Room) {
   let screenShareSubscriber: Subscriber<ScreenShareTrackMap>;
   const observers: Array<Subscription> = [];
 
-  const observable = new Observable<ScreenShareTrackMap>((subscriber) => {
+  const observable = new Observable<ScreenShareTrackMap>(subscriber => {
     screenShareSubscriber = subscriber;
     return () => {
-      observers.forEach((observer) => {
+      observers.forEach(observer => {
         observer.unsubscribe();
       });
     };
   });
   const screenShareTracks: ScreenShareTrackMap = [];
 
-  const handleSub = (publication: TrackPublication, participant: Participant) => {
+  const handleSub = (
+    publication: TrackPublication,
+    participant: Participant
+  ) => {
     if (
       publication.source !== Track.Source.ScreenShare &&
       publication.source !== Track.Source.ScreenShareAudio
     ) {
       return;
     }
-    let trackMap = screenShareTracks.find((tr) => tr.participant.identity === participant.identity);
+    let trackMap = screenShareTracks.find(
+      tr => tr.participant.identity === participant.identity
+    );
     const getScreenShareTracks = (participant: Participant) => {
       return participant
         .getTrackPublications()
         .filter(
-          (track) =>
+          track =>
             (track.source === Track.Source.ScreenShare ||
               track.source === Track.Source.ScreenShareAudio) &&
-            track.track,
+            track.track
         );
     };
     if (!trackMap) {
@@ -119,37 +129,39 @@ export function screenShareObserver(room: Room) {
     screenShareSubscriber.next(screenShareTracks);
   };
   observers.push(
-    roomEventSelector(room, RoomEvent.TrackSubscribed).subscribe(([, ...args]) =>
-      handleSub(...args),
-    ),
+    roomEventSelector(room, RoomEvent.TrackSubscribed).subscribe(
+      ([, ...args]) => handleSub(...args)
+    )
   );
   observers.push(
-    roomEventSelector(room, RoomEvent.TrackUnsubscribed).subscribe(([, ...args]) =>
-      handleSub(...args),
-    ),
+    roomEventSelector(room, RoomEvent.TrackUnsubscribed).subscribe(
+      ([, ...args]) => handleSub(...args)
+    )
   );
   observers.push(
-    roomEventSelector(room, RoomEvent.LocalTrackPublished).subscribe((args) => handleSub(...args)),
+    roomEventSelector(room, RoomEvent.LocalTrackPublished).subscribe(args =>
+      handleSub(...args)
+    )
   );
   observers.push(
-    roomEventSelector(room, RoomEvent.LocalTrackUnpublished).subscribe((args) => {
+    roomEventSelector(room, RoomEvent.LocalTrackUnpublished).subscribe(args => {
       handleSub(...args);
-    }),
+    })
   );
   observers.push(
-    roomEventSelector(room, RoomEvent.TrackMuted).subscribe((args) => {
+    roomEventSelector(room, RoomEvent.TrackMuted).subscribe(args => {
       handleSub(...args);
-    }),
+    })
   );
   observers.push(
-    roomEventSelector(room, RoomEvent.TrackUnmuted).subscribe((args) => {
+    roomEventSelector(room, RoomEvent.TrackUnmuted).subscribe(args => {
       handleSub(...args);
-    }),
+    })
   );
   setTimeout(() => {
     // TODO find way to avoid this timeout
     for (const p of room.remoteParticipants.values()) {
-      p.getTrackPublications().forEach((track) => {
+      p.getTrackPublications().forEach(track => {
         handleSub(track, p);
       });
     }
@@ -162,34 +174,34 @@ export function roomInfoObserver(room: Room) {
   const observer = observeRoomEvents(
     room,
     RoomEvent.RoomMetadataChanged,
-    RoomEvent.ConnectionStateChanged,
+    RoomEvent.ConnectionStateChanged
   ).pipe(
-    map((r) => {
+    map(r => {
       return { name: r.name, metadata: r.metadata };
-    }),
+    })
   );
   return observer;
 }
 
 export function activeSpeakerObserver(room: Room) {
   return roomEventSelector(room, RoomEvent.ActiveSpeakersChanged).pipe(
-    map(([speakers]) => speakers),
+    map(([speakers]) => speakers)
   );
 }
 
 export function createMediaDeviceObserver(
   kind?: MediaDeviceKind,
   onError?: (e: Error) => void,
-  requestPermissions = true,
+  requestPermissions = true
 ) {
   // Initial devices fetch observable
-  const initialDevices$ = new Observable<MediaDeviceInfo[]>((subscriber) => {
+  const initialDevices$ = new Observable<MediaDeviceInfo[]>(subscriber => {
     Room.getLocalDevices(kind, requestPermissions)
-      .then((devices) => {
+      .then(devices => {
         subscriber.next(devices);
         subscriber.complete();
       })
-      .catch((e) => {
+      .catch(e => {
         onError?.(e);
         subscriber.next([] as MediaDeviceInfo[]);
         subscriber.complete();
@@ -197,7 +209,7 @@ export function createMediaDeviceObserver(
   });
 
   // Device change observable
-  const deviceChanges$ = new Observable<MediaDeviceInfo[]>((subscriber) => {
+  const deviceChanges$ = new Observable<MediaDeviceInfo[]>(subscriber => {
     const onDeviceChange = async () => {
       try {
         const newDevices = await Room.getLocalDevices(kind, requestPermissions);
@@ -210,7 +222,7 @@ export function createMediaDeviceObserver(
     if (typeof window !== 'undefined') {
       if (!window.isSecureContext) {
         throw new Error(
-          `Accessing media devices is available only in secure contexts (HTTPS and localhost), in some or all supporting browsers. See: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/mediaDevices`,
+          `Accessing media devices is available only in secure contexts (HTTPS and localhost), in some or all supporting browsers. See: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/mediaDevices`
         );
       }
       navigator?.mediaDevices?.addEventListener('devicechange', onDeviceChange);
@@ -218,7 +230,10 @@ export function createMediaDeviceObserver(
 
     // Return unsubscribe function that cleans up when the observable is unsubscribed
     return () => {
-      navigator?.mediaDevices?.removeEventListener('devicechange', onDeviceChange);
+      navigator?.mediaDevices?.removeEventListener(
+        'devicechange',
+        onDeviceChange
+      );
     };
   });
 
@@ -235,52 +250,70 @@ export function createChatObserver(room: Room) {
 }
 
 export function roomAudioPlaybackAllowedObservable(room: Room) {
-  const observable = observeRoomEvents(room, RoomEvent.AudioPlaybackStatusChanged).pipe(
-    map((room) => {
+  const observable = observeRoomEvents(
+    room,
+    RoomEvent.AudioPlaybackStatusChanged
+  ).pipe(
+    map(room => {
       return { canPlayAudio: room.canPlaybackAudio };
-    }),
+    })
   );
   return observable;
 }
 
 export function roomVideoPlaybackAllowedObservable(room: Room) {
-  const observable = observeRoomEvents(room, RoomEvent.VideoPlaybackStatusChanged).pipe(
-    map((room) => {
+  const observable = observeRoomEvents(
+    room,
+    RoomEvent.VideoPlaybackStatusChanged
+  ).pipe(
+    map(room => {
       return { canPlayVideo: room.canPlaybackVideo };
-    }),
+    })
   );
   return observable;
 }
 
-export function createActiveDeviceObservable(room: Room, kind: MediaDeviceKind) {
+export function createActiveDeviceObservable(
+  room: Room,
+  kind: MediaDeviceKind
+) {
   return roomEventSelector(room, RoomEvent.ActiveDeviceChanged).pipe(
     filter(([kindOfDevice]) => kindOfDevice === kind),
     map(([kind, deviceId]) => {
-      log.debug('activeDeviceObservable | RoomEvent.ActiveDeviceChanged', { kind, deviceId });
+      log.debug('activeDeviceObservable | RoomEvent.ActiveDeviceChanged', {
+        kind,
+        deviceId,
+      });
       return deviceId;
-    }),
+    })
   );
 }
 
-export function encryptionStatusObservable(room: Room, participant: Participant | undefined) {
-  return roomEventSelector(room, RoomEvent.ParticipantEncryptionStatusChanged).pipe(
+export function encryptionStatusObservable(
+  room: Room,
+  participant: Participant | undefined
+) {
+  return roomEventSelector(
+    room,
+    RoomEvent.ParticipantEncryptionStatusChanged
+  ).pipe(
     filter(
       ([, p]) =>
         participant?.identity === p?.identity ||
-        (!p && participant?.identity === room.localParticipant.identity),
+        (!p && participant?.identity === room.localParticipant.identity)
     ),
     map(([encrypted]) => encrypted),
     startWith(
       participant?.isLocal
         ? (participant as LocalParticipant).isE2EEEnabled
-        : !!participant?.isEncrypted,
-    ),
+        : !!participant?.isEncrypted
+    )
   );
 }
 
 export function recordingStatusObservable(room: Room) {
   return roomEventSelector(room, RoomEvent.RecordingStatusChanged).pipe(
     map(([recording]) => recording),
-    startWith(room.isRecording),
+    startWith(room.isRecording)
   );
 }

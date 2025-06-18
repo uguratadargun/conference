@@ -90,7 +90,7 @@ export function selectGridLayout(
   layoutDefinitions: GridLayoutDefinition[],
   participantCount: number,
   width: number,
-  height: number,
+  height: number
 ): GridLayoutInfo {
   if (layoutDefinitions.length < 1) {
     throw new Error('At least one grid layout definition must be provided.');
@@ -106,10 +106,16 @@ export function selectGridLayout(
     currentLayoutIndex = index;
     const isBiggerLayoutAvailable =
       allLayouts.findIndex((l, i) => {
-        const fitsOrientation = !l.orientation || l.orientation === containerOrientation;
+        const fitsOrientation =
+          !l.orientation || l.orientation === containerOrientation;
         const layoutIsBiggerThanCurrent = i > index;
-        const layoutFitsSameAmountOfParticipants = l.maxTiles === layout_.maxTiles;
-        return layoutIsBiggerThanCurrent && layoutFitsSameAmountOfParticipants && fitsOrientation;
+        const layoutFitsSameAmountOfParticipants =
+          l.maxTiles === layout_.maxTiles;
+        return (
+          layoutIsBiggerThanCurrent &&
+          layoutFitsSameAmountOfParticipants &&
+          fitsOrientation
+        );
       }) !== -1;
     return layout_.maxTiles >= participantCount && !isBiggerLayoutAvailable;
   });
@@ -117,7 +123,7 @@ export function selectGridLayout(
     layout = layouts[layouts.length - 1];
     if (layout) {
       log.warn(
-        `No layout found for: participantCount: ${participantCount}, width/height: ${width}/${height} fallback to biggest available layout (${layout}).`,
+        `No layout found for: participantCount: ${participantCount}, width/height: ${width}/${height} fallback to biggest available layout (${layout}).`
       );
     } else {
       throw new Error(`No layout or fallback layout found.`);
@@ -133,7 +139,7 @@ export function selectGridLayout(
         layouts.slice(0, currentLayoutIndex),
         smallerLayout.maxTiles,
         width,
-        height,
+        height
       );
     }
   }
@@ -143,9 +149,11 @@ export function selectGridLayout(
 /**
  * @internal
  */
-export function expandAndSortLayoutDefinitions(layouts: GridLayoutDefinition[]): GridLayoutInfo[] {
+export function expandAndSortLayoutDefinitions(
+  layouts: GridLayoutDefinition[]
+): GridLayoutInfo[] {
   return [...layouts]
-    .map((layout) => {
+    .map(layout => {
       return {
         name: `${layout.columns}x${layout.rows}`,
         columns: layout.columns,

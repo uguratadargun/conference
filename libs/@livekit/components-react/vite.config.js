@@ -25,7 +25,10 @@ export default defineConfig({
         index: resolve(__dirname, 'src/index.ts'),
         hooks: resolve(__dirname, 'src/hooks/index.ts'),
         prefabs: resolve(__dirname, 'src/prefabs/index.ts'),
-        krisp: resolve(__dirname, 'src/hooks/cloud/krisp/useKrispNoiseFilter.ts'),
+        krisp: resolve(
+          __dirname,
+          'src/hooks/cloud/krisp/useKrispNoiseFilter.ts'
+        ),
       },
     },
     rollupOptions: {
@@ -44,7 +47,10 @@ export default defineConfig({
           dir: 'dist',
           manualChunks: {
             contexts: ['src/context/index.ts'],
-            room: ['src/hooks/useLiveKitRoom.ts', 'src/components/LiveKitRoom.tsx'],
+            room: [
+              'src/hooks/useLiveKitRoom.ts',
+              'src/components/LiveKitRoom.tsx',
+            ],
             hooks: ['src/hooks/index.ts'],
             components: ['src/components/index.ts'],
             prefabs: ['src/prefabs/index.ts'],

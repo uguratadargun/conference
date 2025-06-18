@@ -4,9 +4,10 @@ import { log } from '@livekit/components-core';
 import clsx from 'clsx';
 
 /** @internal */
-export function isProp<U extends HTMLElement, T extends React.HTMLAttributes<U>>(
-  prop: T | undefined,
-): prop is T {
+export function isProp<
+  U extends HTMLElement,
+  T extends React.HTMLAttributes<U>,
+>(prop: T | undefined): prop is T {
   return prop !== undefined;
 }
 
@@ -22,9 +23,9 @@ export function mergeProps<
 export function cloneSingleChild(
   children: React.ReactNode | React.ReactNode[],
   props?: Record<string, any>,
-  key?: any,
+  key?: any
 ) {
-  return React.Children.map(children, (child) => {
+  return React.Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
     if (React.isValidElement(child) && React.Children.only(children)) {
@@ -53,9 +54,12 @@ export function warnAboutMissingStyles(el?: HTMLElement) {
       process?.env?.NODE_ENV === 'development')
   ) {
     const target = el ?? document.querySelector('.lk-room-container');
-    if (target && !getComputedStyle(target).getPropertyValue('--lk-has-imported-styles')) {
+    if (
+      target &&
+      !getComputedStyle(target).getPropertyValue('--lk-has-imported-styles')
+    ) {
       log.warn(
-        "It looks like you're not using the `@livekit/components-styles package`. To render the UI with the default styling, please import it in your layout or page.",
+        "It looks like you're not using the `@livekit/components-styles package`. To render the UI with the default styling, please import it in your layout or page."
       );
     }
   }

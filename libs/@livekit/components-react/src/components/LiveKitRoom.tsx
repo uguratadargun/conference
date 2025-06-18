@@ -12,7 +12,8 @@ import { type FeatureFlags, LKFeatureContext, RoomContext } from '../context';
 import { useLiveKitRoom } from '../hooks';
 
 /** @public */
-export interface LiveKitRoomProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface LiveKitRoomProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onError'> {
   /**
    * URL to the LiveKit server.
    * For example: `wss://<domain>.livekit.cloud`
@@ -67,7 +68,10 @@ export interface LiveKitRoomProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   onConnected?: () => void;
   onDisconnected?: (reason?: DisconnectReason) => void;
   onError?: (error: Error) => void;
-  onMediaDeviceFailure?: (failure?: MediaDeviceFailure, kind?: MediaDeviceKind) => void;
+  onMediaDeviceFailure?: (
+    failure?: MediaDeviceFailure,
+    kind?: MediaDeviceKind
+  ) => void;
   onEncryptionError?: (error: Error) => void;
   /**
    * Optional room instance.
@@ -102,7 +106,8 @@ export interface LiveKitRoomProps extends Omit<React.HTMLAttributes<HTMLDivEleme
  * @public
  */
 export const LiveKitRoom: (
-  props: React.PropsWithChildren<LiveKitRoomProps> & React.RefAttributes<HTMLDivElement>,
+  props: React.PropsWithChildren<LiveKitRoomProps> &
+    React.RefAttributes<HTMLDivElement>
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<LiveKitRoomProps>

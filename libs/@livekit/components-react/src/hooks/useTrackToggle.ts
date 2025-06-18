@@ -1,5 +1,9 @@
 import type { ToggleSource } from '@livekit/components-core';
-import { setupMediaToggle, setupManualToggle, log } from '@livekit/components-core';
+import {
+  setupMediaToggle,
+  setupManualToggle,
+  log,
+} from '@livekit/components-core';
 import * as React from 'react';
 import type { TrackToggleProps } from '../components';
 import { useMaybeRoomContext } from '../context';
@@ -38,13 +42,22 @@ export function useTrackToggle<T extends ToggleSource>({
   const { toggle, className, pendingObserver, enabledObserver } = React.useMemo(
     () =>
       room
-        ? setupMediaToggle<T>(source, room, captureOptions, publishOptions, onDeviceError)
+        ? setupMediaToggle<T>(
+            source,
+            room,
+            captureOptions,
+            publishOptions,
+            onDeviceError
+          )
         : setupManualToggle(),
-    [room, source, JSON.stringify(captureOptions), publishOptions],
+    [room, source, JSON.stringify(captureOptions), publishOptions]
   );
 
   const pending = useObservableState(pendingObserver, false);
-  const enabled = useObservableState(enabledObserver, initialState ?? !!track?.isEnabled);
+  const enabled = useObservableState(
+    enabledObserver,
+    initialState ?? !!track?.isEnabled
+  );
 
   React.useEffect(() => {
     onChange?.(enabled, userInteractionRef.current);
@@ -60,16 +73,20 @@ export function useTrackToggle<T extends ToggleSource>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const newProps = React.useMemo(() => mergeProps(rest, { className }), [rest, className]);
-
-  const clickHandler: React.MouseEventHandler<HTMLButtonElement> = React.useCallback(
-    (evt) => {
-      userInteractionRef.current = true;
-      toggle().catch(() => (userInteractionRef.current = false));
-      rest.onClick?.(evt);
-    },
-    [rest, toggle],
+  const newProps = React.useMemo(
+    () => mergeProps(rest, { className }),
+    [rest, className]
   );
+
+  const clickHandler: React.MouseEventHandler<HTMLButtonElement> =
+    React.useCallback(
+      evt => {
+        userInteractionRef.current = true;
+        toggle().catch(() => (userInteractionRef.current = false));
+        rest.onClick?.(evt);
+      },
+      [rest, toggle]
+    );
 
   return {
     toggle,

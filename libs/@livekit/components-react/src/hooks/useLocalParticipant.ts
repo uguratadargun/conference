@@ -24,24 +24,30 @@ export interface UseLocalParticipantOptions {
  */
 export function useLocalParticipant(options: UseLocalParticipantOptions = {}) {
   const room = useEnsureRoom(options.room);
-  const [localParticipant, setLocalParticipant] = React.useState(room.localParticipant);
+  const [localParticipant, setLocalParticipant] = React.useState(
+    room.localParticipant
+  );
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled,
+    localParticipant.isMicrophoneEnabled
   );
   const [isCameraEnabled, setIsCameraEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled,
+    localParticipant.isMicrophoneEnabled
   );
   const [lastMicrophoneError, setLastMicrophoneError] = React.useState(
-    localParticipant.lastMicrophoneError,
+    localParticipant.lastMicrophoneError
   );
-  const [lastCameraError, setLastCameraError] = React.useState(localParticipant.lastCameraError);
+  const [lastCameraError, setLastCameraError] = React.useState(
+    localParticipant.lastCameraError
+  );
   const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled,
+    localParticipant.isMicrophoneEnabled
   );
-  const [microphoneTrack, setMicrophoneTrack] = React.useState<TrackPublication | undefined>(
-    undefined,
-  );
-  const [cameraTrack, setCameraTrack] = React.useState<TrackPublication | undefined>(undefined);
+  const [microphoneTrack, setMicrophoneTrack] = React.useState<
+    TrackPublication | undefined
+  >(undefined);
+  const [cameraTrack, setCameraTrack] = React.useState<
+    TrackPublication | undefined
+  >(undefined);
 
   const handleUpdate = (media: ParticipantMedia<LocalParticipant>) => {
     setIsCameraEnabled(media.isCameraEnabled);
@@ -54,7 +60,9 @@ export function useLocalParticipant(options: UseLocalParticipantOptions = {}) {
     setLocalParticipant(media.participant);
   };
   React.useEffect(() => {
-    const listener = observeParticipantMedia(room.localParticipant).subscribe(handleUpdate);
+    const listener = observeParticipantMedia(room.localParticipant).subscribe(
+      handleUpdate
+    );
     // TODO also listen to permission and metadata etc. events
     return () => listener.unsubscribe();
   }, [room]);

@@ -37,7 +37,9 @@ describe.concurrent('Test sorting track bundles by source and isLocal.', () => {
           mockParticipant: true,
           mockIsLocal: true,
         }),
-        mockTrackReferenceSubscribed('C', Track.Source.ScreenShare, { mockPublication: true }),
+        mockTrackReferenceSubscribed('C', Track.Source.ScreenShare, {
+          mockPublication: true,
+        }),
         mockTrackReferenceSubscribed('B', Track.Source.ScreenShare, {
           mockPublication: true,
           mockParticipant: true,
@@ -50,8 +52,13 @@ describe.concurrent('Test sorting track bundles by source and isLocal.', () => {
         }),
       ],
     },
-  ])('ScreenShare should come before Camera sources.', ({ unsorted, expected }) => {
-    const result = sortTrackReferences(unsorted);
-    expect(flatTrackReferenceArray(result)).toStrictEqual(flatTrackReferenceArray(expected));
-  });
+  ])(
+    'ScreenShare should come before Camera sources.',
+    ({ unsorted, expected }) => {
+      const result = sortTrackReferences(unsorted);
+      expect(flatTrackReferenceArray(result)).toStrictEqual(
+        flatTrackReferenceArray(expected)
+      );
+    }
+  );
 });

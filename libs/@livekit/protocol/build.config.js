@@ -1,6 +1,6 @@
 // @ts-check
 
-import { defineBuildConfig } from "unbuild";
+import { defineBuildConfig } from 'unbuild';
 
 export default defineBuildConfig({
   declaration: true,

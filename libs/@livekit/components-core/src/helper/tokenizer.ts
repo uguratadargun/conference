@@ -18,7 +18,7 @@ export function tokenize<T extends TokenizeGrammar>(input: string, grammar: T) {
         weight,
         content,
         index: index ?? 0,
-      })),
+      }))
     )
     .flat()
     .sort((a, b) => {

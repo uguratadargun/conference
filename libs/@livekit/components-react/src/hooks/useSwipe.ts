@@ -22,7 +22,10 @@ export type UseSwipeOptions = {
  * ```
  * @alpha
  */
-export function useSwipe(element: React.RefObject<HTMLElement>, options: UseSwipeOptions = {}) {
+export function useSwipe(
+  element: React.RefObject<HTMLElement>,
+  options: UseSwipeOptions = {}
+) {
   const touchStart = React.useRef<number | null>(null);
   const touchEnd = React.useRef<number | null>(null);
 
@@ -53,7 +56,9 @@ export function useSwipe(element: React.RefObject<HTMLElement>, options: UseSwip
   React.useEffect(() => {
     const elementCopy = element.current;
     if (elementCopy) {
-      elementCopy.addEventListener('touchstart', onTouchStart, { passive: true });
+      elementCopy.addEventListener('touchstart', onTouchStart, {
+        passive: true,
+      });
       elementCopy.addEventListener('touchmove', onTouchMove, { passive: true });
       elementCopy.addEventListener('touchend', onTouchEnd, { passive: true });
     }

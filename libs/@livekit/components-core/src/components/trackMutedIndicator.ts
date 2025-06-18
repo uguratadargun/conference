@@ -5,7 +5,9 @@ import { mutedObserver } from '../observables/participant';
 import { prefixClass } from '../styles-interface';
 import type { TrackReferenceOrPlaceholder } from '../track-reference';
 
-export function setupTrackMutedIndicator(trackRef: TrackReferenceOrPlaceholder) {
+export function setupTrackMutedIndicator(
+  trackRef: TrackReferenceOrPlaceholder
+) {
   let classForSource: keyof Styles = 'track-muted-indicator-camera';
   switch (trackRef.source) {
     case Track.Source.Camera:

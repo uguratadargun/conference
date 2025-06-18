@@ -1,5 +1,13 @@
-import type { Participant, ParticipantKind, Track, TrackPublication } from 'livekit-client';
-import type { TrackReference, TrackReferenceOrPlaceholder } from './track-reference';
+import type {
+  Participant,
+  ParticipantKind,
+  Track,
+  TrackPublication,
+} from 'livekit-client';
+import type {
+  TrackReference,
+  TrackReferenceOrPlaceholder,
+} from './track-reference';
 
 // ## PinState Type
 /** @public */
@@ -20,16 +28,23 @@ export const WIDGET_DEFAULT_STATE: WidgetState = {
 };
 
 // ## Track Source Types
-export type TrackSourceWithOptions = { source: Track.Source; withPlaceholder: boolean };
+export type TrackSourceWithOptions = {
+  source: Track.Source;
+  withPlaceholder: boolean;
+};
 
 export type SourcesArray = Track.Source[] | TrackSourceWithOptions[];
 
 // ### Track Source Type Predicates
-export function isSourceWitOptions(source: SourcesArray[number]): source is TrackSourceWithOptions {
+export function isSourceWitOptions(
+  source: SourcesArray[number]
+): source is TrackSourceWithOptions {
   return typeof source === 'object';
 }
 
-export function isSourcesWithOptions(sources: SourcesArray): sources is TrackSourceWithOptions[] {
+export function isSourcesWithOptions(
+  sources: SourcesArray
+): sources is TrackSourceWithOptions[] {
   return (
     Array.isArray(sources) &&
     (sources as TrackSourceWithOptions[]).filter(isSourceWitOptions).length > 0
@@ -37,7 +52,9 @@ export function isSourcesWithOptions(sources: SourcesArray): sources is TrackSou
 }
 
 // ## Loop Filter Types
-export type TrackReferenceFilter = Parameters<TrackReferenceOrPlaceholder[]['filter']>['0'];
+export type TrackReferenceFilter = Parameters<
+  TrackReferenceOrPlaceholder[]['filter']
+>['0'];
 export type ParticipantFilter = Parameters<Participant[]['filter']>['0'];
 
 // ## Other Types
@@ -76,15 +93,24 @@ export type TrackIdentifier<T extends Track.Source = Track.Source> =
   | TrackReference;
 
 // ## Util Types
-type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
-export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
   {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
+    [K in Keys]-?: Required<Pick<T, K>> &
+      Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
 
-export type AudioSource = Track.Source.Microphone | Track.Source.ScreenShareAudio;
+export type AudioSource =
+  | Track.Source.Microphone
+  | Track.Source.ScreenShareAudio;
 export type VideoSource = Track.Source.Camera | Track.Source.ScreenShare;

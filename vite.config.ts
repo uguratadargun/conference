@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,24 +8,24 @@ export default defineConfig({
   resolve: {
     alias: {
       // Development modunda livekit-client'ın kaynak kodunu direkt kullan
-      "livekit-client": path.resolve(
+      'livekit-client': path.resolve(
         __dirname,
-        "./libs/livekit-client/src/index.ts"
+        './libs/livekit-client/src/index.ts'
       ),
-      "@livekit/components-core": path.resolve(
+      '@livekit/components-core': path.resolve(
         __dirname,
-        "./libs/@livekit/components-core/src/index.ts"
+        './libs/@livekit/components-core/src/index.ts'
       ),
-      "@livekit/components-react": path.resolve(
+      '@livekit/components-react': path.resolve(
         __dirname,
-        "./libs/@livekit/components-react/src/index.ts"
+        './libs/@livekit/components-react/src/index.ts'
       ),
     },
   },
   build: {
     // Performance optimizations
-    target: "es2020",
-    minify: "terser",
+    target: 'es2020',
+    minify: 'terser',
     sourcemap: true, // Source map'leri açık tut
     terserOptions: {
       compress: {
@@ -37,9 +37,9 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor chunk for better caching
-          vendor: ["react", "react-dom"],
-          livekit: ["livekit-client"],
-          primereact: ["primereact"],
+          vendor: ['react', 'react-dom'],
+          livekit: ['livekit-client'],
+          primereact: ['primereact'],
         },
       },
     },
@@ -54,20 +54,20 @@ export default defineConfig({
     sourcemapIgnoreList: false, // Source map'leri ignore etme
   },
   // Asset optimizations
-  assetsInclude: ["**/*.woff2", "**/*.woff"],
+  assetsInclude: ['**/*.woff2', '**/*.woff'],
   // CSS optimizations
   css: {
     devSourcemap: true, // Development'ta CSS source map'lerini aç
   },
   // Preload optimization
   optimizeDeps: {
-    include: ["react", "react-dom"],
+    include: ['react', 'react-dom'],
     exclude: [
-      "@vite/client",
-      "@vite/env",
-      "livekit-client",
-      "@livekit/components-core",
-      "@livekit/components-react",
+      '@vite/client',
+      '@vite/env',
+      'livekit-client',
+      '@livekit/components-core',
+      '@livekit/components-react',
     ], // livekit-client'ı optimize etme
   },
 });

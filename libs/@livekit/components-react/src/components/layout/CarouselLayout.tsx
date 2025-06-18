@@ -12,7 +12,8 @@ const ASPECT_RATIO = 16 / 10;
 const ASPECT_RATIO_INVERT = (1 - ASPECT_RATIO) * -1;
 
 /** @public */
-export interface CarouselLayoutProps extends React.HTMLAttributes<HTMLMediaElement> {
+export interface CarouselLayoutProps
+  extends React.HTMLAttributes<HTMLMediaElement> {
   tracks: TrackReferenceOrPlaceholder[];
   children: React.ReactNode;
   /** Place the tiles vertically or horizontally next to each other.
@@ -35,7 +36,11 @@ export interface CarouselLayoutProps extends React.HTMLAttributes<HTMLMediaEleme
  * ```
  * @public
  */
-export function CarouselLayout({ tracks, orientation, ...props }: CarouselLayoutProps) {
+export function CarouselLayout({
+  tracks,
+  orientation,
+  ...props
+}: CarouselLayoutProps) {
   const asideEl = React.useRef<HTMLDivElement>(null);
   const [prevTiles, setPrevTiles] = React.useState(0);
   const { width, height } = useSize(asideEl);
@@ -68,12 +73,20 @@ export function CarouselLayout({ tracks, orientation, ...props }: CarouselLayout
   React.useLayoutEffect(() => {
     if (asideEl.current) {
       asideEl.current.dataset.lkOrientation = carouselOrientation;
-      asideEl.current.style.setProperty('--lk-max-visible-tiles', maxVisibleTiles.toString());
+      asideEl.current.style.setProperty(
+        '--lk-max-visible-tiles',
+        maxVisibleTiles.toString()
+      );
     }
   }, [maxVisibleTiles, carouselOrientation]);
 
   return (
-    <aside key={carouselOrientation} className="lk-carousel" ref={asideEl} {...props}>
+    <aside
+      key={carouselOrientation}
+      className="lk-carousel"
+      ref={asideEl}
+      {...props}
+    >
       <TrackLoop tracks={sortedTiles}>{props.children}</TrackLoop>
     </aside>
   );
