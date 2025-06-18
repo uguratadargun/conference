@@ -5,15 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --noEmit || true && vite build",
+    "build": "npm run build:libs && tsc -b --noEmit || true && vite build",
     "build:skip-ts": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:components-core": "cd libs/@livekit/components-core && npm run build",
-    "build:components-react": "cd libs/@livekit/components-react && npm run build",
-    "build:mutex": "cd libs/@livekit/mutex && npm run build",
-    "build:protocol": "cd libs/@livekit/protocol && npm run build",
-    "build:livekit-client": "cd libs/livekit-client && npm run build",
+    "build:components-core": "cd libs/@livekit/components-core && npm install && npm run build",
+    "build:components-react": "cd libs/@livekit/components-react && npm install && npm run build",
+    "build:mutex": "cd libs/@livekit/mutex && npm install && npm run build",
+    "build:protocol": "cd libs/@livekit/protocol && npm install && npm run build",
+    "build:livekit-client": "cd libs/livekit-client && npm install && npm run build",
     "build:libs": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:components-core && npm run build:components-react"
   },
   "dependencies": {
