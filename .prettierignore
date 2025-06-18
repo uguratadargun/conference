@@ -1,0 +1,20 @@
+# Build outputs
+dist/
+build/
+.vite/
+coverage/
+
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Generated files
+*.min.js
+*.min.css
+libs/@livekit/protocol/src/gen/
+libs/livekit-client/src/room/worker.d.ts
+
+# Configuration files that should maintain specific formatting
+*.proto 
