@@ -1,0 +1,24 @@
+{
+  "name": "livekit-libs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "LiveKit JavaScript/TypeScript libraries monorepo",
+  "devDependencies": {
+    "@livekit/components-core": "file:./@livekit/components-core",
+    "@livekit/components-react": "file:./@livekit/components-react",
+    "@livekit/mutex": "file:./@livekit/mutex",
+    "@livekit/protocol": "file:./@livekit/protocol",
+    "livekit-client": "file:./livekit-client"
+  },
+  "scripts": {
+    "build:components-core": "cd @livekit/components-core && npm run build",
+    "build:components-react": "cd @livekit/components-react && npm run build",
+    "build:mutex": "cd @livekit/mutex && npm run build",
+    "build:protocol": "cd @livekit/protocol && npm run build",
+    "build:livekit-client": "cd livekit-client && npm run build",
+    "build": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:components-core && npm run build:components-react"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

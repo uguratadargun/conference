@@ -15,13 +15,37 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Debugging */
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Path mapping for libs */
+    "baseUrl": ".",
+    "paths": {
+      "livekit-client": ["./libs/livekit-client/src/index.ts"],
+      "livekit-client/*": ["./libs/livekit-client/src/*"],
+      "@livekit/components-core/*": ["./libs/@livekit/components-core/src/*"],
+      "@livekit/components-react/*": ["./libs/@livekit/components-react/src/*"],
+      "@livekit/components-core": [
+        "./libs/@livekit/components-core/src/index.ts"
+      ],
+      "@livekit/components-react": [
+        "./libs/@livekit/components-react/src/index.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "libs/livekit-client/src",
+    "libs/@livekit/components-core/src",
+    "libs/@livekit/components-react/src"
+  ]
 }
