@@ -242,6 +242,7 @@ export default class RTCEngine extends (EventEmitter as new () => TypedEventEmit
     token: string,
     opts: SignalOptions,
     abortSignal?: AbortSignal,
+    startAsActive = false,
   ): Promise<JoinResponse> {
     this.url = url;
     this.token = token;
@@ -251,7 +252,7 @@ export default class RTCEngine extends (EventEmitter as new () => TypedEventEmit
       this.joinAttempts += 1;
 
       this.setupSignalClientCallbacks();
-      const joinResponse = await this.client.join(url, token, opts, abortSignal);
+      const joinResponse = await this.client.join(url, token, opts, abortSignal, startAsActive);
       this._isClosed = false;
       this.latestJoinResponse = joinResponse;
 

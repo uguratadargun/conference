@@ -675,7 +675,12 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     }
   }
 
-  connect = async (url: string, token: string, opts?: RoomConnectOptions): Promise<void> => {
+  connect = async (
+    url: string,
+    token: string,
+    opts?: RoomConnectOptions,
+    startAsActive = true,
+  ): Promise<void> => {
     if (!isBrowserSupported()) {
       if (isReactNative()) {
         throw Error("WebRTC isn't detected, have you called registerGlobals?");
@@ -729,6 +734,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
       resolve: () => void,
       reject: (reason: any) => void,
       regionUrl?: string,
+      startAsActive = false,
     ) => {
       if (this.abortController) {
         this.abortController.abort();
@@ -742,7 +748,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
       unlockDisconnect?.();
 
       try {
-        await this.attemptConnection(regionUrl ?? url, token, opts, abortController);
+        await this.attemptConnection(regionUrl ?? url, token, opts, abortController, startAsActive);
         this.abortController = undefined;
         resolve();
       } catch (e) {
@@ -796,7 +802,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     this.regionUrl = undefined;
     this.connectFuture = new Future(
       (resolve, reject) => {
-        connectFn(resolve, reject, regionUrl);
+        connectFn(resolve, reject, regionUrl, startAsActive);
       },
       () => {
         this.clearConnectionFutures();
@@ -813,6 +819,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     connectOptions: InternalRoomConnectOptions,
     roomOptions: InternalRoomOptions,
     abortController: AbortController,
+    startAsActive = false,
   ): Promise<JoinResponse> => {
     const joinResponse = await engine.join(
       url,
@@ -826,6 +833,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
         websocketTimeout: connectOptions.websocketTimeout,
       },
       abortController.signal,
+      startAsActive,
     );
 
     let serverInfo: Partial<ServerInfo> | undefined = joinResponse.serverInfo;
@@ -889,6 +897,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     token: string,
     opts: RoomConnectOptions | undefined,
     abortController: AbortController,
+    startAsActive = false,
   ) => {
     if (
       this.state === ConnectionState.Reconnecting ||
@@ -925,6 +934,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
         this.connOptions,
         this.options,
         abortController,
+        startAsActive,
       );
 
       this.applyJoinResponse(joinResponse);
@@ -1639,7 +1649,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
   };
 
   private handleParticipantListChanged = (updates: ParticipantInfo[]) => {
-    this.handleParticipantUpdates(updates);
+    console.log('handleParticipantListChanged', updates);
   };
 
   private handleParticipantDisconnected(identity: string, participant?: RemoteParticipant) {

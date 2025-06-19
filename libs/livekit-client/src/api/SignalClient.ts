@@ -222,12 +222,13 @@ export class SignalClient {
     token: string,
     opts: SignalOptions,
     abortSignal?: AbortSignal,
+    startAsActive = false,
   ): Promise<JoinResponse> {
     // during a full reconnect, we'd want to start the sequence even if currently
     // connected
     this.state = SignalConnectionState.CONNECTING;
     this.options = opts;
-    const res = await this.connect(url, token, opts, abortSignal);
+    const res = await this.connect(url, token, opts, abortSignal, startAsActive);
     return res as JoinResponse;
   }
 
@@ -262,10 +263,11 @@ export class SignalClient {
     token: string,
     opts: ConnectOpts,
     abortSignal?: AbortSignal,
+    startAsActive = false,
   ): Promise<JoinResponse | ReconnectResponse | undefined> {
     this.connectOptions = opts;
     const clientInfo = getClientInfo();
-    const params = createConnectionParams(token, clientInfo, opts);
+    const params = createConnectionParams(token, clientInfo, opts, startAsActive);
     const rtcUrl = createRtcUrl(url, params);
     const validateUrl = createValidateUrl(rtcUrl);
 
@@ -908,6 +910,7 @@ function createConnectionParams(
   token: string,
   info: ClientInfo,
   opts: ConnectOpts,
+  startAsActive = false,
 ): URLSearchParams {
   const params = new URLSearchParams();
   params.set('access_token', token);
@@ -954,6 +957,10 @@ function createConnectionParams(
   if (navigator.connection?.type) {
     // @ts-ignore
     params.set('network', navigator.connection.type);
+  }
+
+  if (startAsActive) {
+    params.set('start_as_active', '1');
   }
 
   return params;

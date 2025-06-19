@@ -128,6 +128,9 @@ message ParticipantInfo {
     ACTIVE = 2;
     // WS disconnected
     DISCONNECTED = 3;
+    RINGING = 4;
+    BUSY = 5;
+    DENIED = 6;
   }
   enum Kind {
     // standard participants, e.g. web clients
