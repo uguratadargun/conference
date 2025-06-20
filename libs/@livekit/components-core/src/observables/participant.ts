@@ -1,4 +1,8 @@
-import type { ParticipantPermission } from '@livekit/protocol';
+import type {
+  ParticipantPermission,
+  ParticipantInfo,
+  ParticipantInfo_State,
+} from '@livekit/protocol';
 import {
   Participant,
   RemoteParticipant,
@@ -232,6 +236,65 @@ export function connectedParticipantsObserver(
   if (room.remoteParticipants.size > 0) {
     subscriber?.next(Array.from(room.remoteParticipants.values()));
   }
+  return observable;
+}
+
+export function listParticipantsObserver(
+  room: Room,
+  options: ConnectedParticipantsObserverOptions = {}
+): Observable<{
+  ringingParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  all: Map<
+    string,
+    {
+      participant: RemoteParticipant | ParticipantInfo;
+      state: ParticipantInfo_State;
+    }
+  >;
+}> {
+  type ParticipantsList = {
+    ringingParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    all: Map<
+      string,
+      {
+        participant: RemoteParticipant | ParticipantInfo;
+        state: ParticipantInfo_State;
+      }
+    >;
+  };
+
+  let subscriber: Subscriber<ParticipantsList> | undefined;
+
+  const observable = new Observable<ParticipantsList>(sub => {
+    subscriber = sub;
+    return () => listener.unsubscribe();
+  }).pipe(startWith(room.participantsList));
+
+  const additionalRoomEvents = options.additionalRoomEvents ?? [];
+
+  const roomEvents = Array.from(
+    new Set([
+      RoomEvent.ParticipantConnected,
+      RoomEvent.ParticipantDisconnected,
+      RoomEvent.ConnectionStateChanged,
+      ...additionalRoomEvents,
+    ])
+  );
+
+  const listener = observeRoomEvents(room, ...roomEvents).subscribe(r =>
+    subscriber?.next(r.participantsList)
+  );
+
+  if (room.participantsList.all.size > 0) {
+    subscriber?.next(room.participantsList);
+  }
+
   return observable;
 }
 

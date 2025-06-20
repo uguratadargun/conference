@@ -86,6 +86,8 @@ export interface LiveKitRoomProps
    * @internal
    */
   featureFlags?: FeatureFlags;
+
+  startAsActive?: boolean;
 }
 
 /**

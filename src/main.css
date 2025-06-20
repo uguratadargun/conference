@@ -154,7 +154,7 @@
   border-bottom: 1px solid var(--overlay-border);
   z-index: 100;
   height: 5vh;
-  transition: width var(--transition-fast);
+  transition: right var(--transition-medium);
 }
 
 .status-item {
@@ -241,7 +241,7 @@
   background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(16px);
   height: 8vh;
-  transition: width var(--transition-fast);
+  transition: right var(--transition-medium);
 }
 
 .controls-panel {
@@ -266,13 +266,16 @@
 
 /* Sidebar adjustments */
 .conference-container.sidebar-open .top-status-bar,
+.conference-container.sidebar-open .controls-container {
+  right: 350px;
+  transition: right var(--transition-medium);
+}
+
 .conference-container.sidebar-open .participants-grid,
-.conference-container.sidebar-open .fullscreen-container,
-.conference-container.sidebar-open .controls-container,
 .conference-container.sidebar-open .fullscreen-container,
 .conference-container.sidebar-open .one-to-one-container {
   width: calc(100% - 350px);
-  transition: width var(--transition-fast);
+  transition: width var(--transition-medium);
 }
 
 .conference-container.sidebar-open .thumbnails-container {
@@ -291,7 +294,7 @@
   padding: var(--spacing-lg);
   contain: layout style;
   will-change: contents;
-  transition: width var(--transition-fast);
+  transition: width var(--transition-medium);
   background-image: url('./images/call-bg.png');
 }
 
@@ -882,6 +885,79 @@
   background: var(--secondary-bg);
   color: var(--white);
   padding: 8px;
+}
+
+/* ====== 6. Settings Sidebar ====== */
+
+/* Settings Sidebar */
+.settings-sidebar-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  width: 350px;
+}
+
+.settings-sidebar {
+  background-color: var(--secondary-bg);
+  border-left: none;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  border-radius: 0;
+  animation: slide-in 0.2s ease-out forwards;
+}
+
+.settings-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.settings-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+.settings-sections {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.settings-section-header .material-icons {
+  font-size: 20px;
+  color: var(--overlay-text);
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+}
+
+.settings-section-title {
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
 }
 
 /* ====== 7. Participant Sidebar ====== */

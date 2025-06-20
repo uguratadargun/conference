@@ -140,6 +140,17 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
    */
   remoteParticipants: Map<string, RemoteParticipant>;
 
+  participantsList: {
+    ringingParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    all: Map<
+      string,
+      { participant: RemoteParticipant | ParticipantInfo; state: ParticipantInfo_State }
+    >;
+  };
+
   /**
    * list of participants that are actively speaking. when this changes
    * a [[RoomEvent.ActiveSpeakersChanged]] event is fired
@@ -218,6 +229,13 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     super();
     this.setMaxListeners(100);
     this.remoteParticipants = new Map();
+    this.participantsList = {
+      ringingParticipants: new Map(),
+      deniedParticipants: new Map(),
+      busyParticipants: new Map(),
+      leftParticipants: new Map(),
+      all: new Map(),
+    };
     this.sidToIdentity = new Map();
     this.options = { ...roomOptionDefaults, ...options };
 
@@ -679,7 +697,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     url: string,
     token: string,
     opts?: RoomConnectOptions,
-    startAsActive = true,
+    startAsActive = false,
   ): Promise<void> => {
     if (!isBrowserSupported()) {
       if (isReactNative()) {
@@ -1421,6 +1439,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     // clear out existing remote participants, since they may have attached
     // the old engine
     this.remoteParticipants.clear();
+    this.clearParticipantLists();
     this.sidToIdentity.clear();
     this.bufferedEvents = [];
     this.maybeCreateEngine();
@@ -1604,6 +1623,7 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
       this.localParticipant.audioTrackPublications.clear();
 
       this.remoteParticipants.clear();
+      this.clearParticipantLists();
       this.sidToIdentity.clear();
       this.activeSpeakers = [];
       if (this.audioContext && typeof this.options.webAudioMix === 'boolean') {
@@ -1648,8 +1668,34 @@ class Room extends (EventEmitter as new () => TypedEmitter<RoomEventCallbacks>) 
     });
   };
 
+  private clearParticipantLists() {
+    this.participantsList.ringingParticipants.clear();
+    this.participantsList.deniedParticipants.clear();
+    this.participantsList.busyParticipants.clear();
+    this.participantsList.leftParticipants.clear();
+    this.participantsList.all.clear();
+  }
+
   private handleParticipantListChanged = (updates: ParticipantInfo[]) => {
-    console.log('handleParticipantListChanged', updates);
+    this.clearParticipantLists();
+    updates.forEach((update) => {
+      // Add to unified participantsList.all
+      this.participantsList.all.set(update.identity, {
+        participant: update,
+        state: update.state,
+      });
+
+      // Add to specific state maps in participantsList
+      if (update.state === ParticipantInfo_State.RINGING) {
+        this.participantsList.ringingParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.DENIED) {
+        this.participantsList.deniedParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.BUSY) {
+        this.participantsList.busyParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.DISCONNECTED) {
+        this.participantsList.leftParticipants.set(update.identity, update);
+      }
+    });
   };
 
   private handleParticipantDisconnected(identity: string, participant?: RemoteParticipant) {

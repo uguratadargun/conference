@@ -1,9 +1,8 @@
 import React from 'react';
-import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { useMediaDeviceSelect } from '@livekit/components-react';
 
-// Settings Dialog Component
+// Settings Sidebar Component
 const SettingsDialog: React.FC<{
   visible: boolean;
   onHide: () => void;
@@ -26,74 +25,104 @@ const SettingsDialog: React.FC<{
     setActiveMediaDevice: setAudioOutput,
   } = useMediaDeviceSelect({ kind: 'audiooutput' });
 
+  if (!visible) return null;
+
   return (
-    <Dialog
-      visible={visible}
-      onHide={onHide}
-      className="settings-dialog"
-      header="Device Settings"
-      style={{ width: '600px' }}
-    >
-      <div className="settings-content">
-        <div className="device-section">
-          <h4>
-            <span className="material-icons">mic</span>
-            Microphone
-          </h4>
-          <select
-            className="device-select"
-            value={activeAudioInput || ''}
-            onChange={e => setAudioInput(e.target.value)}
-          >
-            {audioInputs.map(device => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="settings-sidebar-container">
+      <div className="settings-sidebar">
+        <div className="settings-sidebar-content">
+          {/* Header */}
+          <div className="sidebar-header">
+            <div className="icon-circle">
+              <span className="material-icons">settings</span>
+            </div>
+            <h2 className="sidebar-title">Device Settings</h2>
+            <div className="settings-subtitle">
+              Configure your audio and video devices
+            </div>
+            <Button className="close-sidebar-button" onClick={onHide}>
+              <span className="material-icons">close</span>
+            </Button>
+          </div>
 
-        <div className="device-section">
-          <h4>
-            <span className="material-icons">videocam</span>
-            Camera
-          </h4>
-          <select
-            className="device-select"
-            value={activeVideoInput || ''}
-            onChange={e => setVideoInput(e.target.value)}
-          >
-            {videoInputs.map(device => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Settings Content */}
+          <div className="settings-sections">
+            {/* Microphone Section */}
+            <div className="settings-section">
+              <div className="settings-section-header">
+                <span className="material-icons">mic</span>
+                <h3 className="settings-section-title">Microphone</h3>
+              </div>
+              <select
+                className="device-select"
+                value={activeAudioInput || ''}
+                onChange={e => setAudioInput(e.target.value)}
+              >
+                <option value="" disabled>
+                  {audioInputs.length === 0
+                    ? 'No microphones found'
+                    : 'Select microphone'}
+                </option>
+                {audioInputs.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label ||
+                      `Microphone ${device.deviceId.slice(0, 8)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="device-section">
-          <h4>
-            <span className="material-icons">volume_up</span>
-            Speaker
-          </h4>
-          <select
-            className="device-select"
-            value={activeAudioOutput || ''}
-            onChange={e => setAudioOutput(e.target.value)}
-          >
-            {audioOutputs.map(device => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label}
-              </option>
-            ))}
-          </select>
-        </div>
+            {/* Camera Section */}
+            <div className="settings-section">
+              <div className="settings-section-header">
+                <span className="material-icons">videocam</span>
+                <h3 className="settings-section-title">Camera</h3>
+              </div>
+              <select
+                className="device-select"
+                value={activeVideoInput || ''}
+                onChange={e => setVideoInput(e.target.value)}
+              >
+                <option value="" disabled>
+                  {videoInputs.length === 0
+                    ? 'No cameras found'
+                    : 'Select camera'}
+                </option>
+                {videoInputs.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label || `Camera ${device.deviceId.slice(0, 8)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="settings-actions">
-          <Button label="Close" onClick={onHide} className="close-button" />
+            {/* Speaker Section */}
+            <div className="settings-section">
+              <div className="settings-section-header">
+                <span className="material-icons">volume_up</span>
+                <h3 className="settings-section-title">Speaker</h3>
+              </div>
+              <select
+                className="device-select"
+                value={activeAudioOutput || ''}
+                onChange={e => setAudioOutput(e.target.value)}
+              >
+                <option value="" disabled>
+                  {audioOutputs.length === 0
+                    ? 'No speakers found'
+                    : 'Select speaker'}
+                </option>
+                {audioOutputs.map(device => (
+                  <option key={device.deviceId} value={device.deviceId}>
+                    {device.label || `Speaker ${device.deviceId.slice(0, 8)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-    </Dialog>
+    </div>
   );
 };
 

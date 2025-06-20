@@ -57,23 +57,30 @@ const NAME_COLORS = [
   '#CCB3FF',
 ];
 
+// Function to get a consistent color index based on participant identity
+const getParticipantColorIndex = (participantIdentity: string): number => {
+  let hash = 0;
+  for (let i = 0; i < participantIdentity.length; i++) {
+    const char = participantIdentity.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash);
+};
+
 // CustomParticipantTile Component
 const CustomParticipantTile: React.FC<{
   participant: Participant;
   idx: number;
   onMaximize?: () => void;
-}> = ({ participant, idx, onMaximize }) => {
-  const borderColor = BORDER_COLORS[idx % BORDER_COLORS.length];
-  const nameColor = NAME_COLORS[idx % NAME_COLORS.length];
+  showVoiceIndicator?: boolean;
+}> = ({ participant, idx, onMaximize, showVoiceIndicator = true }) => {
+  // Use participant identity for consistent colors instead of index
+  const colorIndex = getParticipantColorIndex(participant.identity);
+  const borderColor = BORDER_COLORS[colorIndex % BORDER_COLORS.length];
+  const nameColor = NAME_COLORS[colorIndex % NAME_COLORS.length];
 
-  const displayName = participant.isLocal
-    ? 'You'
-    : participant.name?.startsWith('user_')
-      ? `User ${
-          participant.name.split('_')[2]?.slice(0, 4) ||
-          participant.name.slice(-4)
-        }`
-      : participant.name || 'Anonymous';
+  const displayName = participant.name || participant.identity;
 
   const initials = displayName
     .split(' ')
@@ -98,7 +105,13 @@ const CustomParticipantTile: React.FC<{
       />
 
       <div className="participant-content-container">
-        <div className="participant-name" style={{ color: nameColor }}>
+        <div
+          className="participant-name"
+          style={{
+            color: nameColor,
+            display: !participant.isCameraEnabled ? 'flex' : 'none',
+          }}
+        >
           <div className="name-container">{displayName}</div>
         </div>
 
@@ -111,21 +124,24 @@ const CustomParticipantTile: React.FC<{
           </span>
         </div>
 
-        <div
-          className={`audio-waveform-container${
-            participant.isSpeaking ? ' speaking' : ' silent'
-          }`}
-        >
-          <div className="audio-waveform">
-            {[...Array(9)].map((_, i) => (
-              <div
-                key={i}
-                className="waveform-bar"
-                style={{ backgroundColor: nameColor }}
-              />
-            ))}
+        {showVoiceIndicator && !participant.isCameraEnabled && (
+          <div
+            className={`audio-waveform-container${
+              participant.isSpeaking ? ' speaking' : ' silent'
+            }`}
+            style={{ display: 'flex' }}
+          >
+            <div className="audio-waveform">
+              {[...Array(9)].map((_, i) => (
+                <div
+                  key={i}
+                  className="waveform-bar"
+                  style={{ backgroundColor: nameColor }}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {!participant.isMicrophoneEnabled && (

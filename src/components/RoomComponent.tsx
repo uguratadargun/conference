@@ -71,6 +71,7 @@ const RoomComponent: React.FC = () => {
           videoCodec: 'h264',
         },
       }}
+      startAsActive={true}
     >
       <ConferenceComponent />
     </LiveKitRoom>

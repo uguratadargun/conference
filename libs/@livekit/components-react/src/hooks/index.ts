@@ -49,6 +49,10 @@ export {
   type UseRemoteParticipantsOptions,
   useRemoteParticipants,
 } from './useRemoteParticipants';
+export {
+  type UseParticipantsListOptions,
+  useParticipantsList,
+} from './useParticipantsList';
 export { type UseRoomInfoOptions, useRoomInfo } from './useRoomInfo';
 export { useSortedParticipants } from './useSortedParticipants';
 export { useSpeakingParticipants } from './useSpeakingParticipants';

@@ -14,7 +14,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   remoteParticipant,
   localParticipant,
 }) => {
-  const [layout, setLayout] = useState<LayoutType>('standard');
+  const [layout, setLayout] = useState<LayoutType>('no-video');
   // State to track if participants are swapped
   const [isSwapped, setIsSwapped] = useState(false);
 

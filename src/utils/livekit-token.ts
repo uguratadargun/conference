@@ -5,20 +5,12 @@ export const generateToken = async (): Promise<{
   url: string;
   token: string;
 }> => {
-  // Generate a more unique username to avoid duplicates
-  const timestamp = Date.now().toString(36); // Convert timestamp to base36 for shorter string
-
-  // Use crypto.getRandomValues if available for better randomness
-  let randomPart: string;
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    const array = new Uint32Array(1);
-    crypto.getRandomValues(array);
-    randomPart = array[0].toString(36);
-  } else {
-    randomPart = Math.floor(Math.random() * 999999).toString(36);
-  }
-
-  const username = `user_${timestamp}_${randomPart}`;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const randomPart = Array.from(
+    { length: 3 },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join('');
+  const username = `user_UGUR_${randomPart}`;
 
   console.log(`Generated unique username: ${username}`);
 

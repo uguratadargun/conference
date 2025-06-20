@@ -47,6 +47,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
     onMediaDeviceFailure,
     onEncryptionError,
     simulateParticipants,
+    startAsActive,
     ...rest
   } = { ...defaultRoomProps, ...props };
   if (options && passedRoom) {
@@ -162,7 +163,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
         onError?.(Error('no livekit url provided'));
         return;
       }
-      room.connect(serverUrl, token, connectOptions).catch(e => {
+      room.connect(serverUrl, token, connectOptions, startAsActive).catch(e => {
         log.warn(e);
         if (shouldConnect.current === true) {
           onError?.(e as Error);

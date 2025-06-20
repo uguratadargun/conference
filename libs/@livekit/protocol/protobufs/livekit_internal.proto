@@ -177,6 +177,7 @@ message StartSession {
   optional bool subscriber_allow_pause = 18;
   bool disable_ice_lite = 19;
   livekit.CreateRoomRequest create_room = 20;
+  string start_as_active = 21;
 }
 
 // room info that should not be returned to clients

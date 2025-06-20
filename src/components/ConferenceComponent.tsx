@@ -5,15 +5,17 @@ import {
   useParticipants,
   useConnectionState,
   useRoomContext,
+  useParticipantsList,
 } from '@livekit/components-react';
-import { ConnectionState } from 'livekit-client';
+import { ConnectionState, RemoteParticipant } from 'livekit-client';
 import { Button } from 'primereact/button';
 import CustomParticipantTile from './CustomParticipantTile';
 import SettingsDialog from './SettingsDialog';
 import ParticipantListSidebar from './ParticipantListSidebar';
 import ControlBar from './ControlBar';
 import OneToOneCallView from './OneToOneCallView';
-
+import TopStatusBar from './TopStatusBar';
+import ThumbnailsContainer from './ThumbnailsContainer';
 // Grid layout helpers
 const getGridClassName = (count: number) => {
   if (count === 1) return 'grid-1';
@@ -30,6 +32,7 @@ const getGridClassName = (count: number) => {
 // Main Room Component that uses LiveKit hooks
 const ConferenceComponent: React.FC = () => {
   const participants = useParticipants();
+  const participantsList = useParticipantsList();
   const connectionState = useConnectionState();
   const { localParticipant } = useLocalParticipant();
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
@@ -113,54 +116,16 @@ const ConferenceComponent: React.FC = () => {
   return (
     <div
       className={`conference-container ${
-        showParticipantList ? 'sidebar-open' : ''
+        showParticipantList || showSettings ? 'sidebar-open' : ''
       }`}
     >
       {/* Top Status Bar */}
-      <div className="top-status-bar">
-        <div
-          className={`status-item connection-status ${
-            connectionState === ConnectionState.Connected
-              ? 'connected'
-              : connectionState === ConnectionState.Connecting ||
-                  connectionState === ConnectionState.Reconnecting
-                ? 'connecting'
-                : 'disconnected'
-          }`}
-        >
-          <span className="material-icons">
-            {connectionState === ConnectionState.Connected
-              ? 'wifi'
-              : connectionState === ConnectionState.Connecting ||
-                  connectionState === ConnectionState.Reconnecting
-                ? 'sync'
-                : 'wifi_off'}
-          </span>
-          <span>
-            {connectionState === ConnectionState.Connected
-              ? 'Connected'
-              : connectionState === ConnectionState.Connecting ||
-                  connectionState === ConnectionState.Reconnecting
-                ? 'Connecting...'
-                : 'Disconnected'}
-          </span>
-        </div>
-
-        {/* Participant List Button */}
-        {!showParticipantList && (
-          <div className="status-item participant-list-button">
-            <Button
-              icon={<span className="material-icons">people_alt</span>}
-              onClick={() => setShowParticipantList(true)}
-              className="p-button-text"
-              tooltipOptions={{ position: 'bottom' }}
-              label={`${participants.length} participant${
-                participants.length !== 1 ? 's' : ''
-              }`}
-            />
-          </div>
-        )}
-      </div>
+      <TopStatusBar
+        connectionState={connectionState as ConnectionState}
+        participants={participants}
+        showParticipantList={showParticipantList}
+        onShowParticipantList={() => setShowParticipantList(true)}
+      />
 
       {/* Main Video Area */}
       {fullscreenParticipant ? (
@@ -172,19 +137,10 @@ const ConferenceComponent: React.FC = () => {
             className="exit-fullscreen-button"
             title="Exit fullscreen"
           />
-          {otherParticipants.length > 0 && (
-            <div className="thumbnails-container">
-              {otherParticipants.map((participant, idx) => (
-                <div key={participant.identity} className="thumbnail-wrapper">
-                  <CustomParticipantTile
-                    participant={participant}
-                    idx={idx + 1}
-                    onMaximize={() => enterFullScreen(participant.identity)}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+          <ThumbnailsContainer
+            otherParticipants={otherParticipants}
+            enterFullScreen={enterFullScreen}
+          />
         </div>
       ) : isOneToOneView && remoteParticipant && localParticipantObj ? (
         <OneToOneCallView
@@ -228,6 +184,26 @@ const ConferenceComponent: React.FC = () => {
         visible={showParticipantList}
         onHide={() => setShowParticipantList(false)}
         participants={participants}
+        ringingParticipants={
+          Array.from(
+            participantsList.ringingParticipants.values()
+          ) as RemoteParticipant[]
+        }
+        deniedParticipants={
+          Array.from(
+            participantsList.deniedParticipants.values()
+          ) as RemoteParticipant[]
+        }
+        busyParticipants={
+          Array.from(
+            participantsList.busyParticipants.values()
+          ) as RemoteParticipant[]
+        }
+        leftParticipants={
+          Array.from(
+            participantsList.leftParticipants.values()
+          ) as RemoteParticipant[]
+        }
       />
     </div>
   );
