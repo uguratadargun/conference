@@ -55,6 +55,7 @@ message SignalRequest {
     UpdateLocalAudioTrack update_audio_track = 17;
     // Update local video track settings
     UpdateLocalVideoTrack update_video_track = 18;
+    bool set_active = 19;
   }
 }
 
@@ -107,7 +108,6 @@ message SignalResponse {
     TrackSubscribed track_subscribed = 23;
     // notify to the participant when they have been moved to a new room
     RoomMovedResponse room_moved = 24;
-    ParticipantListChanged participant_list_changed = 25;
 
   }
 }
@@ -219,6 +219,7 @@ message SessionDescription {
 
 message ParticipantUpdate {
   repeated ParticipantInfo participants = 1;
+  repeated ParticipantInfo all_participants = 2;
 }
 
 message UpdateSubscription {
@@ -306,10 +307,6 @@ message SpeakersChanged {
 
 message RoomUpdate {
   Room room = 1;
-}
-
-message ParticipantListChanged {
-  repeated ParticipantInfo participants = 1;
 }
 
 message ConnectionQualityInfo {

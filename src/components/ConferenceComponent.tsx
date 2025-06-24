@@ -100,6 +100,10 @@ const ConferenceComponent: React.FC = () => {
     setShowSettings(true);
   }, []);
 
+  const setActive = () => {
+    room?.setActive();
+  };
+
   const gridClassName = getGridClassName(participants.length);
   const fullscreenParticipant = participants.find(
     p => p.identity === fullScreenParticipant
@@ -168,6 +172,7 @@ const ConferenceComponent: React.FC = () => {
         toggleVideo={toggleVideo}
         disconnect={disconnect}
         openSettings={openSettings}
+        setActive={setActive}
       />
 
       {/* Audio Renderer for spatial audio */}
@@ -183,7 +188,6 @@ const ConferenceComponent: React.FC = () => {
       <ParticipantListSidebar
         visible={showParticipantList}
         onHide={() => setShowParticipantList(false)}
-        participants={participants}
         ringingParticipants={
           Array.from(
             participantsList.ringingParticipants.values()
@@ -202,6 +206,11 @@ const ConferenceComponent: React.FC = () => {
         leftParticipants={
           Array.from(
             participantsList.leftParticipants.values()
+          ) as RemoteParticipant[]
+        }
+        activeParticipants={
+          Array.from(
+            participantsList.activeParticipants.values()
           ) as RemoteParticipant[]
         }
       />

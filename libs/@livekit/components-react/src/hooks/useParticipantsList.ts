@@ -1,5 +1,6 @@
 import { listParticipantsObserver } from '@livekit/components-core';
 import type { RoomEvent, RemoteParticipant, Room } from 'livekit-client';
+import type { ParticipantInfo, ParticipantInfo_State } from '@livekit/protocol';
 import * as React from 'react';
 import { useEnsureRoom } from '../context';
 
@@ -33,14 +34,34 @@ export interface UseParticipantsListOptions {
  */
 export function useParticipantsList(options: UseParticipantsListOptions = {}) {
   const room = useEnsureRoom(options.room);
-  const [participants, setParticipants] = React.useState<
-    typeof room.participantsList
-  >(room.participantsList);
+  const [participants, setParticipants] = React.useState<{
+    ringingParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    all: Map<
+      string,
+      {
+        participant: RemoteParticipant | ParticipantInfo;
+        state: ParticipantInfo_State;
+      }
+    >;
+  }>({
+    ringingParticipants: room.participantsList.ringingParticipants,
+    deniedParticipants: room.participantsList.deniedParticipants,
+    busyParticipants: room.participantsList.busyParticipants,
+    leftParticipants: room.participantsList.leftParticipants,
+    activeParticipants: room.participantsList.activeParticipants,
+    all: room.participantsList.all,
+  });
 
   React.useEffect(() => {
     const listener = listParticipantsObserver(room, {
       additionalRoomEvents: options.updateOnlyOn,
-    }).subscribe(newParticipants => setParticipants(newParticipants));
+    }).subscribe(newParticipants => {
+      setParticipants(newParticipants);
+    });
     return () => listener.unsubscribe();
   }, [room, JSON.stringify(options.updateOnlyOn)]);
   return participants;

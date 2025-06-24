@@ -247,6 +247,7 @@ export function listParticipantsObserver(
   deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   all: Map<
     string,
     {
@@ -260,6 +261,7 @@ export function listParticipantsObserver(
     deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<
       string,
       {
@@ -279,12 +281,7 @@ export function listParticipantsObserver(
   const additionalRoomEvents = options.additionalRoomEvents ?? [];
 
   const roomEvents = Array.from(
-    new Set([
-      RoomEvent.ParticipantConnected,
-      RoomEvent.ParticipantDisconnected,
-      RoomEvent.ConnectionStateChanged,
-      ...additionalRoomEvents,
-    ])
+    new Set([RoomEvent.ParticipantListChanged, ...additionalRoomEvents])
   );
 
   const listener = observeRoomEvents(room, ...roomEvents).subscribe(r =>

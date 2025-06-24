@@ -656,6 +656,13 @@ export class SignalClient {
     });
   }
 
+  sendSetActive() {
+    return this.sendRequest({
+      case: 'setActive',
+      value: true,
+    });
+  }
+
   async sendRequest(message: SignalMessage, fromQueue: boolean = false) {
     // capture all requests while reconnecting and put them in a queue
     // unless the request originates from the queue, then don't enqueue again
@@ -717,6 +724,9 @@ export class SignalClient {
         this.onTrickle(candidate, msg.value.target);
       }
     } else if (msg.case === 'update') {
+      if (msg.value.allParticipants && msg.value.allParticipants.length > 0) {
+        this.onParticipantListChanged(msg.value.allParticipants);
+      }
       if (this.onParticipantUpdate) {
         this.onParticipantUpdate(msg.value.participants ?? []);
       }
@@ -787,10 +797,6 @@ export class SignalClient {
       }
       if (this.onRoomMoved) {
         this.onRoomMoved(msg.value);
-      }
-    } else if (msg.case === 'participantListChanged') {
-      if (this.onParticipantListChanged) {
-        this.onParticipantListChanged(msg.value.participants);
       }
     } else {
       this.log.debug('unsupported message', { ...this.logContext, msgCase: msg.case });

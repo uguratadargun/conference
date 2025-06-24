@@ -1,5 +1,11 @@
 import { AccessToken } from 'livekit-server-sdk';
-import { LIVEKIT_CONFIG } from '../config/livekit';
+
+const LIVEKIT_CONFIG = {
+  apiKey: 'APIB6KUGSRtzEGw',
+  apiSecret: 'bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K',
+  projectName: 'ugurdargun-w5ph6ze0',
+  roomName: 'test3',
+} as const;
 
 export const generateToken = async (): Promise<{
   url: string;

@@ -352,6 +352,14 @@ export enum RoomEvent {
    * fired when the client receives connection metrics from other participants
    */
   MetricsReceived = 'metricsReceived',
+
+  /**
+   * Emitted when the list of participants in the room changes.
+   * This includes when participants join or leave the room.
+   *
+   * args: (participants: [[Participant]][])
+   */
+  ParticipantListChanged = 'participantListChanged',
 }
 
 export enum ParticipantEvent {

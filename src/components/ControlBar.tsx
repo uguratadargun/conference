@@ -8,6 +8,7 @@ interface ControlBarProps {
   toggleVideo: () => void;
   disconnect: () => void;
   openSettings: () => void;
+  setActive: () => void;
 }
 
 const ControlBar: React.FC<ControlBarProps> = ({
@@ -16,6 +17,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
   toggleVideo,
   disconnect,
   openSettings,
+  setActive,
 }) => {
   return (
     <div className="controls-container">
@@ -78,6 +80,16 @@ const ControlBar: React.FC<ControlBarProps> = ({
           <Button
             icon={<span className="material-icons">settings</span>}
             onClick={openSettings}
+            className="control-button settings-button"
+            tooltip="Settings"
+            tooltipOptions={{ position: 'top' }}
+          />
+        </div>
+
+        <div className="control-group">
+          <Button
+            icon={<span className="material-icons">check_circle</span>}
+            onClick={setActive}
             className="control-button settings-button"
             tooltip="Settings"
             tooltipOptions={{ position: 'top' }}

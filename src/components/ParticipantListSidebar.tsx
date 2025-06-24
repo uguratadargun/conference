@@ -5,21 +5,21 @@ import { Button } from 'primereact/button';
 interface ParticipantListSidebarProps {
   visible: boolean;
   onHide: () => void;
-  participants: Participant[];
   ringingParticipants: RemoteParticipant[];
   deniedParticipants: RemoteParticipant[];
   busyParticipants: RemoteParticipant[];
   leftParticipants: RemoteParticipant[];
+  activeParticipants: RemoteParticipant[];
 }
 
 const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   visible,
   onHide,
-  participants,
   ringingParticipants,
   deniedParticipants,
   busyParticipants,
   leftParticipants,
+  activeParticipants,
 }) => {
   if (!visible) return null;
 
@@ -83,7 +83,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             </div>
             <h2 className="sidebar-title">Group voice call</h2>
             <div className="participant-count">
-              {participants.length} Connected
+              {activeParticipants.length} Connected
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
               <span className="material-icons">close</span>
@@ -101,7 +101,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           {/* Participant Sections */}
           {renderSection(
             'In this call',
-            participants,
+            activeParticipants,
             'No participants in the call'
           )}
           {renderSection(
@@ -122,4 +122,4 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   );
 };
 
-export default React.memo(ParticipantListSidebar);
+export default ParticipantListSidebar;

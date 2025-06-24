@@ -1,10 +1,3 @@
-export const LIVEKIT_CONFIG = {
-  apiKey: 'APIB6KUGSRtzEGw',
-  apiSecret: 'bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K',
-  projectName: 'ugurdargun-w5ph6ze0',
-  roomName: 'test2',
-} as const;
-
 export const ROOM_OPTIONS = {
   adaptiveStream: true,
   dynacast: true,
