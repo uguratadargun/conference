@@ -99,23 +99,32 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
 
           {/* Participant Sections */}
-          {renderSection(
-            'In this call',
-            activeParticipants,
-            'No participants in the call'
-          )}
-          {renderSection(
-            'Ringing',
-            ringingParticipants,
-            'No participants ringing'
-          )}
-          {renderSection(
-            'Denied',
-            deniedParticipants,
-            'No denied participants'
-          )}
-          {renderSection('Busy', busyParticipants, 'No busy participants')}
-          {renderSection('Left', leftParticipants, 'No participants have left')}
+          {activeParticipants.length > 0 &&
+            renderSection(
+              'In this call',
+              activeParticipants,
+              'No participants in the call'
+            )}
+          {ringingParticipants.length > 0 &&
+            renderSection(
+              'Ringing',
+              ringingParticipants,
+              'No participants ringing'
+            )}
+          {deniedParticipants.length > 0 &&
+            renderSection(
+              'Denied',
+              deniedParticipants,
+              'No denied participants'
+            )}
+          {busyParticipants.length > 0 &&
+            renderSection('Busy', busyParticipants, 'No busy participants')}
+          {leftParticipants.length > 0 &&
+            renderSection(
+              'Left',
+              leftParticipants,
+              'No participants have left'
+            )}
         </div>
       </div>
     </div>
