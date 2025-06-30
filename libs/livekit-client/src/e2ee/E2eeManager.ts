@@ -25,6 +25,7 @@ import type {
   RTPVideoMapMessage,
   RatchetRequestMessage,
   RemoveTransformMessage,
+  ScriptTransformOptions,
   SetKeyMessage,
   SifTrailerMessage,
   UpdateCodecMessage,
@@ -220,8 +221,9 @@ export class E2EEManager
           this.room.localParticipant.identity,
         );
       });
-    room.localParticipant.on(ParticipantEvent.LocalTrackPublished, async (publication) => {
-      this.setupE2EESender(publication.track!, publication.track!.sender!);
+
+    room.localParticipant.on(ParticipantEvent.LocalSenderCreated, async (sender, track) => {
+      this.setupE2EESender(track, sender);
     });
 
     keyProvider
@@ -345,7 +347,7 @@ export class E2EEManager
     }
 
     if (isScriptTransformSupported()) {
-      const options = {
+      const options: ScriptTransformOptions = {
         kind: 'decode',
         participantIdentity,
         trackId,
@@ -371,6 +373,7 @@ export class E2EEManager
       let writable: WritableStream = receiver.writableStream;
       // @ts-ignore
       let readable: ReadableStream = receiver.readableStream;
+
       if (!writable || !readable) {
         // @ts-ignore
         const receiverStreams = receiver.createEncodedStreams();
@@ -390,6 +393,7 @@ export class E2EEManager
           trackId: trackId,
           codec,
           participantIdentity: participantIdentity,
+          isReuse: E2EE_FLAG in receiver,
         },
       };
       this.worker.postMessage(msg, [readable, writable]);
@@ -435,6 +439,7 @@ export class E2EEManager
           codec,
           trackId,
           participantIdentity: this.room.localParticipant.identity,
+          isReuse: false,
         },
       };
       this.worker.postMessage(msg, [senderStreams.readable, senderStreams.writable]);

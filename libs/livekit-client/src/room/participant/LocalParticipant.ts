@@ -93,7 +93,7 @@ import {
   isLocalTrack,
   isLocalVideoTrack,
   isSVCCodec,
-  isSafari17,
+  isSafari17Based,
   isVideoTrack,
   isWeb,
   numberToBigInt,
@@ -708,7 +708,7 @@ export default class LocalParticipant extends Participant {
       throw new DeviceUnsupportedError('getDisplayMedia not supported');
     }
 
-    if (options.resolution === undefined && !isSafari17()) {
+    if (options.resolution === undefined && !isSafari17Based()) {
       // we need to constrain the dimensions, otherwise it could lead to low bitrate
       // due to encoding a huge video. Encoding such large surfaces is really expensive
       // unfortunately Safari 17 has a but and cannot be constrained by default
@@ -1169,6 +1169,7 @@ export default class LocalParticipant extends Participant {
       }
 
       track.sender = await this.engine.createSender(track, opts, encodings);
+      this.emit(ParticipantEvent.LocalSenderCreated, track.sender, track);
 
       if (isLocalVideoTrack(track)) {
         opts.degradationPreference ??= getDefaultDegradationPreference(track);
@@ -1271,6 +1272,9 @@ export default class LocalParticipant extends Participant {
       loggerName: this.roomOptions.loggerName,
       loggerContextCb: () => this.logContext,
     });
+    publication.on(TrackEvent.CpuConstrained, (constrainedTrack) =>
+      this.onTrackCpuConstrained(constrainedTrack, publication),
+    );
     // save options for when it needs to be republished again
     publication.options = opts;
     track.sid = ti.sid;
@@ -2327,6 +2331,14 @@ export default class LocalParticipant extends Participant {
       return;
     }
     this.engine.client.sendUpdateLocalAudioTrack(pub.trackSid, pub.getTrackFeatures());
+  };
+
+  private onTrackCpuConstrained = (track: LocalVideoTrack, publication: LocalTrackPublication) => {
+    this.log.debug('track cpu constrained', {
+      ...this.logContext,
+      ...getLogContextFromTrack(publication),
+    });
+    this.emit(ParticipantEvent.LocalTrackCpuConstrained, track, publication);
   };
 
   private handleSubscribedQualityUpdate = async (update: SubscribedQualityUpdate) => {
