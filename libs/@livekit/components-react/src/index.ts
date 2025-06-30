@@ -1,14 +1,14 @@
 export * from './components/index.js';
 
-export * from './hooks/index.js';
+export * from './hooks';
 
-export * from './prefabs/index.js';
+export * from './prefabs';
 
-export * from './context/index.js';
+export * from './context';
 
-export * from './assets/icons/index.js';
+export * from './assets/icons';
 
-export * from './assets/images/index.js';
+export * from './assets/images';
 
 // Re-exports from core
 export {

@@ -36,4 +36,4 @@ export {
   type ChatEntryProps,
   ChatEntry,
   formatChatMessageLinks,
-} from './ChatEntry';
+} from '../components/ChatEntry';

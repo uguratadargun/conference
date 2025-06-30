@@ -29,6 +29,7 @@ export type { ChatMessage };
 /** @public */
 export interface ReceivedChatMessage extends ChatMessage {
   from?: Participant;
+  attributes?: Record<string, string>;
 }
 
 export interface LegacyChatMessage extends ChatMessage {
@@ -76,7 +77,7 @@ const decodeLegacyMsg = (message: Uint8Array) =>
     | LegacyReceivedChatMessage
     | ReceivedChatMessage;
 
-const encodeLegacyMsg = (message: LegacyReceivedChatMessage) =>
+const encodeLegacyMsg = (message: LegacyChatMessage) =>
   new TextEncoder().encode(JSON.stringify(message));
 
 export function setupChat(room: Room, options?: ChatOptions) {
@@ -184,18 +185,31 @@ export function setupChat(room: Room, options?: ChatOptions) {
 
     try {
       const info = await room.localParticipant.sendText(message, options);
-      const chatMsg: ReceivedChatMessage = {
+
+      const legacyChatMsg: LegacyChatMessage = {
         id: info.id,
         timestamp: Date.now(),
         message,
-        from: room.localParticipant,
+      };
+
+      const chatMsg: ChatMessage = {
+        ...legacyChatMsg,
         attachedFiles: options.attachments,
       };
-      messageSubject.next(chatMsg);
-      const encodedLegacyMsg = finalMessageEncoder({
+
+      const receivedChatMsg: ReceivedChatMessage = {
         ...chatMsg,
+        from: room.localParticipant,
+        attributes: options.attributes,
+      };
+
+      messageSubject.next(receivedChatMsg);
+
+      const encodedLegacyMsg = finalMessageEncoder({
+        ...legacyChatMsg,
         ignoreLegacy: serverSupportsDataStreams(),
       });
+
       try {
         await sendMessage(room.localParticipant, encodedLegacyMsg, {
           reliable: true,
@@ -204,7 +218,8 @@ export function setupChat(room: Room, options?: ChatOptions) {
       } catch (error) {
         log.info('could not send message in legacy chat format', error);
       }
-      return chatMsg;
+
+      return receivedChatMsg;
     } finally {
       isSending$.next(false);
     }

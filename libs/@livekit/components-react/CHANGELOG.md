@@ -1,5 +1,30 @@
 # @livekit/components-react
 
+## 2.9.12
+
+### Patch Changes
+
+- Only call onDeviceChange callback when non default device initially - [#1172](https://github.com/livekit/components-js/pull/1172) ([@lukasIO](https://github.com/lukasIO))
+
+- Updated dependencies [[`287c29fbdbe33086e44162b08343882c7e9ece99`](https://github.com/livekit/components-js/commit/287c29fbdbe33086e44162b08343882c7e9ece99)]:
+  - @livekit/components-core@0.12.8
+
+## 2.9.11
+
+### Patch Changes
+
+- Initialize connection quality with participant's current value - [#1171](https://github.com/livekit/components-js/pull/1171) ([@lukasIO](https://github.com/lukasIO))
+
+- fix(react): ensure useParticipantTracks hook updates on participant joins - [#1166](https://github.com/livekit/components-js/pull/1166) ([@lukasIO](https://github.com/lukasIO))
+
+## 2.9.10
+
+### Patch Changes
+
+- Refine visible controls based on canPublishSources permissions - [#1160](https://github.com/livekit/components-js/pull/1160) ([@lukasIO](https://github.com/lukasIO))
+
+- Use correct default states in useLocalParticipant hook - [#1169](https://github.com/livekit/components-js/pull/1169) ([@lukasIO](https://github.com/lukasIO))
+
 ## 2.9.9
 
 ### Patch Changes

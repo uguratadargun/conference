@@ -27,21 +27,24 @@ export function useLocalParticipant(options: UseLocalParticipantOptions = {}) {
   const [localParticipant, setLocalParticipant] = React.useState(
     room.localParticipant
   );
+
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = React.useState(
     localParticipant.isMicrophoneEnabled
   );
   const [isCameraEnabled, setIsCameraEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled
+    localParticipant.isCameraEnabled
   );
+  const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(
+    localParticipant.isScreenShareEnabled
+  );
+
   const [lastMicrophoneError, setLastMicrophoneError] = React.useState(
     localParticipant.lastMicrophoneError
   );
   const [lastCameraError, setLastCameraError] = React.useState(
     localParticipant.lastCameraError
   );
-  const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled
-  );
+
   const [microphoneTrack, setMicrophoneTrack] = React.useState<
     TrackPublication | undefined
   >(undefined);
