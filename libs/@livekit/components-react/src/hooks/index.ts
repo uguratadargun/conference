@@ -88,3 +88,4 @@ export * from './useParticipantAttributes';
 export * from './useIsRecording';
 export * from './useTextStream';
 export * from './useTranscriptions';
+export * from './useBackgroundEffects';

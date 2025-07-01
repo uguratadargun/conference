@@ -27,6 +27,7 @@
     "@livekit/components-react": "file:./libs/@livekit/components-react",
     "@livekit/mutex": "file:./libs/@livekit/mutex",
     "@livekit/protocol": "file:./libs/@livekit/protocol",
+    "@livekit/track-processors": "^0.5.7",
     "@tabler/icons-react": "^3.34.0",
     "chart.js": "^4.4.9",
     "livekit-client": "file:./libs/livekit-client",

@@ -1,12 +1,18 @@
 import React from 'react';
 import { Button } from 'primereact/button';
-import { useMediaDeviceSelect } from '@livekit/components-react';
+import {
+  useMediaDeviceSelect,
+  useBackgroundEffects,
+} from '@livekit/components-react';
 import {
   IconSettings,
   IconX,
   IconMicrophone,
   IconVideo,
   IconVolume,
+  IconPhoto,
+  IconBlur,
+  IconPlayerStop,
 } from '@tabler/icons-react';
 
 // Settings Sidebar Component
@@ -31,6 +37,22 @@ const SettingsDialog: React.FC<{
     activeDeviceId: activeAudioOutput,
     setActiveMediaDevice: setAudioOutput,
   } = useMediaDeviceSelect({ kind: 'audiooutput' });
+
+  // Background effects hook
+  const {
+    activeEffect,
+    isProcessing,
+    error,
+    isSupported,
+    blurRadius,
+    appliedBlurRadius,
+    applyEffect,
+    setBlurRadius,
+    clearError,
+  } = useBackgroundEffects({
+    initialBlurRadius: 10,
+    blurDebounceMs: 300, // Faster response for better UX
+  });
 
   if (!visible) return null;
 
@@ -102,6 +124,97 @@ const SettingsDialog: React.FC<{
                 ))}
               </select>
             </div>
+
+            {/* Background Effects Section */}
+            {isSupported && (
+              <div className="settings-section">
+                <div className="settings-section-header">
+                  <IconPhoto size={20} />
+                  <h3 className="settings-section-title">Background Effects</h3>
+                </div>
+
+                {error && (
+                  <div className="background-effects-error">
+                    {error}
+                    <button onClick={clearError}>✕</button>
+                  </div>
+                )}
+
+                <div className="background-effects-grid">
+                  {/* None */}
+                  <button
+                    className={`effect-button ${activeEffect === 'none' ? 'active' : ''}`}
+                    onClick={() => applyEffect('none')}
+                    disabled={isProcessing}
+                  >
+                    <IconPlayerStop
+                      size={20}
+                      color={activeEffect === 'none' ? 'white' : '#ccc'}
+                    />
+                    <span>None</span>
+                  </button>
+
+                  {/* Blur */}
+                  <button
+                    className={`effect-button ${activeEffect === 'blur' ? 'active' : ''}`}
+                    onClick={() => applyEffect('blur')}
+                    disabled={isProcessing}
+                  >
+                    <IconBlur
+                      size={20}
+                      color={activeEffect === 'blur' ? 'white' : '#ccc'}
+                    />
+                    <span>Blur</span>
+                  </button>
+
+                  {/* Virtual Background */}
+                  <button
+                    className={`effect-button ${activeEffect === 'virtual' ? 'active' : ''}`}
+                    onClick={() => applyEffect('virtual')}
+                    disabled={isProcessing}
+                  >
+                    <IconPhoto
+                      size={20}
+                      color={activeEffect === 'virtual' ? 'white' : '#ccc'}
+                    />
+                    <span>Virtual</span>
+                  </button>
+                </div>
+
+                {/* Blur Radius Control */}
+                {activeEffect === 'blur' && (
+                  <div className="blur-controls">
+                    <label>Blur Intensity: {blurRadius}</label>
+                    <input
+                      type="range"
+                      min="5"
+                      max="25"
+                      value={blurRadius}
+                      onChange={e => setBlurRadius(Number(e.target.value))}
+                      disabled={isProcessing}
+                    />
+                  </div>
+                )}
+
+                {isProcessing && (
+                  <div className="background-effects-processing">
+                    Processing effect...
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!isSupported && (
+              <div className="settings-section">
+                <div className="settings-section-header">
+                  <IconPhoto size={20} />
+                  <h3 className="settings-section-title">Background Effects</h3>
+                </div>
+                <div className="background-effects-unsupported">
+                  Background effects are not supported in this browser
+                </div>
+              </div>
+            )}
 
             {/* Speaker Section */}
             <div className="settings-section">

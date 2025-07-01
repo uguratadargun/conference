@@ -1488,3 +1488,131 @@
   height: 100%;
   width: 100%;
 }
+
+/* ====== 10. Background Effects ====== */
+.background-effects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: 12px;
+}
+
+.effect-button {
+  padding: 12px;
+  border: 1px solid #444;
+  border-radius: var(--radius-md);
+  background: #2a2a2a;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: var(--transition-fast);
+  opacity: 1;
+}
+
+.effect-button:hover {
+  background: #333;
+}
+
+.effect-button.active {
+  border: 2px solid var(--primary-blue);
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.effect-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.effect-button span {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.effect-button.active span {
+  font-weight: bold;
+}
+
+.blur-controls {
+  margin-top: 12px;
+}
+
+.blur-controls label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: var(--spacing-sm);
+  color: var(--overlay-text);
+}
+
+.blur-controls input[type='range'] {
+  width: 100%;
+  height: 6px;
+  background: #444;
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.blur-controls input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--primary-blue);
+  border-radius: var(--radius-round);
+  cursor: pointer;
+}
+
+.blur-controls input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--primary-blue);
+  border-radius: var(--radius-round);
+  cursor: pointer;
+  border: none;
+}
+
+.blur-controls input[type='range']:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.background-effects-error {
+  color: var(--danger-color);
+  font-size: 12px;
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.background-effects-error button {
+  margin-left: var(--spacing-sm);
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+}
+
+.background-effects-error button:hover {
+  opacity: 0.8;
+}
+
+.background-effects-processing {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-top: var(--spacing-sm);
+}
+
+.background-effects-unsupported {
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
