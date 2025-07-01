@@ -1,6 +1,15 @@
 import React from 'react';
 import { Participant, RemoteParticipant } from 'livekit-client';
 import { Button } from 'primereact/button';
+import {
+  IconUsers,
+  IconX,
+  IconUserPlus,
+  IconMicrophone,
+  IconMicrophoneOff,
+  IconVideo,
+  IconVideoOff,
+} from '@tabler/icons-react';
 
 interface ParticipantListSidebarProps {
   visible: boolean;
@@ -38,16 +47,16 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           <div className="participant-list-name">{displayName}</div>
         </div>
         <div className="participant-controls">
-          <span
-            className={`material-icons status-icon ${participant.isMicrophoneEnabled ? 'active' : 'inactive'}`}
-          >
-            {participant.isMicrophoneEnabled ? 'mic' : 'mic_off'}
-          </span>
-          <span
-            className={`material-icons status-icon ${participant.isCameraEnabled ? 'active' : 'inactive'}`}
-          >
-            {participant.isCameraEnabled ? 'videocam' : 'videocam_off'}
-          </span>
+          {participant.isMicrophoneEnabled ? (
+            <IconMicrophone size={16} className="status-icon active" />
+          ) : (
+            <IconMicrophoneOff size={16} className="status-icon inactive" />
+          )}
+          {participant.isCameraEnabled ? (
+            <IconVideo size={16} className="status-icon active" />
+          ) : (
+            <IconVideoOff size={16} className="status-icon inactive" />
+          )}
         </div>
       </div>
     );
@@ -79,21 +88,21 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           {/* Header */}
           <div className="sidebar-header">
             <div className="icon-circle">
-              <span className="material-icons">people</span>
+              <IconUsers size={24} />
             </div>
             <h2 className="sidebar-title">Group voice call</h2>
             <div className="participant-count">
               {activeParticipants.length} Connected
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
-              <span className="material-icons">close</span>
+              <IconX size={20} />
             </Button>
           </div>
 
           {/* Add People Section */}
           <div className="add-people-section">
             <Button className="add-people-button">
-              <span className="material-icons">person_add</span>
+              <IconUserPlus size={20} />
               <span>Add people...</span>
             </Button>
           </div>

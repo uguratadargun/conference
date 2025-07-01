@@ -23,12 +23,13 @@
     "watch:libs": "npm run watch:components-core & npm run watch:components-react & npm run watch:livekit-client"
   },
   "dependencies": {
-    "@livekit/components-react": "file:./libs/@livekit/components-react",
     "@livekit/components-core": "file:./libs/@livekit/components-core",
-    "@livekit/protocol": "file:./libs/@livekit/protocol",
+    "@livekit/components-react": "file:./libs/@livekit/components-react",
     "@livekit/mutex": "file:./libs/@livekit/mutex",
-    "livekit-client": "file:./libs/livekit-client",
+    "@livekit/protocol": "file:./libs/@livekit/protocol",
+    "@tabler/icons-react": "^3.34.0",
     "chart.js": "^4.4.9",
+    "livekit-client": "file:./libs/livekit-client",
     "livekit-server-sdk": "^2.13.0",
     "primereact": "^10.9.5",
     "quill": "^2.0.3",

@@ -3,6 +3,7 @@ import { LiveKitRoom } from '@livekit/components-react';
 import { useLiveKit } from '../context/LiveKitContext';
 import ConferenceComponent from './ConferenceComponent';
 import { Button } from 'primereact/button';
+import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
 
 // Main ConferenceCall Component with LiveKitRoom wrapper
 const RoomComponent: React.FC = () => {
@@ -36,7 +37,7 @@ const RoomComponent: React.FC = () => {
     return (
       <div className="conference-container">
         <div className="loading-container">
-          <span className="material-icons rotating">sync</span>
+          <IconRefresh size={24} className="rotating" />
           <span>Connecting to room...</span>
         </div>
       </div>
@@ -47,7 +48,7 @@ const RoomComponent: React.FC = () => {
     return (
       <div className="conference-container">
         <div className="error-container">
-          <span className="material-icons">error</span>
+          <IconAlertCircle size={24} />
           <span>{error || 'Failed to get connection data'}</span>
           <Button
             label="Retry"
@@ -71,7 +72,7 @@ const RoomComponent: React.FC = () => {
           videoCodec: 'h264',
         },
       }}
-      startAsActive={false}
+      startAsActive={true}
     >
       <ConferenceComponent />
     </LiveKitRoom>

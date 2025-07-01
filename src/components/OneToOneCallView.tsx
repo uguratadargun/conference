@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Participant } from 'livekit-client';
 import CustomParticipantTile from './CustomParticipantTile';
 import { Button } from 'primereact/button';
+import { IconGridDots } from '@tabler/icons-react';
 
 interface OneToOneCallViewProps {
   remoteParticipant: Participant;
@@ -101,7 +102,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
 
       {/* Layout toggle button */}
       <Button
-        icon={<span className="material-icons">grid_view</span>}
+        icon={<IconGridDots size={20} />}
         onClick={toggleLayout}
         className="layout-toggle-button"
         tooltip={

@@ -1,6 +1,13 @@
 import React from 'react';
 import { Button } from 'primereact/button';
 import { useMediaDeviceSelect } from '@livekit/components-react';
+import {
+  IconSettings,
+  IconX,
+  IconMicrophone,
+  IconVideo,
+  IconVolume,
+} from '@tabler/icons-react';
 
 // Settings Sidebar Component
 const SettingsDialog: React.FC<{
@@ -34,14 +41,14 @@ const SettingsDialog: React.FC<{
           {/* Header */}
           <div className="sidebar-header">
             <div className="icon-circle">
-              <span className="material-icons">settings</span>
+              <IconSettings size={24} />
             </div>
             <h2 className="sidebar-title">Device Settings</h2>
             <div className="settings-subtitle">
               Configure your audio and video devices
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
-              <span className="material-icons">close</span>
+              <IconX size={20} />
             </Button>
           </div>
 
@@ -50,7 +57,7 @@ const SettingsDialog: React.FC<{
             {/* Microphone Section */}
             <div className="settings-section">
               <div className="settings-section-header">
-                <span className="material-icons">mic</span>
+                <IconMicrophone size={20} />
                 <h3 className="settings-section-title">Microphone</h3>
               </div>
               <select
@@ -75,7 +82,7 @@ const SettingsDialog: React.FC<{
             {/* Camera Section */}
             <div className="settings-section">
               <div className="settings-section-header">
-                <span className="material-icons">videocam</span>
+                <IconVideo size={20} />
                 <h3 className="settings-section-title">Camera</h3>
               </div>
               <select
@@ -99,7 +106,7 @@ const SettingsDialog: React.FC<{
             {/* Speaker Section */}
             <div className="settings-section">
               <div className="settings-section-header">
-                <span className="material-icons">volume_up</span>
+                <IconVolume size={20} />
                 <h3 className="settings-section-title">Speaker</h3>
               </div>
               <select

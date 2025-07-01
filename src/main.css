@@ -101,26 +101,8 @@
   }
 }
 
-/* Material Icons */
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: inherit;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-  will-change: auto;
-}
-
-.material-icons.rotating {
+/* Tabler Icons */
+.rotating {
   animation: rotate 1s linear infinite;
   will-change: transform;
   transform: translateZ(0);
@@ -166,9 +148,7 @@
   font-weight: 500;
 }
 
-.status-item .material-icons {
-  font-size: 18px;
-}
+/* Status item icons are handled by size prop in Tabler icons */
 
 .status-item.connection-status {
   margin-right: auto;
@@ -182,9 +162,7 @@
   color: var(--primary-blue);
 }
 
-.status-item.connection-status.connecting .material-icons {
-  animation: rotate 1s linear infinite;
-}
+/* Rotating animation for connection status is handled by className on icon */
 
 .status-item.connection-status.disconnected {
   color: var(--danger-color);
@@ -215,10 +193,7 @@
   background: var(--overlay-medium);
 }
 
-.status-item.participant-list-button .material-icons {
-  margin-right: 0;
-  font-size: 1.5rem;
-}
+/* Participant list button icon styling handled by Tabler icons size prop */
 
 .status-item.participant-list-button .p-button-text .p-button-label {
   margin-left: var(--spacing-sm);
@@ -945,12 +920,10 @@
   margin-bottom: var(--spacing-sm);
 }
 
-.settings-section-header .material-icons {
-  font-size: 20px;
+.settings-section-header svg {
   color: var(--overlay-text);
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .settings-section-title {
@@ -1012,20 +985,17 @@
   transition: background-color var(--transition-fast);
 }
 
-.close-sidebar-button .material-icons {
-  font-size: 20px;
-  background-color: rgba(255, 255, 255, 0.2);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-round);
+.close-sidebar-button svg {
+  color: var(--overlay-text);
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-fast);
 }
 
-.close-sidebar-button:hover .material-icons {
-  background-color: rgba(255, 255, 255, 0.3);
+.close-sidebar-button:hover svg {
+  color: var(--white);
 }
 
 .icon-circle {
@@ -1039,8 +1009,7 @@
   margin-bottom: 12px;
 }
 
-.icon-circle .material-icons {
-  font-size: 32px;
+.icon-circle svg {
   color: var(--white);
 }
 
@@ -1079,13 +1048,11 @@
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-.add-people-button .material-icons {
-  font-size: 20px;
-  margin-right: 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-round);
+.add-people-button svg {
+  margin-right: var(--spacing-sm);
+  color: var(--overlay-text);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1223,9 +1190,7 @@
   background: rgba(0, 0, 0, 0.8) !important;
 }
 
-.layout-toggle-button .material-icons {
-  font-size: 18px;
-}
+/* Layout toggle button icon size is handled by Tabler icon size prop */
 
 /* Standard Layout */
 .one-to-one-remote {

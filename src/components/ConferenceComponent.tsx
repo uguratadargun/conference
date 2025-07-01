@@ -9,6 +9,7 @@ import {
 } from '@livekit/components-react';
 import { ConnectionState, RemoteParticipant } from 'livekit-client';
 import { Button } from 'primereact/button';
+import { IconX } from '@tabler/icons-react';
 import CustomParticipantTile from './CustomParticipantTile';
 import SettingsDialog from './SettingsDialog';
 import ParticipantListSidebar from './ParticipantListSidebar';
@@ -136,7 +137,7 @@ const ConferenceComponent: React.FC = () => {
         <div className="fullscreen-container">
           <CustomParticipantTile participant={fullscreenParticipant} idx={0} />
           <Button
-            icon={<span className="material-icons">close</span>}
+            icon={<IconX size={20} />}
             onClick={exitFullScreen}
             className="exit-fullscreen-button"
             title="Exit fullscreen"

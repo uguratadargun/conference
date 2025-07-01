@@ -1,6 +1,7 @@
 import React from 'react';
 import { Participant, Track } from 'livekit-client';
-import CustomVideoTrack from './CustomVideoTrack';
+import CustomTracks from './CustomTracks';
+import { IconMicrophoneOff } from '@tabler/icons-react';
 
 // Define the color arrays
 const BORDER_COLORS = [
@@ -99,10 +100,7 @@ const CustomParticipantTile: React.FC<{
       }}
       onClick={onMaximize}
     >
-      <CustomVideoTrack
-        participant={participant}
-        source={Track.Source.Camera}
-      />
+      <CustomTracks participant={participant} source={Track.Source.Camera} />
 
       <div className="participant-content-container">
         <div
@@ -146,7 +144,7 @@ const CustomParticipantTile: React.FC<{
 
       {!participant.isMicrophoneEnabled && (
         <div className="audio-muted-indicator">
-          <span className="material-icons">mic_off</span>
+          <IconMicrophoneOff size={18} />
         </div>
       )}
     </div>

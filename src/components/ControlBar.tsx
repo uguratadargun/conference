@@ -1,6 +1,15 @@
 import React from 'react';
 import { Button } from 'primereact/button';
 import { Participant } from 'livekit-client';
+import {
+  IconMicrophone,
+  IconMicrophoneOff,
+  IconVideo,
+  IconVideoOff,
+  IconPhoneOff,
+  IconSettings,
+  IconCheck,
+} from '@tabler/icons-react';
 
 interface ControlBarProps {
   localParticipant: Participant | undefined;
@@ -26,9 +35,9 @@ const ControlBar: React.FC<ControlBarProps> = ({
           <Button
             icon={
               localParticipant?.isMicrophoneEnabled ? (
-                <span className="material-icons">mic</span>
+                <IconMicrophone size={20} />
               ) : (
-                <span className="material-icons">mic_off</span>
+                <IconMicrophoneOff size={20} />
               )
             }
             onClick={toggleAudio}
@@ -48,9 +57,9 @@ const ControlBar: React.FC<ControlBarProps> = ({
           <Button
             icon={
               localParticipant?.isCameraEnabled ? (
-                <span className="material-icons">videocam</span>
+                <IconVideo size={20} />
               ) : (
-                <span className="material-icons">videocam_off</span>
+                <IconVideoOff size={20} />
               )
             }
             onClick={toggleVideo}
@@ -68,7 +77,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
 
         <div className="control-group">
           <Button
-            icon={<span className="material-icons">call_end</span>}
+            icon={<IconPhoneOff size={20} />}
             onClick={disconnect}
             className="control-button hang-up-button"
             tooltip="Leave Call"
@@ -78,7 +87,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
 
         <div className="control-group">
           <Button
-            icon={<span className="material-icons">settings</span>}
+            icon={<IconSettings size={20} />}
             onClick={openSettings}
             className="control-button settings-button"
             tooltip="Settings"
@@ -88,7 +97,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
 
         <div className="control-group">
           <Button
-            icon={<span className="material-icons">check_circle</span>}
+            icon={<IconCheck size={20} />}
             onClick={setActive}
             className="control-button settings-button"
             tooltip="Settings"

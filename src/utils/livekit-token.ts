@@ -26,9 +26,9 @@ export const generateToken = async (): Promise<{
   at.addGrant({
     roomJoin: true,
     room: LIVEKIT_CONFIG.roomName,
-    canSubscribe: false,
-    canPublish: false,
-    canPublishData: false,
+    canSubscribe: true,
+    canPublish: true,
+    canPublishData: true,
   });
   const token = await at.toJwt();
   const url = `ws://10.0.2.148:7880`;

@@ -1,6 +1,12 @@
 import React from 'react';
 import { ConnectionState, Participant } from 'livekit-client';
 import { Button } from 'primereact/button';
+import {
+  IconWifi,
+  IconRefresh,
+  IconWifiOff,
+  IconUsers,
+} from '@tabler/icons-react';
 
 interface TopStatusBarProps {
   connectionState: ConnectionState;
@@ -27,14 +33,14 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
               : 'disconnected'
         }`}
       >
-        <span className="material-icons">
-          {connectionState === ConnectionState.Connected
-            ? 'wifi'
-            : connectionState === ConnectionState.Connecting ||
-                connectionState === ConnectionState.Reconnecting
-              ? 'sync'
-              : 'wifi_off'}
-        </span>
+        {connectionState === ConnectionState.Connected ? (
+          <IconWifi size={18} />
+        ) : connectionState === ConnectionState.Connecting ||
+          connectionState === ConnectionState.Reconnecting ? (
+          <IconRefresh size={18} className="rotating" />
+        ) : (
+          <IconWifiOff size={18} />
+        )}
         <span>
           {connectionState === ConnectionState.Connected
             ? 'Connected'
@@ -49,7 +55,7 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
       {!showParticipantList && (
         <div className="status-item participant-list-button">
           <Button
-            icon={<span className="material-icons">people_alt</span>}
+            icon={<IconUsers size={18} />}
             onClick={onShowParticipantList}
             className="p-button-text"
             tooltipOptions={{ position: 'bottom' }}
