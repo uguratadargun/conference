@@ -10,6 +10,7 @@ import {
   LeaveRequest_Action,
   MuteTrackRequest,
   ParticipantInfo,
+  ParticipantInfo_State,
   Ping,
   ReconnectReason,
   ReconnectResponse,
@@ -728,7 +729,16 @@ export class SignalClient {
         this.onParticipantListChanged(msg.value.allParticipants);
       }
       if (this.onParticipantUpdate) {
-        this.onParticipantUpdate(msg.value.participants ?? []);
+        // TODO - ulak : This is a temporary fix to remove denied participants from the list.
+        const participants = msg.value.participants.filter((participant) => {
+          return (
+            participant.state !== ParticipantInfo_State.DENIED &&
+            participant.state !== ParticipantInfo_State.RINGING
+          );
+        });
+        if (participants.length > 0) {
+          this.onParticipantUpdate(participants);
+        }
       }
     } else if (msg.case === 'trackPublished') {
       if (this.onLocalTrackPublished) {

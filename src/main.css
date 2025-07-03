@@ -1150,6 +1150,102 @@
   color: var(--danger-color);
 }
 
+/* Participant status text */
+.participant-status-text {
+  color: var(--overlay-text);
+  font-size: 12px;
+  opacity: 0.8;
+  margin-right: var(--spacing-sm);
+  white-space: nowrap;
+}
+
+/* Status-specific icon colors */
+.status-icon.ringing {
+  color: var(--primary-blue);
+  opacity: 1;
+}
+
+.status-icon.denied {
+  color: var(--danger-color);
+  opacity: 1;
+}
+
+.status-icon.busy {
+  color: #f59e0b;
+  opacity: 1;
+}
+
+.status-icon.left {
+  color: var(--overlay-text);
+  opacity: 0.6;
+}
+
+/* Call again button */
+.call-again-button {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--white) !important;
+  padding: 4px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all var(--transition-fast);
+  font-size: 12px !important;
+  height: auto !important;
+  min-width: auto !important;
+}
+
+.call-again-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Spin animation for ringing status */
+.animate-spin {
+  animation: rotate 1s linear infinite;
+}
+
+/* Ringing dots animation */
+.ringing-dots {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ringing-dots .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--overlay-text);
+  animation: ringing-pulse 1.4s ease-in-out infinite both;
+}
+
+.ringing-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.ringing-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.ringing-dots .dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes ringing-pulse {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
 /* ====== 8. One-to-one Call View ====== */
 .one-to-one-container {
   width: 100%;

@@ -6,9 +6,10 @@ import {
   IconMicrophoneOff,
   IconVideo,
   IconVideoOff,
-  IconPhoneOff,
+  IconPhone,
   IconSettings,
   IconCheck,
+  IconX,
 } from '@tabler/icons-react';
 
 interface ControlBarProps {
@@ -18,6 +19,7 @@ interface ControlBarProps {
   disconnect: () => void;
   openSettings: () => void;
   setActive: () => void;
+  hangup: () => void;
 }
 
 const ControlBar: React.FC<ControlBarProps> = ({
@@ -27,6 +29,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
   disconnect,
   openSettings,
   setActive,
+  hangup,
 }) => {
   return (
     <div className="controls-container">
@@ -77,7 +80,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
 
         <div className="control-group">
           <Button
-            icon={<IconPhoneOff size={20} />}
+            icon={<IconPhone size={20} />}
             onClick={disconnect}
             className="control-button hang-up-button"
             tooltip="Leave Call"
@@ -100,7 +103,17 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconCheck size={20} />}
             onClick={setActive}
             className="control-button settings-button"
-            tooltip="Settings"
+            tooltip="Accept Call"
+            tooltipOptions={{ position: 'top' }}
+          />
+        </div>
+
+        <div className="control-group">
+          <Button
+            icon={<IconX size={20} />}
+            onClick={hangup}
+            className="control-button hang-up-button"
+            tooltip="Deny Call"
             tooltipOptions={{ position: 'top' }}
           />
         </div>

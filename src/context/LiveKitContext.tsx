@@ -3,7 +3,12 @@ import type { ReactNode } from 'react';
 import { generateToken } from '../utils/livekit-token';
 
 interface LiveKitContextType {
-  generateToken: () => Promise<{ url: string; token: string }>;
+  generateToken: () => Promise<{
+    url: string;
+    token: string;
+    roomId: string;
+    identity: string;
+  }>;
 }
 
 const LiveKitContext = createContext<LiveKitContextType | null>(null);

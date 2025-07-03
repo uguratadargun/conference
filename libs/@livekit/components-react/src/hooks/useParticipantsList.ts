@@ -48,19 +48,27 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
       }
     >;
   }>({
-    ringingParticipants: room.participantsList.ringingParticipants,
-    deniedParticipants: room.participantsList.deniedParticipants,
-    busyParticipants: room.participantsList.busyParticipants,
-    leftParticipants: room.participantsList.leftParticipants,
-    activeParticipants: room.participantsList.activeParticipants,
-    all: room.participantsList.all,
+    ringingParticipants: new Map(room.participantsList.ringingParticipants),
+    deniedParticipants: new Map(room.participantsList.deniedParticipants),
+    busyParticipants: new Map(room.participantsList.busyParticipants),
+    leftParticipants: new Map(room.participantsList.leftParticipants),
+    activeParticipants: new Map(room.participantsList.activeParticipants),
+    all: new Map(room.participantsList.all),
   });
 
   React.useEffect(() => {
     const listener = listParticipantsObserver(room, {
       additionalRoomEvents: options.updateOnlyOn,
     }).subscribe(newParticipants => {
-      setParticipants(newParticipants);
+      // Create new Map instances to ensure React detects the changes
+      setParticipants({
+        ringingParticipants: new Map(newParticipants.ringingParticipants),
+        deniedParticipants: new Map(newParticipants.deniedParticipants),
+        busyParticipants: new Map(newParticipants.busyParticipants),
+        leftParticipants: new Map(newParticipants.leftParticipants),
+        activeParticipants: new Map(newParticipants.activeParticipants),
+        all: new Map(newParticipants.all),
+      });
     });
     return () => listener.unsubscribe();
   }, [room, JSON.stringify(options.updateOnlyOn)]);

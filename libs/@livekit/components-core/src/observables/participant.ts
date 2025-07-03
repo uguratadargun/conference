@@ -276,7 +276,7 @@ export function listParticipantsObserver(
   const observable = new Observable<ParticipantsList>(sub => {
     subscriber = sub;
     return () => listener.unsubscribe();
-  }).pipe(startWith(room.participantsList));
+  });
 
   const additionalRoomEvents = options.additionalRoomEvents ?? [];
 
@@ -288,8 +288,9 @@ export function listParticipantsObserver(
     subscriber?.next(r.participantsList)
   );
 
+  // Only emit initial state if there's actual data, otherwise wait for the first real update
   if (room.participantsList.all.size > 0) {
-    subscriber?.next(room.participantsList);
+    return observable.pipe(startWith(room.participantsList));
   }
 
   return observable;

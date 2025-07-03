@@ -31,7 +31,9 @@ const getGridClassName = (count: number) => {
 };
 
 // Main Room Component that uses LiveKit hooks
-const ConferenceComponent: React.FC = () => {
+const ConferenceComponent: React.FC<{
+  hangup: () => void;
+}> = ({ hangup }) => {
   const participants = useParticipants();
   const participantsList = useParticipantsList();
   const connectionState = useConnectionState();
@@ -105,6 +107,12 @@ const ConferenceComponent: React.FC = () => {
     room?.setActive();
   };
 
+  const handleCallParticipant = useCallback((participant: any) => {
+    // Implement call participant logic here
+    console.log('Calling participant:', participant.identity);
+    // You can add your specific logic to initiate a call to this participant
+  }, []);
+
   const gridClassName = getGridClassName(participants.length);
   const fullscreenParticipant = participants.find(
     p => p.identity === fullScreenParticipant
@@ -174,6 +182,7 @@ const ConferenceComponent: React.FC = () => {
         disconnect={disconnect}
         openSettings={openSettings}
         setActive={setActive}
+        hangup={hangup}
       />
 
       {/* Audio Renderer for spatial audio */}
@@ -214,6 +223,7 @@ const ConferenceComponent: React.FC = () => {
             participantsList.activeParticipants.values()
           ) as RemoteParticipant[]
         }
+        onCallParticipant={handleCallParticipant}
       />
     </div>
   );

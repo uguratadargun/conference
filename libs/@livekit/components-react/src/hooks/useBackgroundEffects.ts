@@ -6,6 +6,7 @@ import {
 } from '@livekit/track-processors';
 import type { LocalVideoTrack } from 'livekit-client';
 import { useLocalParticipant } from './useLocalParticipant';
+import backgroundImage from '../assets/images/background.jpeg';
 
 /** @public */
 export type BackgroundEffectType = 'none' | 'blur' | 'virtual';
@@ -51,40 +52,6 @@ export interface UseBackgroundEffectsReturn {
   clearError: () => void;
 }
 
-// Fallback background image (solid color as data URL)
-const FALLBACK_BACKGROUND =
-  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=';
-
-/**
- * Function to try loading background image from multiple locations
- */
-async function loadBackgroundImage(): Promise<string> {
-  // List of possible paths where the image might be located
-  const possiblePaths = [
-    '/src/assets/images/ordulu.jpeg', // Vite asset path
-    '/assets/images/ordulu.jpeg', // Built asset path
-    '/ordulu.jpeg', // Public directory
-  ];
-
-  for (const path of possiblePaths) {
-    try {
-      const img = new Image();
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject();
-        img.src = path;
-      });
-      return path;
-    } catch {
-      // Continue to next path
-    }
-  }
-
-  throw new Error(
-    'Background image not found. Please place ordulu.jpeg in src/assets/images/ or public/ directory.'
-  );
-}
-
 /**
  * Hook for managing background effects (blur and virtual backgrounds) on video tracks.
  *
@@ -101,7 +68,7 @@ async function loadBackgroundImage(): Promise<string> {
  * // Apply blur effect
  * await applyEffect('blur', { blurRadius: 15 });
  *
- * // Apply virtual background (uses ordulu.jpeg if available, otherwise fallback)
+ * // Apply virtual background (uses imported ordulu.jpeg)
  * await applyEffect('virtual');
  *
  * // Remove effects
@@ -169,23 +136,13 @@ export function useBackgroundEffects(
           }
 
           case 'virtual': {
-            let backgroundImageUrl = FALLBACK_BACKGROUND;
-
-            // Try to load the custom image
             try {
-              backgroundImageUrl = await loadBackgroundImage();
-            } catch (imageError) {
-              console.warn(
-                'Custom background image not found, using fallback:',
-                imageError
-              );
-              setError(
-                'Custom background image not found. Please add "ordulu.jpeg" to src/assets/images/ directory. Using default background for now.'
-              );
+              const virtualBgProcessor = VirtualBackground(backgroundImage);
+              await localVideoTrack.setProcessor(virtualBgProcessor);
+            } catch (err) {
+              console.error('Failed to apply virtual background:', err);
+              setError('Failed to apply virtual background');
             }
-
-            const virtualBgProcessor = VirtualBackground(backgroundImageUrl);
-            await localVideoTrack.setProcessor(virtualBgProcessor);
             break;
           }
 

@@ -9,7 +9,20 @@ import {
   IconMicrophoneOff,
   IconVideo,
   IconVideoOff,
+  IconPhoneCall,
+  IconPhoneX,
+  IconClock,
+  IconUserMinus,
+  IconLoader2,
 } from '@tabler/icons-react';
+
+// Participant status type
+type ParticipantStatus = 'active' | 'ringing' | 'denied' | 'busy' | 'left';
+
+interface ParticipantWithStatus {
+  participant: Participant;
+  status: ParticipantStatus;
+}
 
 interface ParticipantListSidebarProps {
   visible: boolean;
@@ -19,6 +32,7 @@ interface ParticipantListSidebarProps {
   busyParticipants: RemoteParticipant[];
   leftParticipants: RemoteParticipant[];
   activeParticipants: RemoteParticipant[];
+  onCallParticipant?: (participant: Participant) => void;
 }
 
 const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
@@ -29,6 +43,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   busyParticipants,
   leftParticipants,
   activeParticipants,
+  onCallParticipant,
 }) => {
   if (!visible) return null;
 
@@ -36,46 +51,127 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     return participant.identity || 'Anonymous';
   };
 
-  const renderParticipant = (participant: Participant) => {
+  // Combine all participants with their status
+  const allParticipants: ParticipantWithStatus[] = [
+    ...activeParticipants.map(p => ({
+      participant: p,
+      status: 'active' as ParticipantStatus,
+    })),
+    ...ringingParticipants.map(p => ({
+      participant: p,
+      status: 'ringing' as ParticipantStatus,
+    })),
+    ...deniedParticipants.map(p => ({
+      participant: p,
+      status: 'denied' as ParticipantStatus,
+    })),
+    ...busyParticipants.map(p => ({
+      participant: p,
+      status: 'busy' as ParticipantStatus,
+    })),
+    ...leftParticipants.map(p => ({
+      participant: p,
+      status: 'left' as ParticipantStatus,
+    })),
+  ];
+
+  const getStatusIcon = (status: ParticipantStatus) => {
+    switch (status) {
+      case 'ringing':
+        return (
+          <IconLoader2 size={16} className="status-icon ringing animate-spin" />
+        );
+      case 'denied':
+        return <IconPhoneX size={16} className="status-icon denied" />;
+      case 'busy':
+        return <IconClock size={16} className="status-icon busy" />;
+      case 'left':
+        return <IconUserMinus size={16} className="status-icon left" />;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusText = (status: ParticipantStatus) => {
+    switch (status) {
+      case 'ringing':
+        return (
+          <div className="ringing-dots">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
+        );
+      case 'denied':
+        return 'Declined';
+      case 'busy':
+        return 'Busy';
+      case 'left':
+        return 'Left';
+      default:
+        return 'In call';
+    }
+  };
+
+  const renderCallButton = (participantWithStatus: ParticipantWithStatus) => {
+    const { participant, status } = participantWithStatus;
+
+    if (status === 'active' || status === 'ringing') {
+      return null; // No call button for active or ringing participants
+    }
+
+    return (
+      <Button
+        className="call-again-button"
+        size="small"
+        onClick={() => onCallParticipant?.(participant)}
+        title="Call again"
+      >
+        Ring
+      </Button>
+    );
+  };
+
+  const renderParticipant = (participantWithStatus: ParticipantWithStatus) => {
+    const { participant, status } = participantWithStatus;
     const displayName = getDisplayName(participant);
     const initial = displayName.charAt(0).toUpperCase();
 
     return (
-      <div key={participant.identity} className="participant-item">
+      <div
+        key={`${participant.identity}-${status}`}
+        className="participant-item"
+      >
         <div className="participant-avatar">{initial}</div>
         <div className="participant-info">
           <div className="participant-list-name">{displayName}</div>
         </div>
         <div className="participant-controls">
-          {participant.isMicrophoneEnabled ? (
-            <IconMicrophone size={16} className="status-icon active" />
-          ) : (
-            <IconMicrophoneOff size={16} className="status-icon inactive" />
+          {/* Show status text only for non-active participants */}
+          {status !== 'active' && (
+            <div className="participant-status-text">
+              {getStatusText(status)}
+            </div>
           )}
-          {participant.isCameraEnabled ? (
-            <IconVideo size={16} className="status-icon active" />
-          ) : (
-            <IconVideoOff size={16} className="status-icon inactive" />
-          )}
-        </div>
-      </div>
-    );
-  };
 
-  const renderSection = (
-    title: string,
-    participantList: Participant[],
-    emptyMessage: string
-  ) => {
-    return (
-      <div className="participant-section">
-        <h3 className="section-title">{title}</h3>
-        <div className="participant-list">
-          {participantList.length === 0 ? (
-            <div className="no-participants">{emptyMessage}</div>
-          ) : (
-            participantList.map(renderParticipant)
+          {/* Show mic/video icons only for active participants */}
+          {status === 'active' && (
+            <>
+              {participant.isMicrophoneEnabled ? (
+                <IconMicrophone size={16} className="status-icon active" />
+              ) : (
+                <IconMicrophoneOff size={16} className="status-icon inactive" />
+              )}
+              {participant.isCameraEnabled ? (
+                <IconVideo size={16} className="status-icon active" />
+              ) : (
+                <IconVideoOff size={16} className="status-icon inactive" />
+              )}
+            </>
           )}
+
+          {/* Show call again button for denied/busy/left participants */}
+          {renderCallButton(participantWithStatus)}
         </div>
       </div>
     );
@@ -107,33 +203,17 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             </Button>
           </div>
 
-          {/* Participant Sections */}
-          {activeParticipants.length > 0 &&
-            renderSection(
-              'In this call',
-              activeParticipants,
-              'No participants in the call'
-            )}
-          {ringingParticipants.length > 0 &&
-            renderSection(
-              'Ringing',
-              ringingParticipants,
-              'No participants ringing'
-            )}
-          {deniedParticipants.length > 0 &&
-            renderSection(
-              'Denied',
-              deniedParticipants,
-              'No denied participants'
-            )}
-          {busyParticipants.length > 0 &&
-            renderSection('Busy', busyParticipants, 'No busy participants')}
-          {leftParticipants.length > 0 &&
-            renderSection(
-              'Left',
-              leftParticipants,
-              'No participants have left'
-            )}
+          {/* All Participants List */}
+          <div className="participant-section">
+            <h3 className="section-title">Participants</h3>
+            <div className="participant-list">
+              {allParticipants.length === 0 ? (
+                <div className="no-participants">No participants</div>
+              ) : (
+                allParticipants.map(renderParticipant)
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

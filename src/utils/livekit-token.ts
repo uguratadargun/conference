@@ -10,6 +10,8 @@ const LIVEKIT_CONFIG = {
 export const generateToken = async (): Promise<{
   url: string;
   token: string;
+  roomId: string;
+  identity: string;
 }> => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPart = Array.from(
@@ -31,7 +33,7 @@ export const generateToken = async (): Promise<{
     canPublishData: true,
   });
   const token = await at.toJwt();
-  const url = `ws://10.0.2.148:7880`;
+  const url = `10.0.2.148:7880`;
 
-  return { url, token };
+  return { url, token, roomId: LIVEKIT_CONFIG.roomName, identity: username };
 };

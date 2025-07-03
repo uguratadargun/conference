@@ -11,9 +11,39 @@ const RoomComponent: React.FC = () => {
   const [connectionData, setConnectionData] = useState<{
     url: string;
     token: string;
+    roomId: string;
+    identity: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const sendDenyCallRequest = async (
+    url: string,
+    roomId: string,
+    identity: string,
+    token: string
+  ) => {
+    try {
+      const response = await fetch(
+        `http://${url}/twirp/livekit.RoomService/DenyCall`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            roomId,
+            identity,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Failed to send deny call request:', error);
+    }
+  };
 
   useEffect(() => {
     const connectToRoom = async () => {
@@ -62,7 +92,7 @@ const RoomComponent: React.FC = () => {
 
   return (
     <LiveKitRoom
-      serverUrl={connectionData.url}
+      serverUrl={`ws://${connectionData.url}`}
       token={connectionData.token}
       connectOptions={{
         autoSubscribe: true,
@@ -74,7 +104,18 @@ const RoomComponent: React.FC = () => {
       }}
       startAsActive={true}
     >
-      <ConferenceComponent />
+      <ConferenceComponent
+        hangup={() => {
+          if (connectionData) {
+            sendDenyCallRequest(
+              connectionData.url,
+              connectionData.roomId,
+              connectionData.identity,
+              connectionData.token
+            );
+          }
+        }}
+      />
     </LiveKitRoom>
   );
 };
