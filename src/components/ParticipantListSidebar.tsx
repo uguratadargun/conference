@@ -103,7 +103,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
         );
       case 'denied':
-        return 'Declined';
+        return 'Denied';
       case 'busy':
         return 'Busy';
       case 'left':
