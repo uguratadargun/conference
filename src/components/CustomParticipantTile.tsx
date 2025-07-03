@@ -74,15 +74,17 @@ const CustomParticipantTile: React.FC<{
   participant: Participant;
   idx: number;
   onMaximize?: () => void;
-  showVoiceIndicator?: boolean;
-}> = ({ participant, idx, onMaximize, showVoiceIndicator = true }) => {
+  isThumbnail?: boolean;
+  sizeVariant?: 'small' | 'medium' | 'large' | 'xlarge';
+}> = ({ participant, idx, onMaximize, isThumbnail = false, sizeVariant }) => {
   // Use participant identity for consistent colors instead of index
   const colorIndex = getParticipantColorIndex(participant.identity);
   const borderColor = BORDER_COLORS[colorIndex % BORDER_COLORS.length];
   const nameColor = NAME_COLORS[colorIndex % NAME_COLORS.length];
 
   const displayName = participant.name || participant.identity;
-
+  const department = participant.attributes?.department || 'Ulak';
+  const title = participant.attributes?.title || 'Takim Lideri';
   const initials = displayName
     .split(' ')
     .map(n => n[0]?.toUpperCase())
@@ -110,7 +112,19 @@ const CustomParticipantTile: React.FC<{
             display: !participant.isCameraEnabled ? 'flex' : 'none',
           }}
         >
-          <div className="name-container">{displayName}</div>
+          <div className="name-container">
+            <div
+              className={`participant-info${sizeVariant ? ` size-${sizeVariant}` : ''}`}
+            >
+              <div className="display-name">{displayName}</div>
+              {!isThumbnail && (
+                <>
+                  <div className="participant-title">{title}</div>
+                  <div className="participant-department">{department}</div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         <div
@@ -122,7 +136,7 @@ const CustomParticipantTile: React.FC<{
           </span>
         </div>
 
-        {showVoiceIndicator && !participant.isCameraEnabled && (
+        {!isThumbnail && !participant.isCameraEnabled && (
           <div
             className={`audio-waveform-container${
               participant.isSpeaking ? ' speaking' : ' silent'

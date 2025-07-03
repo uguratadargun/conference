@@ -21,7 +21,7 @@ const ThumbnailsContainer: React.FC<ThumbnailsContainerProps> = ({
             participant={participant}
             idx={idx + 1}
             onMaximize={() => enterFullScreen(participant.identity)}
-            showVoiceIndicator={false}
+            isThumbnail={true}
           />
         </div>
       ))}

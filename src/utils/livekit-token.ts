@@ -18,7 +18,7 @@ export const generateToken = async (): Promise<{
     { length: 3 },
     () => chars[Math.floor(Math.random() * chars.length)]
   ).join('');
-  const username = `ugur_${randomPart}`;
+  const username = `ugur_desktop_${randomPart}_${Date.now()}`;
 
   console.log(`Generated unique username: ${username}`);
 

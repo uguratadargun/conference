@@ -48,7 +48,14 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   if (!visible) return null;
 
   const getDisplayName = (participant: Participant): string => {
-    return participant.identity || 'Anonymous';
+    return participant.name || participant.identity || 'Anonymous';
+  };
+
+  const getParticipantInfo = (participant: Participant) => {
+    const displayName = getDisplayName(participant);
+    const department = participant.attributes?.department || 'Ulak';
+    const title = participant.attributes?.title || 'Takim Lideri';
+    return { displayName, department, title };
   };
 
   // Combine all participants with their status
@@ -103,7 +110,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
         );
       case 'denied':
-        return 'Declined';
+        return 'Denied';
       case 'busy':
         return 'Busy';
       case 'left':
@@ -134,7 +141,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
 
   const renderParticipant = (participantWithStatus: ParticipantWithStatus) => {
     const { participant, status } = participantWithStatus;
-    const displayName = getDisplayName(participant);
+    const { displayName, department, title } = getParticipantInfo(participant);
     const initial = displayName.charAt(0).toUpperCase();
 
     return (
@@ -145,6 +152,8 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         <div className="participant-avatar">{initial}</div>
         <div className="participant-info">
           <div className="participant-list-name">{displayName}</div>
+          <div className="participant-list-title">{title}</div>
+          <div className="participant-list-department">{department}</div>
         </div>
         <div className="participant-controls">
           {/* Show status text only for non-active participants */}
