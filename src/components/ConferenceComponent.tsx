@@ -7,7 +7,11 @@ import {
   useRoomContext,
   useParticipantsList,
 } from '@livekit/components-react';
-import { ConnectionState, RemoteParticipant } from 'livekit-client';
+import {
+  ConnectionState,
+  Participant,
+  RemoteParticipant,
+} from 'livekit-client';
 import { Button } from 'primereact/button';
 import { IconX } from '@tabler/icons-react';
 import CustomParticipantTile from './CustomParticipantTile';
@@ -30,6 +34,14 @@ const getGridClassName = (count: number) => {
   return 'grid-scroll';
 };
 
+// Interface for calling participant info
+export interface CallingParticipantInfo {
+  name: string;
+  title: string;
+  department: string;
+  identity: string;
+}
+
 // Main Room Component that uses LiveKit hooks
 const ConferenceComponent: React.FC<{
   hangup: () => void;
@@ -45,6 +57,18 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
+
+  const callParticipantInfo: CallingParticipantInfo = {
+    name: 'Ahmet Emre Zengin',
+    title: 'Software Engineer',
+    department: 'Software Development',
+    identity: 'ahmet.emre.zengin',
+  };
+  // State to track calling mode
+  const [isCalling, setIsCalling] = useState(false);
+  // State to store calling participant info
+  const [callingParticipantInfo, setCallingParticipantInfo] =
+    useState<CallingParticipantInfo | null>(callParticipantInfo);
 
   // Check if we should use one-to-one view (exactly 2 participants)
   useEffect(() => {
@@ -155,10 +179,13 @@ const ConferenceComponent: React.FC<{
             enterFullScreen={enterFullScreen}
           />
         </div>
-      ) : isOneToOneView && remoteParticipant && localParticipantObj ? (
+      ) : (isOneToOneView && remoteParticipant && localParticipantObj) ||
+        isCalling ? (
         <OneToOneCallView
-          remoteParticipant={remoteParticipant}
-          localParticipant={localParticipantObj}
+          remoteParticipant={remoteParticipant || ({} as Participant)}
+          localParticipant={localParticipantObj || ({} as Participant)}
+          isCalling={isCalling}
+          callingParticipantInfo={callingParticipantInfo}
         />
       ) : (
         <div className={`participants-grid ${gridClassName}`}>
