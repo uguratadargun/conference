@@ -18,9 +18,7 @@ export const generateToken = async (): Promise<{
     { length: 3 },
     () => chars[Math.floor(Math.random() * chars.length)]
   ).join('');
-  const username = `ugur_desktop_${randomPart}_${Date.now()}`;
-
-  console.log(`Generated unique username: ${username}`);
+  const username = `ugur.2`;
 
   const at = new AccessToken(LIVEKIT_CONFIG.apiKey, LIVEKIT_CONFIG.apiSecret, {
     identity: username,

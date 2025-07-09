@@ -11,10 +11,12 @@ import {
   ConnectionState,
   Participant,
   RemoteParticipant,
+  Track,
 } from 'livekit-client';
 import { Button } from 'primereact/button';
 import { IconX } from '@tabler/icons-react';
 import CustomParticipantTile from './CustomParticipantTile';
+import CustomTracks from './CustomTracks';
 import SettingsDialog from './SettingsDialog';
 import ParticipantListSidebar from './ParticipantListSidebar';
 import ControlBar from './ControlBar';
@@ -57,6 +59,7 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
+  const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
 
   const callParticipantInfo: CallingParticipantInfo = {
     name: 'Ahmet Emre Zengin',
@@ -113,6 +116,22 @@ const ConferenceComponent: React.FC<{
       );
     }
   }, [localParticipant]);
+
+  const toggleScreenShare = useCallback(async () => {
+    if (localParticipant) {
+      try {
+        // Toggle screen sharing
+        const enabled = await localParticipant.setScreenShareEnabled(
+          !isScreenShareEnabled,
+          { audio: true }
+        );
+        // Update state based on the result
+        setIsScreenShareEnabled(!!enabled);
+      } catch (error) {
+        console.error('Error toggling screen share:', error);
+      }
+    }
+  }, [localParticipant, isScreenShareEnabled]);
 
   const room = useRoomContext();
 
@@ -206,6 +225,8 @@ const ConferenceComponent: React.FC<{
         localParticipant={localParticipant}
         toggleAudio={toggleAudio}
         toggleVideo={toggleVideo}
+        toggleScreenShare={toggleScreenShare}
+        isScreenShareEnabled={isScreenShareEnabled}
         disconnect={disconnect}
         openSettings={openSettings}
         setActive={setActive}

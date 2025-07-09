@@ -1,5 +1,5 @@
 import React from 'react';
-import { Participant, RemoteParticipant } from 'livekit-client';
+import { Participant, RemoteParticipant, Track } from 'livekit-client';
 import { Button } from 'primereact/button';
 import {
   IconUsers,
@@ -9,11 +9,9 @@ import {
   IconMicrophoneOff,
   IconVideo,
   IconVideoOff,
-  IconPhoneCall,
-  IconPhoneX,
-  IconClock,
-  IconUserMinus,
-  IconLoader2,
+  IconPhone,
+  IconDeviceDesktop,
+  IconScreenShare,
 } from '@tabler/icons-react';
 
 // Participant status type
@@ -22,6 +20,18 @@ type ParticipantStatus = 'active' | 'ringing' | 'denied' | 'busy' | 'left';
 interface ParticipantWithStatus {
   participant: Participant;
   status: ParticipantStatus;
+}
+
+interface GroupedParticipant {
+  baseIdentity: string;
+  displayName: string;
+  department: string;
+  title: string;
+  devices: {
+    phone?: ParticipantWithStatus;
+    desktop?: ParticipantWithStatus;
+  };
+  status: ParticipantStatus; // Overall status (prioritized)
 }
 
 interface ParticipantListSidebarProps {
@@ -58,6 +68,31 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     return { displayName, department, title };
   };
 
+  const getBaseIdentity = (identity: string): string => {
+    // Remove .1 or .2 suffix if exists
+    if (identity.endsWith('.1') || identity.endsWith('.2')) {
+      return identity.slice(0, -2);
+    }
+    return identity;
+  };
+
+  const getDeviceType = (identity: string): 'phone' | 'desktop' | null => {
+    if (identity.endsWith('.1')) return 'phone';
+    if (identity.endsWith('.2')) return 'desktop';
+    return null;
+  };
+
+  const getPriorityStatus = (
+    statuses: ParticipantStatus[]
+  ): ParticipantStatus => {
+    // Priority order: active > ringing > busy > denied > left
+    if (statuses.includes('active')) return 'active';
+    if (statuses.includes('ringing')) return 'ringing';
+    if (statuses.includes('busy')) return 'busy';
+    if (statuses.includes('denied')) return 'denied';
+    return 'left';
+  };
+
   // Combine all participants with their status
   const allParticipants: ParticipantWithStatus[] = [
     ...activeParticipants.map(p => ({
@@ -82,22 +117,50 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     })),
   ];
 
-  const getStatusIcon = (status: ParticipantStatus) => {
-    switch (status) {
-      case 'ringing':
-        return (
-          <IconLoader2 size={16} className="status-icon ringing animate-spin" />
+  // Group participants by base identity
+  const groupedParticipants: GroupedParticipant[] = [];
+  const processedIdentities = new Set<string>();
+
+  allParticipants.forEach(participantWithStatus => {
+    const { participant } = participantWithStatus;
+    const baseIdentity = getBaseIdentity(participant.identity);
+    const deviceType = getDeviceType(participant.identity);
+
+    if (processedIdentities.has(baseIdentity)) {
+      // Find existing group and add device
+      const existingGroup = groupedParticipants.find(
+        g => g.baseIdentity === baseIdentity
+      );
+      if (existingGroup && deviceType) {
+        existingGroup.devices[deviceType] = participantWithStatus;
+        // Update overall status based on priority
+        const allStatuses = Object.values(existingGroup.devices).map(
+          d => d!.status
         );
-      case 'denied':
-        return <IconPhoneX size={16} className="status-icon denied" />;
-      case 'busy':
-        return <IconClock size={16} className="status-icon busy" />;
-      case 'left':
-        return <IconUserMinus size={16} className="status-icon left" />;
-      default:
-        return null;
+        existingGroup.status = getPriorityStatus(allStatuses);
+      }
+    } else {
+      // Create new group
+      processedIdentities.add(baseIdentity);
+      const { displayName, department, title } =
+        getParticipantInfo(participant);
+
+      const groupedParticipant: GroupedParticipant = {
+        baseIdentity,
+        displayName,
+        department,
+        title,
+        devices: {},
+        status: participantWithStatus.status,
+      };
+
+      if (deviceType) {
+        groupedParticipant.devices[deviceType] = participantWithStatus;
+      }
+
+      groupedParticipants.push(groupedParticipant);
     }
-  };
+  });
 
   const getStatusText = (status: ParticipantStatus) => {
     switch (status) {
@@ -120,12 +183,17 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     }
   };
 
-  const renderCallButton = (participantWithStatus: ParticipantWithStatus) => {
-    const { participant, status } = participantWithStatus;
+  const renderCallButton = (groupedParticipant: GroupedParticipant) => {
+    const { status, devices } = groupedParticipant;
 
     if (status === 'active' || status === 'ringing') {
       return null; // No call button for active or ringing participants
     }
+
+    // Use the first available participant for calling
+    const participant =
+      devices.phone?.participant || devices.desktop?.participant;
+    if (!participant) return null;
 
     return (
       <Button
@@ -139,17 +207,77 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     );
   };
 
-  const renderParticipant = (participantWithStatus: ParticipantWithStatus) => {
-    const { participant, status } = participantWithStatus;
-    const { displayName, department, title } = getParticipantInfo(participant);
-    const initial = displayName.charAt(0).toUpperCase();
+  const renderDeviceIcons = (devices: GroupedParticipant['devices']) => {
+    const hasPhone = !!devices.phone;
+    const hasDesktop = !!devices.desktop;
+
+    if (!hasPhone && !hasDesktop) return null;
 
     return (
-      <div
-        key={`${participant.identity}-${status}`}
-        className="participant-item"
-      >
-        <div className="participant-avatar">{initial}</div>
+      <div className="device-icons">
+        {hasPhone && <IconPhone size={12} className="device-icon phone-icon" />}
+        {hasDesktop && (
+          <IconDeviceDesktop size={12} className="device-icon desktop-icon" />
+        )}
+      </div>
+    );
+  };
+
+  const getActiveParticipantForControls = (
+    devices: GroupedParticipant['devices']
+  ) => {
+    // Return the active participant for showing mic/video controls
+    return devices.phone?.status === 'active'
+      ? devices.phone.participant
+      : devices.desktop?.status === 'active'
+        ? devices.desktop.participant
+        : null;
+  };
+
+  const renderActiveParticipantControls = (participant: Participant) => {
+    if (!participant) return null;
+
+    const isScreenSharing = !!participant.getTrackPublication(
+      Track.Source.ScreenShare
+    );
+
+    return (
+      <div className="active-participant-controls">
+        <div className="participant-status-icon">
+          {participant.isMicrophoneEnabled ? (
+            <IconMicrophone size={16} />
+          ) : (
+            <IconMicrophoneOff size={16} />
+          )}
+        </div>
+        <div className="participant-status-icon">
+          {participant.isCameraEnabled ? (
+            <IconVideo size={16} />
+          ) : (
+            <IconVideoOff size={16} />
+          )}
+        </div>
+        {isScreenSharing && (
+          <div className="participant-status-icon screen-share">
+            <IconScreenShare size={16} color="#3b82f6" />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderParticipant = (groupedParticipant: GroupedParticipant) => {
+    const { baseIdentity, displayName, department, title, devices, status } =
+      groupedParticipant;
+    const initial = displayName.charAt(0).toUpperCase();
+    const activeParticipant = getActiveParticipantForControls(devices);
+
+    return (
+      <div key={baseIdentity} className="participant-item">
+        <div className="participant-avatar-container">
+          <div className="participant-avatar">{initial}</div>
+          {renderDeviceIcons(devices)}
+        </div>
         <div className="participant-info">
           <div className="participant-list-name">{displayName}</div>
           <div className="participant-list-title">{title}</div>
@@ -164,23 +292,12 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           )}
 
           {/* Show mic/video icons only for active participants */}
-          {status === 'active' && (
-            <>
-              {participant.isMicrophoneEnabled ? (
-                <IconMicrophone size={16} className="status-icon active" />
-              ) : (
-                <IconMicrophoneOff size={16} className="status-icon inactive" />
-              )}
-              {participant.isCameraEnabled ? (
-                <IconVideo size={16} className="status-icon active" />
-              ) : (
-                <IconVideoOff size={16} className="status-icon inactive" />
-              )}
-            </>
+          {status === 'active' && activeParticipant && (
+            <>{renderActiveParticipantControls(activeParticipant)}</>
           )}
 
           {/* Show call again button for denied/busy/left participants */}
-          {renderCallButton(participantWithStatus)}
+          {renderCallButton(groupedParticipant)}
         </div>
       </div>
     );
@@ -216,10 +333,10 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           <div className="participant-section">
             <h3 className="section-title">Participants</h3>
             <div className="participant-list">
-              {allParticipants.length === 0 ? (
+              {groupedParticipants.length === 0 ? (
                 <div className="no-participants">No participants</div>
               ) : (
-                allParticipants.map(renderParticipant)
+                groupedParticipants.map(renderParticipant)
               )}
             </div>
           </div>

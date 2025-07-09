@@ -13,7 +13,7 @@ const CustomTracks: React.FC<{
   source: Track.Source;
 }> = ({ participant, source }) => {
   // Handle local participant tracks differently
-  const { cameraTrack } = useLocalParticipant();
+  const { localParticipant } = useLocalParticipant();
 
   // Use LiveKit's hook for remote participants
   const videoTracks = useParticipantTracks(
@@ -25,29 +25,69 @@ const CustomTracks: React.FC<{
     participant.isLocal ? '' : participant.identity
   );
 
-  // Get track references based on participant type
-  const videoTrackRef = participant.isLocal
-    ? source === Track.Source.Camera && cameraTrack
-      ? { participant, publication: cameraTrack, source }
-      : undefined
-    : videoTracks[0];
+  // Get screen share tracks
+  const screenShareTracks = useParticipantTracks(
+    [Track.Source.ScreenShare],
+    participant.isLocal ? '' : participant.identity
+  );
+
+  // Get track references based on participant type and source
+  let trackRef;
+  if (participant.isLocal) {
+    if (source === Track.Source.Camera) {
+      const publication = localParticipant?.getTrackPublication(
+        Track.Source.Camera
+      );
+      if (publication?.track) {
+        trackRef = { participant, publication, source };
+      }
+    } else if (source === Track.Source.ScreenShare) {
+      const publication = localParticipant?.getTrackPublication(
+        Track.Source.ScreenShare
+      );
+      if (publication?.track) {
+        trackRef = { participant, publication, source };
+      }
+    }
+  } else {
+    if (source === Track.Source.Camera) {
+      trackRef = videoTracks[0];
+    } else if (source === Track.Source.ScreenShare) {
+      trackRef = screenShareTracks[0];
+    }
+  }
 
   const audioTrackRef = participant.isLocal
     ? undefined // No audio for local participant
     : audioTracks[0];
 
+  // Determine if we're displaying a screen share track
+  const isScreenShare = source === Track.Source.ScreenShare;
+
+  // Define different styling for screen share vs camera tracks
+  const videoStyle = isScreenShare
+    ? {
+        objectFit: 'contain' as const,
+        display: trackRef ? 'block' : 'none',
+      }
+    : {
+        display: participant.isCameraEnabled ? 'block' : 'none',
+      };
+
   return (
-    <div>
-      {videoTrackRef && (
+    <div
+      className={
+        isScreenShare ? 'screen-share-container' : 'participant-video-container'
+      }
+    >
+      {trackRef && (
         <VideoTrack
-          trackRef={videoTrackRef}
-          className="participant-video"
+          trackRef={trackRef}
+          className={isScreenShare ? 'screen-share-video' : 'participant-video'}
           autoPlay
           playsInline
           muted={participant.isLocal}
-          style={{
-            display: participant.isCameraEnabled ? 'block' : 'none',
-          }}
+          style={videoStyle}
         />
       )}
       {audioTrackRef && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Participant, Track } from 'livekit-client';
 import CustomTracks from './CustomTracks';
-import { IconMicrophoneOff } from '@tabler/icons-react';
+import { IconMicrophoneOff, IconScreenShare } from '@tabler/icons-react';
 
 // Define the color arrays
 const BORDER_COLORS = [
@@ -91,6 +91,16 @@ const CustomParticipantTile: React.FC<{
     .join('')
     .slice(0, 2);
 
+  // Check if participant is sharing screen
+  const isScreenSharing = participant
+    .getTrackPublications()
+    .some(
+      track => track.source === Track.Source.ScreenShare && track.isSubscribed
+    );
+
+  // Hide avatar and info when video or screen is active
+  const showInfo = !participant.isCameraEnabled && !isScreenSharing;
+
   return (
     <div
       className={`size-full participant ${
@@ -102,14 +112,25 @@ const CustomParticipantTile: React.FC<{
       }}
       onClick={onMaximize}
     >
-      <CustomTracks participant={participant} source={Track.Source.Camera} />
+      {/* Show screen share track if available */}
+      {isScreenSharing && (
+        <CustomTracks
+          participant={participant}
+          source={Track.Source.ScreenShare}
+        />
+      )}
+
+      {/* Show camera track if not screen sharing or if in thumbnail mode */}
+      {(!isScreenSharing || isThumbnail) && (
+        <CustomTracks participant={participant} source={Track.Source.Camera} />
+      )}
 
       <div className="participant-content-container">
         <div
           className="participant-name"
           style={{
             color: nameColor,
-            display: !participant.isCameraEnabled ? 'flex' : 'none',
+            display: showInfo ? 'flex' : 'none',
           }}
         >
           <div className="name-container">
@@ -129,14 +150,14 @@ const CustomParticipantTile: React.FC<{
 
         <div
           className="avatar-container"
-          style={{ display: !participant.isCameraEnabled ? 'flex' : 'none' }}
+          style={{ display: showInfo ? 'flex' : 'none' }}
         >
           <span className="avatar-initials" style={{ color: nameColor }}>
             {initials}
           </span>
         </div>
 
-        {!isThumbnail && !participant.isCameraEnabled && (
+        {!isThumbnail && showInfo && participant.isSpeaking && (
           <div
             className={`audio-waveform-container${
               participant.isSpeaking ? ' speaking' : ' silent'
@@ -159,6 +180,12 @@ const CustomParticipantTile: React.FC<{
       {!participant.isMicrophoneEnabled && (
         <div className="audio-muted-indicator">
           <IconMicrophoneOff size={18} />
+        </div>
+      )}
+
+      {isScreenSharing && (
+        <div className="screen-share-indicator">
+          <IconScreenShare size={18} color="#3b82f6" />
         </div>
       )}
     </div>

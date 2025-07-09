@@ -10,12 +10,16 @@ import {
   IconSettings,
   IconCheck,
   IconX,
+  IconScreenShare,
+  IconScreenShareOff,
 } from '@tabler/icons-react';
 
 interface ControlBarProps {
   localParticipant: Participant | undefined;
   toggleAudio: () => void;
   toggleVideo: () => void;
+  toggleScreenShare: () => void;
+  isScreenShareEnabled: boolean;
   disconnect: () => void;
   openSettings: () => void;
   setActive: () => void;
@@ -26,6 +30,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
   localParticipant,
   toggleAudio,
   toggleVideo,
+  toggleScreenShare,
+  isScreenShareEnabled,
   disconnect,
   openSettings,
   setActive,
@@ -73,6 +79,26 @@ const ControlBar: React.FC<ControlBarProps> = ({
               localParticipant?.isCameraEnabled
                 ? 'Turn Off Camera'
                 : 'Turn On Camera'
+            }
+            tooltipOptions={{ position: 'top' }}
+          />
+        </div>
+
+        <div className="control-group">
+          <Button
+            icon={
+              isScreenShareEnabled ? (
+                <IconScreenShareOff size={20} />
+              ) : (
+                <IconScreenShare size={20} />
+              )
+            }
+            onClick={toggleScreenShare}
+            className={`control-button screen-share-button ${
+              isScreenShareEnabled ? 'active' : ''
+            }`}
+            tooltip={
+              isScreenShareEnabled ? 'Stop Screen Sharing' : 'Share Screen'
             }
             tooltipOptions={{ position: 'top' }}
           />
