@@ -11,12 +11,10 @@ import {
   ConnectionState,
   Participant,
   RemoteParticipant,
-  Track,
 } from 'livekit-client';
 import { Button } from 'primereact/button';
 import { IconX } from '@tabler/icons-react';
 import CustomParticipantTile from './CustomParticipantTile';
-import CustomTracks from './CustomTracks';
 import SettingsDialog from './SettingsDialog';
 import ParticipantListSidebar from './ParticipantListSidebar';
 import ControlBar from './ControlBar';

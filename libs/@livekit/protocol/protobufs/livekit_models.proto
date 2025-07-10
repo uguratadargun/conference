@@ -171,8 +171,9 @@ message ParticipantInfo {
   map<string, string> attributes = 15;
   DisconnectReason disconnect_reason = 16;
   repeated KindDetail kind_details = 18;
-
-  // NEXT_ID: 19
+  string title = 19;
+  string department = 20;
+  // NEXT_ID: 21
 }
 
 enum TrackType {

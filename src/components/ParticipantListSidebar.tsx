@@ -68,8 +68,8 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
 
   const getParticipantInfo = (participant: Participant) => {
     const displayName = getDisplayName(participant);
-    const department = participant.attributes?.department || 'Ulak';
-    const title = participant.attributes?.title || 'Takim Lideri';
+    const department = participant?.department || '';
+    const title = participant?.title || '';
     return { displayName, department, title };
   };
 

@@ -75,11 +75,7 @@ const CustomTracks: React.FC<{
       };
 
   return (
-    <div
-      className={
-        isScreenShare ? 'screen-share-container' : 'participant-video-container'
-      }
-    >
+    <div>
       {trackRef && (
         <VideoTrack
           trackRef={trackRef}

@@ -48,6 +48,8 @@ export default class RemoteParticipant extends Participant {
       pi.attributes,
       loggerOptions,
       pi.kind,
+      pi.title,
+      pi.department,
     );
   }
 
@@ -69,8 +71,10 @@ export default class RemoteParticipant extends Participant {
     attributes?: Record<string, string>,
     loggerOptions?: LoggerOptions,
     kind: ParticipantKind = ParticipantKind.STANDARD,
+    title?: string,
+    department?: string,
   ) {
-    super(sid, identity || '', name, metadata, attributes, loggerOptions, kind);
+    super(sid, identity || '', name, metadata, attributes, loggerOptions, kind, title, department);
     this.signalClient = signalClient;
     this.trackPublications = new Map();
     this.audioTrackPublications = new Map();

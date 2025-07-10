@@ -76,6 +76,12 @@ export default class Participant extends (EventEmitter as new () => TypedEmitter
   /** client assigned display name, encoded in JWT token */
   name?: string;
 
+  /** client assigned title, encoded in JWT token */
+  title?: string;
+
+  /** client assigned department, encoded in JWT token */
+  department?: string;
+
   /** client metadata, opaque to livekit */
   metadata?: string;
 
@@ -136,6 +142,8 @@ export default class Participant extends (EventEmitter as new () => TypedEmitter
     attributes?: Record<string, string>,
     loggerOptions?: LoggerOptions,
     kind: ParticipantKind = ParticipantKind.STANDARD,
+    title?: string,
+    department?: string,
   ) {
     super();
 
@@ -147,6 +155,8 @@ export default class Participant extends (EventEmitter as new () => TypedEmitter
     this.identity = identity;
     this.name = name;
     this.metadata = metadata;
+    this.title = title;
+    this.department = department;
     this.audioTrackPublications = new Map();
     this.videoTrackPublications = new Map();
     this.trackPublications = new Map();
@@ -252,6 +262,8 @@ export default class Participant extends (EventEmitter as new () => TypedEmitter
     this.identity = info.identity;
     this.sid = info.sid;
     this._setName(info.name);
+    this.title = info.title;
+    this.department = info.department;
     this._setMetadata(info.metadata);
     this._setAttributes(info.attributes);
     if (

@@ -83,8 +83,8 @@ const CustomParticipantTile: React.FC<{
   const nameColor = NAME_COLORS[colorIndex % NAME_COLORS.length];
 
   const displayName = participant.name || participant.identity;
-  const department = participant.attributes?.department || 'Ulak';
-  const title = participant.attributes?.title || 'Takim Lideri';
+  const department = participant?.department || '';
+  const title = participant?.title || '';
   const initials = displayName
     .split(' ')
     .map(n => n[0]?.toUpperCase())

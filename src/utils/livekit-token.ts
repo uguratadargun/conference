@@ -4,7 +4,7 @@ const LIVEKIT_CONFIG = {
   apiKey: 'APIB6KUGSRtzEGw',
   apiSecret: 'bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K',
   projectName: 'ugurdargun-w5ph6ze0',
-  roomName: 'test63',
+  roomName: 'test61',
 } as const;
 
 export const generateToken = async (): Promise<{
@@ -18,13 +18,13 @@ export const generateToken = async (): Promise<{
     { length: 3 },
     () => chars[Math.floor(Math.random() * chars.length)]
   ).join('');
-  const username = `ugur_${randomPart}_${Date.now()}_${Math.floor(
-    Math.random() * 10000
-  )}.2`;
+  const identity = `ugur.2`;
 
   const at = new AccessToken(LIVEKIT_CONFIG.apiKey, LIVEKIT_CONFIG.apiSecret, {
-    identity: username,
+    identity,
+    name: 'Ugur Ata Dargun',
   });
+
   at.addGrant({
     roomJoin: true,
     room: LIVEKIT_CONFIG.roomName,
@@ -32,8 +32,15 @@ export const generateToken = async (): Promise<{
     canPublish: true,
     canPublishData: true,
   });
+
+  at.grants = {
+    ...at.grants,
+    name: 'Ugur Ata Dargun',
+    title: 'Takim Lideri',
+    department: 'Ulak',
+  };
   const token = await at.toJwt();
   const url = `10.0.2.148:7880`;
 
-  return { url, token, roomId: LIVEKIT_CONFIG.roomName, identity: username };
+  return { url, token, roomId: LIVEKIT_CONFIG.roomName, identity };
 };

@@ -729,15 +729,8 @@ export class SignalClient {
         this.onParticipantListChanged(msg.value.allParticipants);
       }
       if (this.onParticipantUpdate) {
-        // TODO - ulak : This is a temporary fix to remove denied participants from the list.
-        const participants = msg.value.participants.filter((participant) => {
-          return (
-            participant.state !== ParticipantInfo_State.DENIED &&
-            participant.state !== ParticipantInfo_State.RINGING
-          );
-        });
-        if (participants.length > 0) {
-          this.onParticipantUpdate(participants);
+        if (msg.value.participants.length > 0) {
+          this.onParticipantUpdate(msg.value.participants);
         }
       }
     } else if (msg.case === 'trackPublished') {
