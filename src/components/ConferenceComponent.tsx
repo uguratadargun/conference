@@ -51,7 +51,7 @@ const ConferenceComponent: React.FC<{
   const participants = useParticipants();
   const participantsList = useParticipantsList();
   const connectionState = useConnectionState();
-  const { localParticipant } = useLocalParticipant();
+  const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
     string | null
   >(null);
@@ -59,7 +59,6 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
-  const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
 
   const callParticipantInfo: CallingParticipantInfo = {
     name: 'Ahmet Emre Zengin',
@@ -120,13 +119,10 @@ const ConferenceComponent: React.FC<{
   const toggleScreenShare = useCallback(async () => {
     if (localParticipant) {
       try {
-        // Toggle screen sharing
-        const enabled = await localParticipant.setScreenShareEnabled(
-          !isScreenShareEnabled,
-          { audio: true }
-        );
-        // Update state based on the result
-        setIsScreenShareEnabled(!!enabled);
+        // Toggle screen sharing - LiveKit's hook will handle state updates automatically
+        await localParticipant.setScreenShareEnabled(!isScreenShareEnabled, {
+          audio: true,
+        });
       } catch (error) {
         console.error('Error toggling screen share:', error);
       }
@@ -165,7 +161,9 @@ const ConferenceComponent: React.FC<{
   );
 
   // Get remote participant in one-to-one view
-  const remoteParticipant = participants.find(p => !p.isLocal);
+  const remoteParticipant = participants.find(
+    p => !p.isLocal
+  ) as RemoteParticipant;
   // Get local participant in one-to-one view
   const localParticipantObj = participants.find(p => p.isLocal);
 
@@ -266,11 +264,7 @@ const ConferenceComponent: React.FC<{
             participantsList.leftParticipants.values()
           ) as RemoteParticipant[]
         }
-        activeParticipants={
-          Array.from(
-            participantsList.activeParticipants.values()
-          ) as RemoteParticipant[]
-        }
+        activeParticipants={participants || []}
         onCallParticipant={handleCallParticipant}
       />
     </div>

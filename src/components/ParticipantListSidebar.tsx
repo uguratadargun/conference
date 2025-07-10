@@ -1,5 +1,10 @@
 import React from 'react';
-import { Participant, RemoteParticipant, Track } from 'livekit-client';
+import {
+  LocalParticipant,
+  Participant,
+  RemoteParticipant,
+  Track,
+} from 'livekit-client';
 import { Button } from 'primereact/button';
 import {
   IconUsers,
@@ -41,7 +46,7 @@ interface ParticipantListSidebarProps {
   deniedParticipants: RemoteParticipant[];
   busyParticipants: RemoteParticipant[];
   leftParticipants: RemoteParticipant[];
-  activeParticipants: RemoteParticipant[];
+  activeParticipants: RemoteParticipant[] | LocalParticipant[] | any[];
   onCallParticipant?: (participant: Participant) => void;
 }
 
@@ -245,21 +250,21 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
       <div className="active-participant-controls">
         <div className="participant-status-icon">
           {participant.isMicrophoneEnabled ? (
-            <IconMicrophone size={16} />
+            <IconMicrophone size={16} color="#22c55e" />
           ) : (
-            <IconMicrophoneOff size={16} />
+            <IconMicrophoneOff size={16} color="#ef4444" />
           )}
         </div>
         <div className="participant-status-icon">
           {participant.isCameraEnabled ? (
-            <IconVideo size={16} />
+            <IconVideo size={16} color="#22c55e" />
           ) : (
-            <IconVideoOff size={16} />
+            <IconVideoOff size={16} color="#ef4444" />
           )}
         </div>
         {isScreenSharing && (
           <div className="participant-status-icon screen-share">
-            <IconScreenShare size={16} color="#3b82f6" />
+            <IconScreenShare size={16} color="#22c55e" />
           </div>
         )}
       </div>
