@@ -101,6 +101,12 @@ const RoomComponent: React.FC = () => {
         publishDefaults: {
           videoCodec: 'h264',
         },
+        adaptiveStream: true,
+        audioCaptureDefaults: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
       }}
       startAsActive={true}
     >

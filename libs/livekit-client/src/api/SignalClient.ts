@@ -729,8 +729,14 @@ export class SignalClient {
         this.onParticipantListChanged(msg.value.allParticipants);
       }
       if (this.onParticipantUpdate) {
-        if (msg.value.participants.length > 0) {
-          this.onParticipantUpdate(msg.value.participants);
+        const updatedParticipants = msg.value.participants.filter(
+          (p: ParticipantInfo) =>
+            p.state !== ParticipantInfo_State.RINGING &&
+            p.state !== ParticipantInfo_State.DENIED &&
+            p.state !== ParticipantInfo_State.BUSY,
+        );
+        if (updatedParticipants.length > 0) {
+          this.onParticipantUpdate(updatedParticipants);
         }
       }
     } else if (msg.case === 'trackPublished') {

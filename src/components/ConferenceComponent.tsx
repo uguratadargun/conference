@@ -7,6 +7,7 @@ import {
   useRoomContext,
   useParticipantsList,
 } from '@livekit/components-react';
+import { sortParticipants } from '@livekit/components-core';
 import {
   ConnectionState,
   Participant,
@@ -154,9 +155,6 @@ const ConferenceComponent: React.FC<{
   const fullscreenParticipant = participants.find(
     p => p.identity === fullScreenParticipant
   );
-  const otherParticipants = participants.filter(
-    p => p.identity !== fullScreenParticipant
-  );
 
   // Get remote participant in one-to-one view
   const remoteParticipant = participants.find(
@@ -164,6 +162,18 @@ const ConferenceComponent: React.FC<{
   ) as RemoteParticipant;
   // Get local participant in one-to-one view
   const localParticipantObj = participants.find(p => p.isLocal);
+
+  // Use LiveKit's built-in sorting which handles speaking participants
+  // and keeps recently spoken participants at the front using lastSpokeAt
+  const sortedParticipants = sortParticipants(participants);
+
+  const otherParticipants = sortedParticipants.filter(
+    p => p.identity !== fullScreenParticipant
+  );
+
+  // Use sorted participants when scroll is active (more than 15 participants)
+  const participantsToRender =
+    participants.length > 15 ? sortedParticipants : participants;
 
   return (
     <div
@@ -204,7 +214,7 @@ const ConferenceComponent: React.FC<{
         />
       ) : (
         <div className={`participants-grid ${gridClassName}`}>
-          {participants.map((participant, idx) => (
+          {participantsToRender.map((participant, idx) => (
             <div key={participant.identity} className="size-full">
               <CustomParticipantTile
                 participant={participant}

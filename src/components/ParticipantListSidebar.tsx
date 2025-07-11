@@ -167,6 +167,28 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     }
   });
 
+  // Sort grouped participants by status priority
+  const getStatusPriority = (status: ParticipantStatus): number => {
+    switch (status) {
+      case 'active':
+        return 0;
+      case 'ringing':
+        return 1;
+      case 'denied':
+        return 2;
+      case 'busy':
+        return 3;
+      case 'left':
+        return 4;
+      default:
+        return 5;
+    }
+  };
+
+  groupedParticipants.sort((a, b) => {
+    return getStatusPriority(a.status) - getStatusPriority(b.status);
+  });
+
   const getStatusText = (status: ParticipantStatus) => {
     switch (status) {
       case 'ringing':

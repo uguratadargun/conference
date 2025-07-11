@@ -4,7 +4,7 @@ const LIVEKIT_CONFIG = {
   apiKey: 'APIB6KUGSRtzEGw',
   apiSecret: 'bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K',
   projectName: 'ugurdargun-w5ph6ze0',
-  roomName: 'test61',
+  roomName: 'test63',
 } as const;
 
 export const generateToken = async (): Promise<{
@@ -18,7 +18,7 @@ export const generateToken = async (): Promise<{
     { length: 3 },
     () => chars[Math.floor(Math.random() * chars.length)]
   ).join('');
-  const identity = `ugur.2`;
+  const identity = `ugur_${randomPart}.2`;
 
   const at = new AccessToken(LIVEKIT_CONFIG.apiKey, LIVEKIT_CONFIG.apiSecret, {
     identity,
