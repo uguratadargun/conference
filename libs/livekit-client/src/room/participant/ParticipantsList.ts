@@ -20,6 +20,8 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
   public busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  public noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  public notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public all: Map<string, ParticipantListEntry>;
 
   private engine?: RTCEngine;
@@ -31,6 +33,8 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
     this.busyParticipants = new Map();
     this.leftParticipants = new Map();
     this.activeParticipants = new Map();
+    this.noAnswerParticipants = new Map();
+    this.notReachableParticipants = new Map();
     this.all = new Map();
   }
 
@@ -56,6 +60,8 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
     this.busyParticipants.clear();
     this.leftParticipants.clear();
     this.activeParticipants.clear();
+    this.noAnswerParticipants.clear();
+    this.notReachableParticipants.clear();
     this.all.clear();
   }
 
@@ -84,6 +90,10 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
         this.leftParticipants.set(update.identity, update);
       } else if (update.state === ParticipantInfo_State.ACTIVE) {
         this.activeParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.NO_ANSWER) {
+        this.noAnswerParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.NOT_REACHABLE) {
+        this.notReachableParticipants.set(update.identity, update);
       }
     });
 
@@ -108,6 +118,10 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
         return Array.from(this.leftParticipants.values());
       case ParticipantInfo_State.ACTIVE:
         return Array.from(this.activeParticipants.values());
+      case ParticipantInfo_State.NO_ANSWER:
+        return Array.from(this.noAnswerParticipants.values());
+      case ParticipantInfo_State.NOT_REACHABLE:
+        return Array.from(this.notReachableParticipants.values());
       default:
         return [];
     }

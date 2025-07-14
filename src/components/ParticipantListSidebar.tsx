@@ -20,7 +20,14 @@ import {
 } from '@tabler/icons-react';
 
 // Participant status type
-type ParticipantStatus = 'active' | 'ringing' | 'denied' | 'busy' | 'left';
+type ParticipantStatus =
+  | 'active'
+  | 'ringing'
+  | 'denied'
+  | 'busy'
+  | 'left'
+  | 'noAnswer'
+  | 'notReachable';
 
 interface ParticipantWithStatus {
   participant: Participant;
@@ -46,6 +53,8 @@ interface ParticipantListSidebarProps {
   deniedParticipants: RemoteParticipant[];
   busyParticipants: RemoteParticipant[];
   leftParticipants: RemoteParticipant[];
+  noAnswerParticipants: RemoteParticipant[];
+  notReachableParticipants: RemoteParticipant[];
   activeParticipants: RemoteParticipant[] | LocalParticipant[] | any[];
   onCallParticipant?: (participant: Participant) => void;
 }
@@ -57,6 +66,8 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   deniedParticipants,
   busyParticipants,
   leftParticipants,
+  noAnswerParticipants,
+  notReachableParticipants,
   activeParticipants,
   onCallParticipant,
 }) => {
@@ -90,11 +101,13 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   const getPriorityStatus = (
     statuses: ParticipantStatus[]
   ): ParticipantStatus => {
-    // Priority order: active > ringing > busy > denied > left
+    // Priority order: active > ringing > busy > denied > left > noAnswer > notReachable
     if (statuses.includes('active')) return 'active';
     if (statuses.includes('ringing')) return 'ringing';
     if (statuses.includes('busy')) return 'busy';
     if (statuses.includes('denied')) return 'denied';
+    if (statuses.includes('noAnswer')) return 'noAnswer';
+    if (statuses.includes('notReachable')) return 'notReachable';
     return 'left';
   };
 
@@ -119,6 +132,14 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
     ...leftParticipants.map(p => ({
       participant: p,
       status: 'left' as ParticipantStatus,
+    })),
+    ...noAnswerParticipants.map(p => ({
+      participant: p,
+      status: 'noAnswer' as ParticipantStatus,
+    })),
+    ...notReachableParticipants.map(p => ({
+      participant: p,
+      status: 'notReachable' as ParticipantStatus,
     })),
   ];
 
@@ -180,8 +201,12 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         return 3;
       case 'left':
         return 4;
-      default:
+      case 'noAnswer':
         return 5;
+      case 'notReachable':
+        return 6;
+      default:
+        return 7;
     }
   };
 
@@ -205,6 +230,10 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         return 'Busy';
       case 'left':
         return 'Left';
+      case 'noAnswer':
+        return 'No answer';
+      case 'notReachable':
+        return 'Not reachable';
       default:
         return 'In call';
     }

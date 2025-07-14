@@ -40,6 +40,8 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
     busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<
       string,
       {
@@ -53,6 +55,10 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
     busyParticipants: new Map(room.participantsList.busyParticipants),
     leftParticipants: new Map(room.participantsList.leftParticipants),
     activeParticipants: new Map(room.participantsList.activeParticipants),
+    noAnswerParticipants: new Map(room.participantsList.noAnswerParticipants),
+    notReachableParticipants: new Map(
+      room.participantsList.notReachableParticipants
+    ),
     all: new Map(room.participantsList.all),
   });
 
@@ -67,6 +73,10 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
         busyParticipants: new Map(newParticipants.busyParticipants),
         leftParticipants: new Map(newParticipants.leftParticipants),
         activeParticipants: new Map(newParticipants.activeParticipants),
+        noAnswerParticipants: new Map(newParticipants.noAnswerParticipants),
+        notReachableParticipants: new Map(
+          newParticipants.notReachableParticipants
+        ),
         all: new Map(newParticipants.all),
       });
     });

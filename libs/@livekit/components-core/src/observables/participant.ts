@@ -248,6 +248,8 @@ export function listParticipantsObserver(
   busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   all: Map<
     string,
     {
@@ -262,6 +264,8 @@ export function listParticipantsObserver(
     busyParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     leftParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<
       string,
       {

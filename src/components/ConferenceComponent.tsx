@@ -272,6 +272,16 @@ const ConferenceComponent: React.FC<{
             participantsList.leftParticipants.values()
           ) as RemoteParticipant[]
         }
+        noAnswerParticipants={
+          Array.from(
+            participantsList.noAnswerParticipants.values()
+          ) as RemoteParticipant[]
+        }
+        notReachableParticipants={
+          Array.from(
+            participantsList.notReachableParticipants.values()
+          ) as RemoteParticipant[]
+        }
         activeParticipants={participants || []}
         onCallParticipant={handleCallParticipant}
       />
