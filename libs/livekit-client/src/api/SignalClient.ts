@@ -731,9 +731,8 @@ export class SignalClient {
       if (this.onParticipantUpdate) {
         const updatedParticipants = msg.value.participants.filter(
           (p: ParticipantInfo) =>
-            p.state !== ParticipantInfo_State.RINGING &&
-            p.state !== ParticipantInfo_State.DENIED &&
-            p.state !== ParticipantInfo_State.BUSY,
+            p.state === ParticipantInfo_State.ACTIVE ||
+            p.state === ParticipantInfo_State.DISCONNECTED,
         );
         if (updatedParticipants.length > 0) {
           this.onParticipantUpdate(updatedParticipants);
