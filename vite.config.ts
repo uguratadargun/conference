@@ -1,10 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Copy MediaPipe WASM files to public directory
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'node_modules/@mediapipe/tasks-vision/wasm/*',
+          dest: 'wasm/',
+        },
+      ],
+    }),
+  ],
   resolve: {
     alias: {
       // Development modunda livekit-client'ın kaynak kodunu direkt kullan
@@ -19,6 +31,10 @@ export default defineConfig({
       '@livekit/components-react': path.resolve(
         __dirname,
         './libs/@livekit/components-react/src/index.ts'
+      ),
+      '@livekit/track-processors': path.resolve(
+        __dirname,
+        './libs/@livekit/track-processors/src/index.ts'
       ),
     },
   },
@@ -68,6 +84,9 @@ export default defineConfig({
       'livekit-client',
       '@livekit/components-core',
       '@livekit/components-react',
+      '@livekit/track-processors',
+      // Prevent MediaPipe from being pre-bundled
+      '@mediapipe/tasks-vision',
     ], // livekit-client'ı optimize etme
   },
 });

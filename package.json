@@ -16,7 +16,8 @@
     "build:mutex": "cd libs/@livekit/mutex && npm run build",
     "build:protocol": "cd libs/@livekit/protocol && npm run build",
     "build:livekit-client": "cd libs/livekit-client && npm run build",
-    "build:libs": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:components-core && npm run build:components-react",
+    "build:track-processors": "cd libs/@livekit/track-processors && npm run build",
+    "build:libs": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:components-core && npm run build:components-react && npm run build:track-processors",
     "watch:components-core": "cd libs/@livekit/components-core && npm run dev",
     "watch:components-react": "cd libs/@livekit/components-react && npm run dev",
     "watch:livekit-client": "cd libs/livekit-client && npm run build:watch",
@@ -27,7 +28,8 @@
     "@livekit/components-react": "file:./libs/@livekit/components-react",
     "@livekit/mutex": "file:./libs/@livekit/mutex",
     "@livekit/protocol": "file:./libs/@livekit/protocol",
-    "@livekit/track-processors": "^0.5.7",
+    "@livekit/track-processors": "file:./libs/@livekit/track-processors",
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@tabler/icons-react": "^3.34.0",
     "chart.js": "^4.4.9",
     "livekit-client": "file:./libs/livekit-client",
@@ -51,6 +53,7 @@
     "terser": "^5.39.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^3.1.1"
   }
 }
