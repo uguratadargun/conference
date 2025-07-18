@@ -1,6 +1,6 @@
-import * as vision from '@mediapipe/tasks-vision';
 import VideoTransformer from './VideoTransformer';
 import { VideoTransformerInitOptions } from './types';
+import * as vision from '@mediapipe/tasks-vision';
 
 export type SegmenterOptions = Partial<
   vision.ImageSegmenterOptions['baseOptions']
@@ -57,32 +57,107 @@ export default class BackgroundProcessor extends VideoTransformer<BackgroundOpti
 
     await super.init({ outputCanvas, inputElement: inputVideo });
 
-    // Use local WASM files instead of CDN
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    const wasmPath = new URL(`${baseUrl}wasm`, window.location.origin).href;
-    const modelPath = new URL(
-      `${baseUrl}models/selfie_segmenter.tflite`,
-      window.location.origin
-    ).href;
+    // Cross-platform asset discovery with Electron support
+    let defaultWasmPath: string;
+    let defaultModelPath: string;
 
-    const fileSet = await vision.FilesetResolver.forVisionTasks(
-      this.options.assetPaths?.tasksVisionFileSet ?? wasmPath
-    );
+    // Detect Electron environment
+    const isElectron =
+      typeof process !== 'undefined' &&
+      process.versions &&
+      process.versions.electron;
 
-    this.imageSegmenter = await vision.ImageSegmenter.createFromOptions(
-      fileSet,
-      {
-        baseOptions: {
-          modelAssetPath: this.options.assetPaths?.modelAssetPath ?? modelPath,
-          delegate: 'GPU',
-          ...this.options.segmenterOptions,
-        },
-        canvas: this.canvas,
-        runningMode: 'VIDEO',
-        outputCategoryMask: true,
-        outputConfidenceMasks: false,
+    // Detect file:// protocol (common in Electron)
+    const isFileProtocol = window.location.protocol === 'file:';
+
+    try {
+      // Try to use import.meta.url if available (ES modules)
+      const libraryUrl = new URL('../../', import.meta.url);
+
+      if (isFileProtocol) {
+        // For file:// protocol (Electron), convert to proper file URLs
+        const basePath = libraryUrl.href;
+        defaultWasmPath = new URL('wasm/', basePath).href;
+        defaultModelPath = new URL('models/selfie_segmenter.tflite', basePath)
+          .href;
+      } else {
+        // Regular web environment
+        defaultWasmPath = new URL('wasm/', libraryUrl).href;
+        defaultModelPath = new URL('models/selfie_segmenter.tflite', libraryUrl)
+          .href;
       }
-    );
+    } catch {
+      // Fallback strategies based on environment
+      if (isElectron || isFileProtocol) {
+        // Electron/file:// fallback - use relative paths from current location
+        const currentPath = window.location.href.replace(/\/[^/]*$/, '');
+        defaultWasmPath = `${currentPath}/node_modules/@livekit/track-processors/wasm/`;
+        defaultModelPath = `${currentPath}/node_modules/@livekit/track-processors/models/selfie_segmenter.tflite`;
+      } else {
+        // Browser fallback
+        const baseUrl = window.location.origin;
+        defaultWasmPath = `${baseUrl}/node_modules/@livekit/track-processors/wasm/`;
+        defaultModelPath = `${baseUrl}/node_modules/@livekit/track-processors/models/selfie_segmenter.tflite`;
+      }
+    }
+
+    const wasmPath =
+      this.options.assetPaths?.tasksVisionFileSet ?? defaultWasmPath;
+    const modelPath =
+      this.options.assetPaths?.modelAssetPath ?? defaultModelPath;
+
+    try {
+      const fileSet = await vision.FilesetResolver.forVisionTasks(wasmPath);
+
+      this.imageSegmenter = await vision.ImageSegmenter.createFromOptions(
+        fileSet,
+        {
+          baseOptions: {
+            modelAssetPath: modelPath,
+            delegate: 'GPU',
+            ...this.options.segmenterOptions,
+          },
+          canvas: this.canvas,
+          runningMode: 'VIDEO',
+          outputCategoryMask: true,
+          outputConfidenceMasks: false,
+        }
+      );
+    } catch (error) {
+      if (isElectron || isFileProtocol) {
+        // In Electron, try CDN fallback if local files fail
+        console.warn(
+          'Local assets failed to load in Electron, falling back to CDN...',
+          error
+        );
+
+        const cdnWasmPath =
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm';
+        const cdnModelPath =
+          'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite';
+
+        const fileSet = await vision.FilesetResolver.forVisionTasks(
+          cdnWasmPath
+        );
+
+        this.imageSegmenter = await vision.ImageSegmenter.createFromOptions(
+          fileSet,
+          {
+            baseOptions: {
+              modelAssetPath: cdnModelPath,
+              delegate: 'GPU',
+              ...this.options.segmenterOptions,
+            },
+            canvas: this.canvas,
+            runningMode: 'VIDEO',
+            outputCategoryMask: true,
+            outputConfidenceMasks: false,
+          }
+        );
+      } else {
+        throw error;
+      }
+    }
 
     // Skip loading the image here if update already loaded the image below
     if (this.options?.imagePath && !this.backgroundImage) {

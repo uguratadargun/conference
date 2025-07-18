@@ -8,17 +8,17 @@ Bu repo artık ayrı git repository'lere bölünmüştür. Her paket kendi bağ�
 
 ### Ana Monorepo (Development)
 
-- `git@gitlab.ordulu.com:ulak-conference/desktop/libs.git`
+- `git@gitlab.ordulu.com/ulak-conference/desktop/libs.git`
 - Tüm development işlemleri burada yapılır
 
 ### Ayrı Paket Repository'leri (Production)
 
-- `@livekit/components-react` → `git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git`
-- `@livekit/components-core` → `git@gitlab.ordulu.com:ulak-conference/desktop/components-core.git`
-- `livekit-client` → `git@gitlab.ordulu.com:ulak-conference/desktop/livekit-client.git`
-- `@livekit/mutex` → `git@gitlab.ordulu.com:ulak-conference/desktop/mutex.git`
-- `@livekit/protocol` → `git@gitlab.ordulu.com:ulak-conference/desktop/protocol.git`
-- `@livekit/track-processors` → `git@gitlab.ordulu.com:ulak-conference/desktop/track-processors.git`
+- `@livekit/components-react` → `git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git`
+- `@livekit/components-core` → `git@gitlab.ordulu.com/ulak-conference/desktop/components-core.git`
+- `livekit-client` → `git@gitlab.ordulu.com/ulak-conference/desktop/livekit-client.git`
+- `@livekit/mutex` → `git@gitlab.ordulu.com/ulak-conference/desktop/mutex.git`
+- `@livekit/protocol` → `git@gitlab.ordulu.com/ulak-conference/desktop/protocol.git`
+- `@livekit/track-processors` → `git@gitlab.ordulu.com/ulak-conference/desktop/track-processors.git`
 
 ## 🔄 Development Workflow
 
@@ -76,7 +76,7 @@ npm run update:single components-react
 ```json
 {
   "dependencies": {
-    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git"
+    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git"
   }
 }
 ```
@@ -86,8 +86,8 @@ npm run update:single components-react
 ```json
 {
   "dependencies": {
-    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git#v2.9.12",
-    "livekit-client": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/livekit-client.git#abc1234"
+    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git#v2.9.12",
+    "livekit-client": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/livekit-client.git#abc1234"
   }
 }
 ```
@@ -97,7 +97,7 @@ npm run update:single components-react
 ```json
 {
   "dependencies": {
-    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git#main"
+    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git#main"
   }
 }
 ```
@@ -120,10 +120,10 @@ npm run fix:deps
 
 ```bash
 # Belirli bir commit'e pin'le
-npm install git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git#abc1234
+npm install git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git#abc1234
 
 # Latest'e güncelle
-npm install git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git
+npm install git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git
 ```
 
 ## 🚀 Production Kullanımı
@@ -134,8 +134,8 @@ npm install git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-r
 {
   "name": "my-project",
   "dependencies": {
-    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/components-react.git",
-    "livekit-client": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/livekit-client.git"
+    "@livekit/components-react": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/components-react.git",
+    "livekit-client": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/livekit-client.git"
   }
 }
 ```

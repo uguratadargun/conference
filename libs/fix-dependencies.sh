@@ -11,7 +11,7 @@ echo "  → @livekit/components-react dependency'si güncelleniyor..."
 COMPONENTS_REACT_PACKAGE="@livekit/components-react/package.json"
 
 # Mevcut file: dependency'sini git-based'e çevir
-sed -i '' 's|"@livekit/track-processors": "file:../track-processors"|"@livekit/track-processors": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/track-processors.git"|g' "$COMPONENTS_REACT_PACKAGE"
+sed -i '' 's|"@livekit/track-processors": "file:../track-processors"|"@livekit/track-processors": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/track-processors.git"|g' "$COMPONENTS_REACT_PACKAGE"
 
 echo "✅ Dependency'ler düzeltildi!"
 

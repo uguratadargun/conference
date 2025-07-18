@@ -1,6 +1,6 @@
-import * as vision from '@mediapipe/tasks-vision';
 import VideoTransformer from './VideoTransformer';
 import { VideoTransformerInitOptions } from './types';
+import * as vision from '@mediapipe/tasks-vision';
 export type SegmenterOptions = Partial<vision.ImageSegmenterOptions['baseOptions']>;
 export interface FrameProcessingStats {
     processingTimeMs: number;

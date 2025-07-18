@@ -53,7 +53,7 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@livekit/components-styles": "^1.1.6",
-    "@livekit/track-processors": "git+ssh://git@gitlab.ordulu.com:ulak-conference/desktop/track-processors.git",
+    "@livekit/track-processors": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/track-processors.git",
     "clsx": "2.1.1",
     "usehooks-ts": "3.1.1"
   },

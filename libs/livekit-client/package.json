@@ -32,7 +32,7 @@
       ]
     }
   },
-  "repository": "git@github.com:livekit/client-sdk-js.git",
+  "repository": "git@github.com/livekit/client-sdk-js.git",
   "author": "LiveKit <hello@livekit.io>",
   "license": "Apache-2.0",
   "scripts": {

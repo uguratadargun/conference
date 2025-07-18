@@ -27,7 +27,8 @@
     "update:livekit-client": "./update-single-repo.sh livekit-client",
     "update:mutex": "./update-single-repo.sh mutex",
     "update:protocol": "./update-single-repo.sh protocol",
-    "update:track-processors": "./update-single-repo.sh track-processors"
+    "update:track-processors": "./update-single-repo.sh track-processors",
+    "add:remotes": "./add-remotes.sh"
   },
   "engines": {
     "node": ">=18"

@@ -14,7 +14,9 @@
   "license": "Apache-2.0",
   "files": [
     "dist",
-    "src"
+    "src",
+    "models",
+    "wasm"
   ],
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304"
