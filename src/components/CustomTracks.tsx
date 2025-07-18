@@ -79,7 +79,7 @@ const CustomTracks: React.FC<{
       {trackRef && (
         <VideoTrack
           trackRef={trackRef}
-          className={isScreenShare ? 'screen-share-video' : 'participant-video'}
+          className="participant-video"
           autoPlay
           playsInline
           muted={participant.isLocal}
