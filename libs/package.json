@@ -8,6 +8,7 @@
     "@livekit/components-react": "file:./@livekit/components-react",
     "@livekit/mutex": "file:./@livekit/mutex",
     "@livekit/protocol": "file:./@livekit/protocol",
+    "@livekit/track-processors": "file:./@livekit/track-processors",
     "livekit-client": "file:./livekit-client"
   },
   "scripts": {
@@ -17,7 +18,16 @@
     "build:protocol": "cd @livekit/protocol && npm run build",
     "build:livekit-client": "cd livekit-client && npm run build",
     "build:track-processors": "cd @livekit/track-processors && npm run build",
-    "build": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:components-core && npm run build:components-react && npm run build:track-processors"
+    "build": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:track-processors && npm run build:components-core && npm run build:components-react",
+    "update:all": "./update-repos.sh",
+    "update:single": "./update-single-repo.sh",
+    "fix:deps": "./fix-dependencies.sh",
+    "update:components-react": "./update-single-repo.sh components-react",
+    "update:components-core": "./update-single-repo.sh components-core",
+    "update:livekit-client": "./update-single-repo.sh livekit-client",
+    "update:mutex": "./update-single-repo.sh mutex",
+    "update:protocol": "./update-single-repo.sh protocol",
+    "update:track-processors": "./update-single-repo.sh track-processors"
   },
   "engines": {
     "node": ">=18"
