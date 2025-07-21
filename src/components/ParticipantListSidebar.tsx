@@ -55,8 +55,11 @@ interface ParticipantListSidebarProps {
   leftParticipants: RemoteParticipant[];
   noAnswerParticipants: RemoteParticipant[];
   notReachableParticipants: RemoteParticipant[];
-  activeParticipants: RemoteParticipant[] | LocalParticipant[] | any[];
-  onCallParticipant?: (participant: Participant) => void;
+  activeParticipants: RemoteParticipant[];
+  onCallParticipant?: (participant: RemoteParticipant) => void;
+  inviteUrl: string;
+  onInviteCopy: () => void;
+  inviteCopied: boolean;
 }
 
 const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
@@ -70,6 +73,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   notReachableParticipants,
   activeParticipants,
   onCallParticipant,
+  inviteUrl,
+  onInviteCopy,
+  inviteCopied,
 }) => {
   if (!visible) return null;
 
@@ -377,12 +383,25 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             </Button>
           </div>
 
-          {/* Add People Section */}
-          <div className="add-people-section">
-            <Button className="add-people-button">
+          {/* Invite People Section */}
+          <div
+            className="add-people-section"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <Button className="add-people-button" onClick={onInviteCopy}>
               <IconUserPlus size={20} />
-              <span>Add people...</span>
+              <span>İnsanları davet et</span>
             </Button>
+            {inviteCopied && (
+              <div style={{ color: '#22c55e', fontWeight: 600, marginTop: 4 }}>
+                Davet bağlantısı kopyalandı!
+              </div>
+            )}
           </div>
 
           {/* All Participants List */}

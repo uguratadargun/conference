@@ -124,7 +124,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
           />
         </div>
 
-        <div className="control-group">
+        {/* <div className="control-group">
           <Button
             icon={<IconCheck size={20} />}
             onClick={setActive}
@@ -142,7 +142,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             tooltip="Deny Call"
             tooltipOptions={{ position: 'top' }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
