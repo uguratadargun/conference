@@ -45,7 +45,8 @@ export interface CallingParticipantInfo {
 // Main Room Component that uses LiveKit hooks
 const ConferenceComponent: React.FC<{
   hangup: () => void;
-}> = ({ hangup }) => {
+  roomName: string;
+}> = ({ hangup, roomName }) => {
   const participants = useParticipants();
   const connectionState = useConnectionState();
   const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
@@ -56,6 +57,8 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const inviteUrl = `${window.location.origin}/${roomName}`;
   // State to track showing thumbnails sidebar
   const [showThumbnailsSidebar, setShowThumbnailsSidebar] = useState(false);
 
@@ -72,9 +75,9 @@ const ConferenceComponent: React.FC<{
     useState<CallingParticipantInfo | null>(callParticipantInfo);
 
   // Check if we should use one-to-one view (exactly 2 participants)
-  useEffect(() => {
-    setIsOneToOneView(participants.length === 2);
-  }, [participants.length]);
+  // useEffect(() => {
+  //   setIsOneToOneView(participants.length === 2);
+  // }, [participants.length]);
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
@@ -264,8 +267,17 @@ const ConferenceComponent: React.FC<{
         leftParticipants={[]}
         noAnswerParticipants={[]}
         notReachableParticipants={[]}
-        activeParticipants={participants || []}
+        activeParticipants={
+          participants.filter(p => !p.isLocal) as RemoteParticipant[]
+        }
         onCallParticipant={handleCallParticipant}
+        inviteUrl={inviteUrl}
+        onInviteCopy={async () => {
+          await navigator.clipboard.writeText(inviteUrl);
+          setInviteCopied(true);
+          setTimeout(() => setInviteCopied(false), 2000);
+        }}
+        inviteCopied={inviteCopied}
       />
     </div>
   );

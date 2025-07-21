@@ -4,9 +4,28 @@ import { useLiveKit } from '../context/LiveKitContext';
 import ConferenceComponent from './ConferenceComponent';
 import { Button } from 'primereact/button';
 import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
+import { useLocalParticipant } from '@livekit/components-react';
+
+const generateRandomRoomName = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = 'room_';
+  for (let i = 0; i < 6; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return result;
+};
+
+function getRoomNameFromUrl() {
+  const path = window.location.pathname.replace(/^\//, '');
+  return path || null;
+}
 
 // Main ConferenceCall Component with LiveKitRoom wrapper
-const RoomComponent: React.FC = () => {
+const RoomComponent: React.FC<{
+  username: string;
+  cameraOn: boolean;
+  micOn: boolean;
+}> = ({ username, cameraOn, micOn }) => {
   const { generateToken } = useLiveKit();
   const [connectionData, setConnectionData] = useState<{
     url: string;
@@ -16,6 +35,13 @@ const RoomComponent: React.FC = () => {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [roomName, setRoomName] = useState<string>(() => {
+    const fromUrl = getRoomNameFromUrl();
+    if (fromUrl) return fromUrl;
+    const generated = generateRandomRoomName();
+    window.history.replaceState({}, '', `/${generated}`);
+    return generated;
+  });
 
   const sendDenyCallRequest = async (
     url: string,
@@ -50,7 +76,7 @@ const RoomComponent: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await generateToken();
+        const data = await generateToken(username, roomName);
         setConnectionData(data);
       } catch (err) {
         console.error('Failed to get connection data:', err);
@@ -59,9 +85,10 @@ const RoomComponent: React.FC = () => {
         setIsLoading(false);
       }
     };
-
-    connectToRoom();
-  }, [generateToken]);
+    if (username && roomName) {
+      connectToRoom();
+    }
+  }, [generateToken, username, roomName]);
 
   if (isLoading) {
     return (
@@ -109,6 +136,8 @@ const RoomComponent: React.FC = () => {
         },
       }}
       startAsActive={true}
+      video={cameraOn}
+      audio={micOn}
     >
       <ConferenceComponent
         hangup={() => {
@@ -121,9 +150,14 @@ const RoomComponent: React.FC = () => {
             );
           }
         }}
+        roomName={roomName}
       />
     </LiveKitRoom>
   );
 };
 
 export default RoomComponent;
+export function getCurrentRoomName() {
+  const path = window.location.pathname.replace(/^\//, '');
+  return path || null;
+}
