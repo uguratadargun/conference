@@ -54,9 +54,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
               !localParticipant?.isMicrophoneEnabled ? 'disabled' : ''
             }`}
             tooltip={
-              localParticipant?.isMicrophoneEnabled
-                ? 'Mute Audio'
-                : 'Unmute Audio'
+              localParticipant?.isMicrophoneEnabled ? 'Sesi Kapat' : 'Sesi Aç'
             }
             tooltipOptions={{ position: 'top' }}
           />
@@ -77,8 +75,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
             }`}
             tooltip={
               localParticipant?.isCameraEnabled
-                ? 'Turn Off Camera'
-                : 'Turn On Camera'
+                ? 'Kamerayı Kapat'
+                : 'Kamerayı Aç'
             }
             tooltipOptions={{ position: 'top' }}
           />
@@ -98,7 +96,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
               isScreenShareEnabled ? 'active' : ''
             }`}
             tooltip={
-              isScreenShareEnabled ? 'Stop Screen Sharing' : 'Share Screen'
+              isScreenShareEnabled ? 'Ekran Paylaşımını Durdur' : 'Ekran Paylaş'
             }
             tooltipOptions={{ position: 'top' }}
           />
@@ -109,7 +107,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconPhone size={20} />}
             onClick={disconnect}
             className="control-button hang-up-button"
-            tooltip="Leave Call"
+            tooltip="Görüşmeden Ayrıl"
             tooltipOptions={{ position: 'top' }}
           />
         </div>
@@ -119,7 +117,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconSettings size={20} />}
             onClick={openSettings}
             className="control-button settings-button"
-            tooltip="Settings"
+            tooltip="Ayarlar"
             tooltipOptions={{ position: 'top' }}
           />
         </div>
@@ -129,7 +127,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconCheck size={20} />}
             onClick={setActive}
             className="control-button settings-button"
-            tooltip="Accept Call"
+            tooltip="Görüşmeyi Kabul Et"
             tooltipOptions={{ position: 'top' }}
           />
         </div>
@@ -139,7 +137,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconX size={20} />}
             onClick={hangup}
             className="control-button hang-up-button"
-            tooltip="Deny Call"
+            tooltip="Görüşmeyi Reddet"
             tooltipOptions={{ position: 'top' }}
           />
         </div> */}
