@@ -43,11 +43,11 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
         )}
         <span>
           {connectionState === ConnectionState.Connected
-            ? 'Connected'
+            ? 'Bağlandı'
             : connectionState === ConnectionState.Connecting ||
                 connectionState === ConnectionState.Reconnecting
-              ? 'Connecting...'
-              : 'Disconnected'}
+              ? 'Bağlanıyor...'
+              : 'Bağlantı kesildi'}
         </span>
       </div>
 
@@ -59,9 +59,7 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
             onClick={onShowParticipantList}
             className="p-button-text"
             tooltipOptions={{ position: 'bottom' }}
-            label={`${participants.length} participant${
-              participants.length !== 1 ? 's' : ''
-            }`}
+            label={`${participants.length} katılımcı`}
           />
         </div>
       )}

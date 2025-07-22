@@ -158,10 +158,10 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
         className="layout-toggle-button"
         tooltip={
           layout === 'standard'
-            ? 'Change to focus layout'
+            ? 'Odak düzenine geç'
             : layout === 'focus'
-              ? 'Change to no-video layout'
-              : 'Change to standard layout'
+              ? 'Görsel olmayan düzene geç'
+              : 'Standart düzene geç'
         }
         tooltipOptions={{ position: 'left' }}
       />

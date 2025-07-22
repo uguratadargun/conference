@@ -95,7 +95,7 @@ const RoomComponent: React.FC<{
       <div className="conference-container">
         <div className="loading-container">
           <IconRefresh size={24} className="rotating" />
-          <span>Connecting to room...</span>
+          <span>Odaya bağlanıyor...</span>
         </div>
       </div>
     );
@@ -106,9 +106,9 @@ const RoomComponent: React.FC<{
       <div className="conference-container">
         <div className="error-container">
           <IconAlertCircle size={24} />
-          <span>{error || 'Failed to get connection data'}</span>
+          <span>{error || 'Bağlantı verisi alınamadı'}</span>
           <Button
-            label="Retry"
+            label="Tekrar dene"
             onClick={() => window.location.reload()}
             className="retry-button"
           />

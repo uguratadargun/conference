@@ -221,6 +221,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   });
 
   const getStatusText = (status: ParticipantStatus) => {
+    return 'Görüşmede';
     switch (status) {
       case 'ringing':
         return (
@@ -231,17 +232,17 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
         );
       case 'denied':
-        return 'Denied';
+        return 'Reddedildi';
       case 'busy':
-        return 'Busy';
+        return 'Meşgul';
       case 'left':
-        return 'Left';
+        return 'Ayrıldı';
       case 'noAnswer':
-        return 'No answer';
+        return 'Cevap yok';
       case 'notReachable':
-        return 'Not reachable';
+        return 'Ulaşılamıyor';
       default:
-        return 'In call';
+        return 'Görüşmede';
     }
   };
 
@@ -262,9 +263,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         className="call-again-button"
         size="small"
         onClick={() => onCallParticipant?.(participant)}
-        title="Call again"
+        title="Tekrar ara"
       >
-        Ring
+        Tekrar çal
       </Button>
     );
   };
@@ -374,9 +375,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             <div className="icon-circle">
               <IconUsers size={24} />
             </div>
-            <h2 className="sidebar-title">Group voice call</h2>
+            <h2 className="sidebar-title">Grup sesli arama</h2>
             <div className="participant-count">
-              {activeParticipants.length} Connected
+              {activeParticipants.length} Bağlı
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
               <IconX size={20} />
@@ -406,10 +407,10 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
 
           {/* All Participants List */}
           <div className="participant-section">
-            <h3 className="section-title">Participants</h3>
+            <h3 className="section-title">Katılımcılar</h3>
             <div className="participant-list">
               {groupedParticipants.length === 0 ? (
-                <div className="no-participants">No participants</div>
+                <div className="no-participants">Katılımcı yok</div>
               ) : (
                 groupedParticipants.map(renderParticipant)
               )}

@@ -210,7 +210,7 @@ const ConferenceComponent: React.FC<{
             icon={<IconX size={20} />}
             onClick={exitFullScreen}
             className="exit-fullscreen-button"
-            title="Exit fullscreen"
+            title="Tam ekrandan çık"
           />
         </div>
       ) : (isOneToOneView && remoteParticipant && localParticipantObj) ||
