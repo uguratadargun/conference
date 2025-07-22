@@ -97,8 +97,31 @@ const LandingPage: React.FC<{
             marginBottom: 24,
           }}
         >
-          Toplantı
+          <img
+            src="https://ordulu.com/lib/images/logo.png"
+            alt="Ordulu Logo"
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+              marginBottom: 16,
+              display: 'block',
+            }}
+          />
         </h1>
+        <div
+          style={{
+            color: '#bdbdbd',
+            fontSize: 15,
+            marginBottom: 24,
+            textAlign: 'center',
+            lineHeight: 1.5,
+          }}
+        >
+          <b>Toplantı planla:</b> Bir toplantı odası linki oluşturur ve linki
+          kopyalar. Bu linki başkalarıyla paylaşarak toplantıya davet
+          edebilirsiniz. Toplantı zamanı geldiğinde katılımcılar bu linke
+          tıklayarak toplantıya katılabilirler.
+        </div>
         <button
           style={{
             width: '100%',
@@ -119,7 +142,7 @@ const LandingPage: React.FC<{
           onMouseOver={e => (e.currentTarget.style.background = '#334155')}
           onMouseOut={e => (e.currentTarget.style.background = '#1e293b')}
         >
-          Toplantı linki oluştur
+          Toplantıyı Planla
         </button>
         {createdLink && (
           <div
@@ -147,6 +170,19 @@ const LandingPage: React.FC<{
             </div>
           </div>
         )}
+        <div
+          style={{
+            color: '#bdbdbd',
+            fontSize: 15,
+            marginBottom: 24,
+            textAlign: 'center',
+            lineHeight: 1.5,
+          }}
+        >
+          <b>Şimdi başlat:</b> Hemen yeni bir toplantı başlatır ve sizi toplantı
+          odasına yönlendirir. Toplantı başladıktan sonra davet linki
+          oluşturabilirsiniz.
+        </div>
         <button
           style={{
             width: '100%',
@@ -163,10 +199,11 @@ const LandingPage: React.FC<{
             letterSpacing: 0.1,
             transition: 'background 0.2s, border 0.2s',
           }}
+          onClick={handleStartMeeting}
           onMouseOver={e => (e.currentTarget.style.background = '#2a4d7a')}
           onMouseOut={e => (e.currentTarget.style.background = '#3566a3')}
         >
-          Toplantı başlat
+          Şimdi başlat
         </button>
       </div>
     </div>
