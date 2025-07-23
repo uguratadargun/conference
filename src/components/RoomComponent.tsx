@@ -50,7 +50,7 @@ const RoomComponent: React.FC<{
   ) => {
     try {
       const response = await fetch(
-        `http://${url}/twirp/livekit.RoomService/DenyCall`,
+        `https://${url}/twirp/livekit.RoomService/DenyCall`,
         {
           method: 'POST',
           body: JSON.stringify({
@@ -118,7 +118,7 @@ const RoomComponent: React.FC<{
 
   return (
     <LiveKitRoom
-      serverUrl={`ws://${connectionData.url}`}
+      serverUrl={`wss://${connectionData.url}`}
       token={connectionData.token}
       connectOptions={{
         autoSubscribe: true,
