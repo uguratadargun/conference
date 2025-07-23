@@ -124,39 +124,33 @@ export default class BackgroundProcessor extends VideoTransformer<BackgroundOpti
         }
       );
     } catch (error) {
-      if (isElectron || isFileProtocol) {
-        // In Electron, try CDN fallback if local files fail
-        console.warn(
-          'Local assets failed to load in Electron, falling back to CDN...',
-          error
-        );
+      // In Electron, try CDN fallback if local files fail
+      console.warn(
+        'Local assets failed to load in Electron, falling back to CDN...',
+        error
+      );
 
-        const cdnWasmPath =
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm';
-        const cdnModelPath =
-          'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite';
+      const cdnWasmPath =
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm';
+      const cdnModelPath =
+        'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite';
 
-        const fileSet = await vision.FilesetResolver.forVisionTasks(
-          cdnWasmPath
-        );
+      const fileSet = await vision.FilesetResolver.forVisionTasks(cdnWasmPath);
 
-        this.imageSegmenter = await vision.ImageSegmenter.createFromOptions(
-          fileSet,
-          {
-            baseOptions: {
-              modelAssetPath: cdnModelPath,
-              delegate: 'GPU',
-              ...this.options.segmenterOptions,
-            },
-            canvas: this.canvas,
-            runningMode: 'VIDEO',
-            outputCategoryMask: true,
-            outputConfidenceMasks: false,
-          }
-        );
-      } else {
-        throw error;
-      }
+      this.imageSegmenter = await vision.ImageSegmenter.createFromOptions(
+        fileSet,
+        {
+          baseOptions: {
+            modelAssetPath: cdnModelPath,
+            delegate: 'GPU',
+            ...this.options.segmenterOptions,
+          },
+          canvas: this.canvas,
+          runningMode: 'VIDEO',
+          outputCategoryMask: true,
+          outputConfidenceMasks: false,
+        }
+      );
     }
 
     // Skip loading the image here if update already loaded the image below
