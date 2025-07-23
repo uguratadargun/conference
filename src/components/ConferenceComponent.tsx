@@ -143,7 +143,13 @@ const ConferenceComponent: React.FC<{
   }, [room]);
 
   const openSettings = useCallback(() => {
+    setShowParticipantList(false);
     setShowSettings(true);
+  }, []);
+
+  const onShowParticipantList = useCallback(() => {
+    setShowSettings(false);
+    setShowParticipantList(true);
   }, []);
 
   const setActive = () => {
@@ -191,7 +197,7 @@ const ConferenceComponent: React.FC<{
         connectionState={connectionState as ConnectionState}
         participants={participants}
         showParticipantList={showParticipantList}
-        onShowParticipantList={() => setShowParticipantList(true)}
+        onShowParticipantList={onShowParticipantList}
       />
 
       {/* Thumbnails Sidebar (left) */}
@@ -291,9 +297,7 @@ const ConferenceComponent: React.FC<{
             participantsList.notReachableParticipants.values()
           ) as RemoteParticipant[]
         }
-        activeParticipants={
-          participants.filter(p => !p.isLocal) as RemoteParticipant[]
-        }
+        activeParticipants={participants as any}
         onCallParticipant={handleCallParticipant}
         inviteUrl={inviteUrl}
         onInviteCopy={async () => {

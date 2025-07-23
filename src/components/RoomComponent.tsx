@@ -4,7 +4,6 @@ import { useLiveKit } from '../context/LiveKitContext';
 import ConferenceComponent from './ConferenceComponent';
 import { Button } from 'primereact/button';
 import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
-import { useLocalParticipant } from '@livekit/components-react';
 
 const generateRandomRoomName = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
