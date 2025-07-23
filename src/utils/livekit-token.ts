@@ -1,11 +1,17 @@
-import { AccessToken } from 'livekit-server-sdk';
+type LivekitConfig = {
+  apiKey: string;
+  apiSecret: string;
+  roomName: string;
+  url: string;
+};
 
-const LIVEKIT_CONFIG = {
-  apiKey: 'devkey',
-  apiSecret: 'secret',
-  projectName: 'ugurdargun-w5ph6ze0',
-  roomName: 'test63',
-} as const;
+export async function getLivekitConfig(): Promise<LivekitConfig> {
+  const res = await fetch('/livekit-config.json');
+  if (!res.ok) throw new Error('Config not found');
+  return res.json();
+}
+
+import { AccessToken } from 'livekit-server-sdk';
 
 export const generateToken = async (
   username?: string,
@@ -16,6 +22,8 @@ export const generateToken = async (
   roomId: string;
   identity: string;
 }> => {
+  const livekitConfig = await getLivekitConfig();
+
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPart = Array.from(
     { length: 3 },
@@ -25,9 +33,9 @@ export const generateToken = async (
     ? `${username}_${randomPart}`
     : `ugur_${randomPart}.2`;
   const displayName = username || 'Ugur Ata Dargun';
-  const room = roomName || LIVEKIT_CONFIG.roomName;
+  const room = roomName || livekitConfig.roomName;
 
-  const at = new AccessToken(LIVEKIT_CONFIG.apiKey, LIVEKIT_CONFIG.apiSecret, {
+  const at = new AccessToken(livekitConfig.apiKey, livekitConfig.apiSecret, {
     identity,
     name: displayName,
   });
@@ -41,7 +49,7 @@ export const generateToken = async (
   });
 
   const token = await at.toJwt();
-  const url = `10.0.2.154:7880`;
+  const url = livekitConfig.url;
 
   return { url, token, roomId: room, identity };
 };

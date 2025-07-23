@@ -221,7 +221,6 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   });
 
   const getStatusText = (status: ParticipantStatus) => {
-    return 'Görüşmede';
     switch (status) {
       case 'ringing':
         return (
