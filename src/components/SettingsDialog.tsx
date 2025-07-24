@@ -65,9 +65,9 @@ const SettingsDialog: React.FC<{
             <div className="icon-circle">
               <IconSettings size={24} />
             </div>
-            <h2 className="sidebar-title">Device Settings</h2>
+            <h2 className="sidebar-title">Cihaz Ayarları</h2>
             <div className="settings-subtitle">
-              Configure your audio and video devices
+              Ses ve video cihazlarınızı yapılandırın
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
               <IconX size={20} />
@@ -80,7 +80,7 @@ const SettingsDialog: React.FC<{
             <div className="settings-section">
               <div className="settings-section-header">
                 <IconMicrophone size={20} />
-                <h3 className="settings-section-title">Microphone</h3>
+                <h3 className="settings-section-title">Mikrofon</h3>
               </div>
               <select
                 className="device-select"
@@ -89,13 +89,12 @@ const SettingsDialog: React.FC<{
               >
                 <option value="" disabled>
                   {audioInputs.length === 0
-                    ? 'No microphones found'
-                    : 'Select microphone'}
+                    ? 'Mikrofon bulunamadı'
+                    : 'Mikrofon seçin'}
                 </option>
                 {audioInputs.map(device => (
                   <option key={device.deviceId} value={device.deviceId}>
-                    {device.label ||
-                      `Microphone ${device.deviceId.slice(0, 8)}`}
+                    {device.label || `Mikrofon ${device.deviceId.slice(0, 8)}`}
                   </option>
                 ))}
               </select>
@@ -105,7 +104,7 @@ const SettingsDialog: React.FC<{
             <div className="settings-section">
               <div className="settings-section-header">
                 <IconVideo size={20} />
-                <h3 className="settings-section-title">Camera</h3>
+                <h3 className="settings-section-title">Kamera</h3>
               </div>
               <select
                 className="device-select"
@@ -114,12 +113,12 @@ const SettingsDialog: React.FC<{
               >
                 <option value="" disabled>
                   {videoInputs.length === 0
-                    ? 'No cameras found'
-                    : 'Select camera'}
+                    ? 'Kamera bulunamadı'
+                    : 'Kamera seçin'}
                 </option>
                 {videoInputs.map(device => (
                   <option key={device.deviceId} value={device.deviceId}>
-                    {device.label || `Camera ${device.deviceId.slice(0, 8)}`}
+                    {device.label || `Kamera ${device.deviceId.slice(0, 8)}`}
                   </option>
                 ))}
               </select>
@@ -130,7 +129,9 @@ const SettingsDialog: React.FC<{
               <div className="settings-section">
                 <div className="settings-section-header">
                   <IconPhoto size={20} />
-                  <h3 className="settings-section-title">Background Effects</h3>
+                  <h3 className="settings-section-title">
+                    Arka Plan Efektleri
+                  </h3>
                 </div>
 
                 {error && (
@@ -151,7 +152,7 @@ const SettingsDialog: React.FC<{
                       size={20}
                       color={activeEffect === 'none' ? 'white' : '#ccc'}
                     />
-                    <span>None</span>
+                    <span>Yok</span>
                   </button>
 
                   {/* Blur */}
@@ -164,7 +165,7 @@ const SettingsDialog: React.FC<{
                       size={20}
                       color={activeEffect === 'blur' ? 'white' : '#ccc'}
                     />
-                    <span>Blur</span>
+                    <span>Bulanıklaştır</span>
                   </button>
 
                   {/* Virtual Background */}
@@ -177,14 +178,14 @@ const SettingsDialog: React.FC<{
                       size={20}
                       color={activeEffect === 'virtual' ? 'white' : '#ccc'}
                     />
-                    <span>Virtual</span>
+                    <span>Sanal</span>
                   </button>
                 </div>
 
                 {/* Blur Radius Control */}
                 {activeEffect === 'blur' && (
                   <div className="blur-controls">
-                    <label>Blur Intensity: {blurRadius}</label>
+                    <label>Bulanıklık Yoğunluğu: {blurRadius}</label>
                     <input
                       type="range"
                       min="5"
@@ -198,7 +199,7 @@ const SettingsDialog: React.FC<{
 
                 {isProcessing && (
                   <div className="background-effects-processing">
-                    Processing effect...
+                    Efekt işleniyor...
                   </div>
                 )}
               </div>
@@ -208,10 +209,12 @@ const SettingsDialog: React.FC<{
               <div className="settings-section">
                 <div className="settings-section-header">
                   <IconPhoto size={20} />
-                  <h3 className="settings-section-title">Background Effects</h3>
+                  <h3 className="settings-section-title">
+                    Arka Plan Efektleri
+                  </h3>
                 </div>
                 <div className="background-effects-unsupported">
-                  Background effects are not supported in this browser
+                  Arka plan efektleri bu tarayıcıda desteklenmiyor
                 </div>
               </div>
             )}
@@ -220,7 +223,7 @@ const SettingsDialog: React.FC<{
             <div className="settings-section">
               <div className="settings-section-header">
                 <IconVolume size={20} />
-                <h3 className="settings-section-title">Speaker</h3>
+                <h3 className="settings-section-title">Hoparlör</h3>
               </div>
               <select
                 className="device-select"
@@ -229,12 +232,12 @@ const SettingsDialog: React.FC<{
               >
                 <option value="" disabled>
                   {audioOutputs.length === 0
-                    ? 'No speakers found'
-                    : 'Select speaker'}
+                    ? 'Hoparlör bulunamadı'
+                    : 'Hoparlör seçin'}
                 </option>
                 {audioOutputs.map(device => (
                   <option key={device.deviceId} value={device.deviceId}>
-                    {device.label || `Speaker ${device.deviceId.slice(0, 8)}`}
+                    {device.label || `Hoparlör ${device.deviceId.slice(0, 8)}`}
                   </option>
                 ))}
               </select>

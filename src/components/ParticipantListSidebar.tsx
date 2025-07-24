@@ -55,8 +55,11 @@ interface ParticipantListSidebarProps {
   leftParticipants: RemoteParticipant[];
   noAnswerParticipants: RemoteParticipant[];
   notReachableParticipants: RemoteParticipant[];
-  activeParticipants: RemoteParticipant[] | LocalParticipant[] | any[];
-  onCallParticipant?: (participant: Participant) => void;
+  activeParticipants: RemoteParticipant[];
+  onCallParticipant?: (participant: RemoteParticipant) => void;
+  inviteUrl: string;
+  onInviteCopy: () => void;
+  inviteCopied: boolean;
 }
 
 const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
@@ -70,6 +73,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   notReachableParticipants,
   activeParticipants,
   onCallParticipant,
+  inviteUrl,
+  onInviteCopy,
+  inviteCopied,
 }) => {
   if (!visible) return null;
 
@@ -225,17 +231,17 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
         );
       case 'denied':
-        return 'Denied';
+        return 'Reddedildi';
       case 'busy':
-        return 'Busy';
+        return 'Meşgul';
       case 'left':
-        return 'Left';
+        return 'Ayrıldı';
       case 'noAnswer':
-        return 'No answer';
+        return 'Cevap yok';
       case 'notReachable':
-        return 'Not reachable';
+        return 'Ulaşılamıyor';
       default:
-        return 'In call';
+        return 'Görüşmede';
     }
   };
 
@@ -256,9 +262,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         className="call-again-button"
         size="small"
         onClick={() => onCallParticipant?.(participant)}
-        title="Call again"
+        title="Tekrar ara"
       >
-        Ring
+        Tekrar çal
       </Button>
     );
   };
@@ -368,29 +374,42 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             <div className="icon-circle">
               <IconUsers size={24} />
             </div>
-            <h2 className="sidebar-title">Group voice call</h2>
+            <h2 className="sidebar-title">Konferans</h2>
             <div className="participant-count">
-              {activeParticipants.length} Connected
+              {activeParticipants.length} Bağlı
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
               <IconX size={20} />
             </Button>
           </div>
 
-          {/* Add People Section */}
-          <div className="add-people-section">
-            <Button className="add-people-button">
+          {/* Invite People Section */}
+          <div
+            className="add-people-section"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <Button className="add-people-button" onClick={onInviteCopy}>
               <IconUserPlus size={20} />
-              <span>Add people...</span>
+              <span>İnsanları davet et</span>
             </Button>
+            {inviteCopied && (
+              <div style={{ color: '#22c55e', fontWeight: 600, marginTop: 4 }}>
+                Davet bağlantısı kopyalandı!
+              </div>
+            )}
           </div>
 
           {/* All Participants List */}
           <div className="participant-section">
-            <h3 className="section-title">Participants</h3>
+            <h3 className="section-title">Katılımcılar</h3>
             <div className="participant-list">
               {groupedParticipants.length === 0 ? (
-                <div className="no-participants">No participants</div>
+                <div className="no-participants">Katılımcı yok</div>
               ) : (
                 groupedParticipants.map(renderParticipant)
               )}

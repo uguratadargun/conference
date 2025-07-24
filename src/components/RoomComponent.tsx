@@ -5,8 +5,26 @@ import ConferenceComponent from './ConferenceComponent';
 import { Button } from 'primereact/button';
 import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
 
+const generateRandomRoomName = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = 'room_';
+  for (let i = 0; i < 6; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return result;
+};
+
+function getRoomNameFromUrl() {
+  const path = window.location.pathname.replace(/^\//, '');
+  return path || null;
+}
+
 // Main ConferenceCall Component with LiveKitRoom wrapper
-const RoomComponent: React.FC = () => {
+const RoomComponent: React.FC<{
+  username: string;
+  cameraOn: boolean;
+  micOn: boolean;
+}> = ({ username, cameraOn, micOn }) => {
   const { generateToken } = useLiveKit();
   const [connectionData, setConnectionData] = useState<{
     url: string;
@@ -16,6 +34,13 @@ const RoomComponent: React.FC = () => {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [roomName, setRoomName] = useState<string>(() => {
+    const fromUrl = getRoomNameFromUrl();
+    if (fromUrl) return fromUrl;
+    const generated = generateRandomRoomName();
+    window.history.replaceState({}, '', `/${generated}`);
+    return generated;
+  });
 
   const sendDenyCallRequest = async (
     url: string,
@@ -25,7 +50,7 @@ const RoomComponent: React.FC = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://${url}/twirp/livekit.RoomService/DenyCall`,
+        `https://${url}/twirp/livekit.RoomService/DenyCall`,
         {
           method: 'POST',
           body: JSON.stringify({
@@ -50,7 +75,7 @@ const RoomComponent: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await generateToken();
+        const data = await generateToken(username, roomName);
         setConnectionData(data);
       } catch (err) {
         console.error('Failed to get connection data:', err);
@@ -59,16 +84,17 @@ const RoomComponent: React.FC = () => {
         setIsLoading(false);
       }
     };
-
-    connectToRoom();
-  }, [generateToken]);
+    if (username && roomName) {
+      connectToRoom();
+    }
+  }, [generateToken, username, roomName]);
 
   if (isLoading) {
     return (
       <div className="conference-container">
         <div className="loading-container">
           <IconRefresh size={24} className="rotating" />
-          <span>Connecting to room...</span>
+          <span>Odaya bağlanıyor...</span>
         </div>
       </div>
     );
@@ -79,9 +105,9 @@ const RoomComponent: React.FC = () => {
       <div className="conference-container">
         <div className="error-container">
           <IconAlertCircle size={24} />
-          <span>{error || 'Failed to get connection data'}</span>
+          <span>{error || 'Bağlantı verisi alınamadı'}</span>
           <Button
-            label="Retry"
+            label="Tekrar dene"
             onClick={() => window.location.reload()}
             className="retry-button"
           />
@@ -92,7 +118,7 @@ const RoomComponent: React.FC = () => {
 
   return (
     <LiveKitRoom
-      serverUrl={`ws://${connectionData.url}`}
+      serverUrl={`wss://${connectionData.url}`}
       token={connectionData.token}
       connectOptions={{
         autoSubscribe: true,
@@ -109,6 +135,8 @@ const RoomComponent: React.FC = () => {
         },
       }}
       startAsActive={true}
+      video={cameraOn}
+      audio={micOn}
     >
       <ConferenceComponent
         hangup={() => {
@@ -121,9 +149,14 @@ const RoomComponent: React.FC = () => {
             );
           }
         }}
+        roomName={roomName}
       />
     </LiveKitRoom>
   );
 };
 
 export default RoomComponent;
+export function getCurrentRoomName() {
+  const path = window.location.pathname.replace(/^\//, '');
+  return path || null;
+}
