@@ -220,19 +220,51 @@ $calling-avatar-color: #4b5563;
   justify-content: center;
 }
 
-/* Sidebar adjustments */
-.conference-container.sidebar-open .top-status-bar,
-.conference-container.sidebar-open .controls-container {
+/* Sağdan açılan sidebar için */
+.conference-container.sidebar-right-open .top-status-bar,
+.conference-container.sidebar-right-open .controls-container {
   right: 350px;
   transition: right $transition-medium;
 }
-
-.conference-container.sidebar-open .participants-grid,
-.conference-container.sidebar-open .fullscreen-container,
-.conference-container.sidebar-open .one-to-one-container,
-.conference-container.sidebar-open .calling-container {
+.conference-container.sidebar-right-open .participants-grid,
+.conference-container.sidebar-right-open .fullscreen-container,
+.conference-container.sidebar-right-open .one-to-one-container,
+.conference-container.sidebar-right-open .calling-container {
   width: calc(100% - 350px);
   transition: width $transition-medium;
+}
+
+// /* Soldan açılan sidebar için */
+// .conference-container.sidebar-left-open .top-status-bar,
+// .conference-container.sidebar-left-open .controls-container {
+//   left: 200px;
+//   transition: left $transition-medium;
+// }
+.conference-container.sidebar-left-open .participants-grid,
+.conference-container.sidebar-left-open .fullscreen-container,
+.conference-container.sidebar-left-open .one-to-one-container,
+.conference-container.sidebar-left-open .calling-container {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+  transition:
+    width $transition-medium,
+    margin-left $transition-medium;
+}
+
+/* İkisi birden açıksa */
+// .conference-container.sidebar-left-open.sidebar-right-open .top-status-bar,
+// .conference-container.sidebar-left-open.sidebar-right-open .controls-container {
+//   left: 200px;
+//   right: 350px;
+// }
+.conference-container.sidebar-left-open.sidebar-right-open .participants-grid,
+.conference-container.sidebar-left-open.sidebar-right-open
+  .fullscreen-container,
+.conference-container.sidebar-left-open.sidebar-right-open
+  .one-to-one-container,
+.conference-container.sidebar-left-open.sidebar-right-open .calling-container {
+  margin-left: 200px;
+  width: calc(100% - 550px);
 }
 
 .conference-container.sidebar-open .thumbnails-container {
@@ -814,20 +846,25 @@ $calling-avatar-color: #4b5563;
 }
 
 .thumbnails-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 85vw;
+  position: fixed;
+  left: 0;
+  top: 47.5%;
+  transform: translateY(-49%);
+  width: 200px;
+  height: 87vh;
+
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: $spacing-lg;
-  overflow-x: auto;
-  scroll-padding: 40px;
-  scroll-margin: 20px;
-  z-index: 15;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  flex-direction: column;
+  gap: $spacing-sm;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: $secondary-bg; // glassmorphism effect
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1.5px solid rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.18),
+    2px 0 8px rgba(0, 0, 0, 0.12);
+  padding: $spacing-xl $spacing-md;
 }
 
 .thumbnails-container::-webkit-scrollbar {
@@ -838,6 +875,22 @@ $calling-avatar-color: #4b5563;
   min-width: 120px;
   max-width: 160px;
   flex: 0 0 auto;
+  border-radius: $radius-lg;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: $secondary-bg;
+  box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.1);
+  transition:
+    box-shadow $transition-fast,
+    border-color $transition-fast,
+    transform $transition-fast;
+  position: relative;
+}
+
+.thumbnail-wrapper:hover {
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.18);
+  border-color: $primary-blue;
+  transform: translateY(-2px) scale(1.04);
+  z-index: 2;
 }
 
 .thumbnail-wrapper .participant {
@@ -904,6 +957,18 @@ $calling-avatar-color: #4b5563;
 
 .thumbnail-wrapper .audio-waveform-container {
   display: none;
+}
+
+.thumbnails-container .thumbnail-wrapper {
+  min-width: unset;
+  max-width: unset;
+  width: 100%;
+  margin-bottom: $spacing-md;
+}
+
+.thumbnails-container .participant {
+  width: 100%;
+  height: 90px;
 }
 
 /* ====== 6. Control Buttons ====== */
@@ -2103,16 +2168,63 @@ effect-button.active span {
   position: absolute;
   left: 12px;
   bottom: 12px;
-  color: inherit;
   background: rgba(0, 0, 0, 0.5);
+  color: inherit;
   border-radius: 6px;
   padding: 2px 10px;
-  font-weight: 500;
   font-size: 16px;
-  z-index: 2;
+  font-weight: 500;
   max-width: 80%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ====== 8.1. Chat Sidebar (Left) ====== */
+.chat-sidebar-container {
+  position: fixed;
+  top: 47.5%;
+  left: 0;
+  z-index: 1000;
+  width: 200px;
+  height: 87vh;
+  transform: translateY(-49%);
+}
+
+.chat-sidebar {
+  background-color: $secondary-bg;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  animation: slide-in-left 0.2s ease-out forwards;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.chat-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.chat-section {
+  padding: $spacing-md;
+}
+
+.chat-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  text-align: center;
+  margin-top: 40px;
 }

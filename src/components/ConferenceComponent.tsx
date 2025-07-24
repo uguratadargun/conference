@@ -58,6 +58,8 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
+  // State to track showing thumbnails sidebar
+  const [showThumbnailsSidebar, setShowThumbnailsSidebar] = useState(false);
 
   const callParticipantInfo: CallingParticipantInfo = {
     name: 'Ahmet Emre Zengin',
@@ -177,9 +179,9 @@ const ConferenceComponent: React.FC<{
 
   return (
     <div
-      className={`conference-container ${
-        showParticipantList || showSettings ? 'sidebar-open' : ''
-      }`}
+      className={`conference-container${
+        showParticipantList || showSettings ? ' sidebar-right-open' : ''
+      }${fullscreenParticipant ? ' sidebar-left-open' : ''}`}
     >
       {/* Top Status Bar */}
       <TopStatusBar
@@ -188,6 +190,14 @@ const ConferenceComponent: React.FC<{
         showParticipantList={showParticipantList}
         onShowParticipantList={() => setShowParticipantList(true)}
       />
+
+      {/* Thumbnails Sidebar (left) */}
+      {fullscreenParticipant && (
+        <ThumbnailsContainer
+          otherParticipants={otherParticipants}
+          enterFullScreen={enterFullScreen}
+        />
+      )}
 
       {/* Main Video Area */}
       {fullscreenParticipant ? (
@@ -198,10 +208,6 @@ const ConferenceComponent: React.FC<{
             onClick={exitFullScreen}
             className="exit-fullscreen-button"
             title="Exit fullscreen"
-          />
-          <ThumbnailsContainer
-            otherParticipants={otherParticipants}
-            enterFullScreen={enterFullScreen}
           />
         </div>
       ) : (isOneToOneView && remoteParticipant && localParticipantObj) ||

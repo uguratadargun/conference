@@ -161,9 +161,12 @@ const CustomParticipantTile: React.FC<{
         </div>
 
         {/* Name in bottom left if camera is on or screen sharing */}
-        {showNameBottomLeft && (
-          <div className="participant-name-bottom-left">{displayName}</div>
-        )}
+        {showNameBottomLeft &&
+          (isThumbnail ? (
+            <div className="participant-name">{displayName}</div>
+          ) : (
+            <div className="participant-name-bottom-left">{displayName}</div>
+          ))}
 
         {!isThumbnail && showInfo && participant.isSpeaking && (
           <div
