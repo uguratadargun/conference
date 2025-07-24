@@ -101,6 +101,9 @@ const CustomParticipantTile: React.FC<{
   // Hide avatar and info when video or screen is active
   const showInfo = !participant.isCameraEnabled && !isScreenSharing;
 
+  // Show name in bottom left if camera is on or screen sharing
+  const showNameBottomLeft = participant.isCameraEnabled || isScreenSharing;
+
   return (
     <div
       className={`size-full participant ${
@@ -156,6 +159,11 @@ const CustomParticipantTile: React.FC<{
             {initials}
           </span>
         </div>
+
+        {/* Name in bottom left if camera is on or screen sharing */}
+        {showNameBottomLeft && (
+          <div className="participant-name-bottom-left">{displayName}</div>
+        )}
 
         {!isThumbnail && showInfo && participant.isSpeaking && (
           <div
