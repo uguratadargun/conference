@@ -374,7 +374,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             <div className="icon-circle">
               <IconUsers size={24} />
             </div>
-            <h2 className="sidebar-title">Grup sesli arama</h2>
+            <h2 className="sidebar-title">Konferans</h2>
             <div className="participant-count">
               {activeParticipants.length} Bağlı
             </div>
