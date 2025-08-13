@@ -1,12 +1,12 @@
-import type { CreateLocalTracksOptions, LocalAudioTrack, LocalTrack, LocalVideoTrack, TrackProcessor } from 'livekit-client';
-import { Track } from 'livekit-client';
-import * as React from 'react';
-import type { LocalUserChoices } from '@livekit/components-core';
+import type { CreateLocalTracksOptions, LocalAudioTrack, LocalTrack, LocalVideoTrack, TrackProcessor } from "livekit-client";
+import { Track } from "livekit-client";
+import * as React from "react";
+import type { LocalUserChoices } from "@livekit/components-core";
 /**
  * Props for the PreJoin component.
  * @public
  */
-export interface PreJoinProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit' | 'onError'> {
+export interface PreJoinProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit" | "onError"> {
     /** This function is called with the `LocalUserChoices` if validation is passed. */
     onSubmit?: (values: LocalUserChoices) => void;
     /**
@@ -31,15 +31,15 @@ export interface PreJoinProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
     videoProcessor?: TrackProcessor<Track.Kind.Video>;
 }
 /** @public */
-export declare function usePreviewTracks(options: CreateLocalTracksOptions, onError?: (err: Error) => void): LocalTrack<Track.Kind>[];
+export declare function usePreviewTracks(options: CreateLocalTracksOptions, onError?: (err: Error) => void): LocalTrack<Track.Kind>[] | undefined;
 /**
  * @public
  * @deprecated use `usePreviewTracks` instead
  */
-export declare function usePreviewDevice<T extends LocalVideoTrack | LocalAudioTrack>(enabled: boolean, deviceId: string, kind: 'videoinput' | 'audioinput'): {
-    selectedDevice: MediaDeviceInfo;
-    localTrack: T;
-    deviceError: Error;
+export declare function usePreviewDevice<T extends LocalVideoTrack | LocalAudioTrack>(enabled: boolean, deviceId: string, kind: "videoinput" | "audioinput"): {
+    selectedDevice: MediaDeviceInfo | undefined;
+    localTrack: T | undefined;
+    deviceError: Error | null;
 };
 /**
  * The `PreJoin` prefab component is normally presented to the user before he enters a room.

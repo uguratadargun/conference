@@ -3,10 +3,10 @@
  */
 
 // Regular exports
-export * from './index';
+export * from "./index";
 
 // Cloud/Krisp exports
 export {
   useKrispNoiseFilter,
   type useKrispNoiseFilterOptions,
-} from './hooks/cloud/krisp/useKrispNoiseFilter';
+} from "./hooks/cloud/krisp/useKrispNoiseFilter";

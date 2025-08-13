@@ -1,5 +1,5 @@
-import type { GridLayoutDefinition, GridLayoutInfo } from '@livekit/components-core';
-import * as React from 'react';
+import type { GridLayoutDefinition, GridLayoutInfo } from "@livekit/components-core";
+import * as React from "react";
 /**
  * The `useGridLayout` hook tries to select the best layout to fit all tiles.
  * If the available screen space is not enough, it will reduce the number of maximum visible

@@ -1,4 +1,4 @@
-import { log } from '../logger';
+import { log } from "../logger";
 
 /**
  * @public
@@ -27,7 +27,7 @@ export type GridLayoutDefinition = {
    * For which orientation the layout definition should be applied.
    * Will be used for both landscape and portrait if no value is specified.
    */
-  orientation?: 'landscape' | 'portrait';
+  orientation?: "landscape" | "portrait";
 };
 
 export type GridLayoutInfo = {
@@ -46,7 +46,7 @@ export type GridLayoutInfo = {
   minWidth: number;
   /** Minimum height required to use this layout. */
   minHeight: number;
-  orientation?: 'landscape' | 'portrait';
+  orientation?: "landscape" | "portrait";
 };
 
 export const GRID_LAYOUTS: GridLayoutDefinition[] = [
@@ -57,12 +57,12 @@ export const GRID_LAYOUTS: GridLayoutDefinition[] = [
   {
     columns: 1,
     rows: 2,
-    orientation: 'portrait',
+    orientation: "portrait",
   },
   {
     columns: 2,
     rows: 1,
-    orientation: 'landscape',
+    orientation: "landscape",
   },
   {
     columns: 2,
@@ -90,10 +90,10 @@ export function selectGridLayout(
   layoutDefinitions: GridLayoutDefinition[],
   participantCount: number,
   width: number,
-  height: number
+  height: number,
 ): GridLayoutInfo {
   if (layoutDefinitions.length < 1) {
-    throw new Error('At least one grid layout definition must be provided.');
+    throw new Error("At least one grid layout definition must be provided.");
   }
   const layouts = expandAndSortLayoutDefinitions(layoutDefinitions);
   if (width <= 0 || height <= 0) {
@@ -101,7 +101,7 @@ export function selectGridLayout(
   }
   // Find the best layout to fit all participants.
   let currentLayoutIndex = 0;
-  const containerOrientation = width / height > 1 ? 'landscape' : 'portrait';
+  const containerOrientation = width / height > 1 ? "landscape" : "portrait";
   let layout = layouts.find((layout_, index, allLayouts) => {
     currentLayoutIndex = index;
     const isBiggerLayoutAvailable =
@@ -123,7 +123,7 @@ export function selectGridLayout(
     layout = layouts[layouts.length - 1];
     if (layout) {
       log.warn(
-        `No layout found for: participantCount: ${participantCount}, width/height: ${width}/${height} fallback to biggest available layout (${layout}).`
+        `No layout found for: participantCount: ${participantCount}, width/height: ${width}/${height} fallback to biggest available layout (${layout}).`,
       );
     } else {
       throw new Error(`No layout or fallback layout found.`);
@@ -139,7 +139,7 @@ export function selectGridLayout(
         layouts.slice(0, currentLayoutIndex),
         smallerLayout.maxTiles,
         width,
-        height
+        height,
       );
     }
   }
@@ -150,10 +150,10 @@ export function selectGridLayout(
  * @internal
  */
 export function expandAndSortLayoutDefinitions(
-  layouts: GridLayoutDefinition[]
+  layouts: GridLayoutDefinition[],
 ): GridLayoutInfo[] {
   return [...layouts]
-    .map(layout => {
+    .map((layout) => {
       return {
         name: `${layout.columns}x${layout.rows}`,
         columns: layout.columns,

@@ -1,15 +1,15 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   BackgroundBlur,
   VirtualBackground,
   supportsBackgroundProcessors,
-} from '@livekit/track-processors';
-import type { LocalVideoTrack } from 'livekit-client';
-import { useLocalParticipant } from './useLocalParticipant';
-import backgroundImage from '../assets/images/background.jpeg';
+} from "@livekit/track-processors";
+import type { LocalVideoTrack } from "livekit-client";
+import { useLocalParticipant } from "./useLocalParticipant";
+import backgroundImage from "../assets/images/background.jpeg";
 
 /** @public */
-export type BackgroundEffectType = 'none' | 'blur' | 'virtual';
+export type BackgroundEffectType = "none" | "blur" | "virtual";
 
 /** @public */
 export interface BackgroundEffectOptions {
@@ -44,7 +44,7 @@ export interface UseBackgroundEffectsReturn {
   /** Apply a background effect */
   applyEffect: (
     type: BackgroundEffectType,
-    options?: BackgroundEffectOptions
+    options?: BackgroundEffectOptions,
   ) => Promise<void>;
   /** Update blur radius (debounced application) */
   setBlurRadius: (radius: number) => void;
@@ -78,10 +78,10 @@ export interface UseBackgroundEffectsReturn {
  * @public
  */
 export function useBackgroundEffects(
-  options: UseBackgroundEffectsOptions = {}
+  options: UseBackgroundEffectsOptions = {},
 ): UseBackgroundEffectsReturn {
   const {
-    initialEffect = 'none',
+    initialEffect = "none",
     initialBlurRadius = 10,
     blurDebounceMs = 500,
   } = options;
@@ -104,17 +104,17 @@ export function useBackgroundEffects(
   const applyEffect = useCallback(
     async (
       type: BackgroundEffectType,
-      effectOptions?: BackgroundEffectOptions
+      effectOptions?: BackgroundEffectOptions,
     ) => {
       const localVideoTrack = cameraTrack?.track as LocalVideoTrack;
 
       if (!localVideoTrack) {
-        setError('No video track available');
+        setError("No video track available");
         return;
       }
 
       if (!isSupported) {
-        setError('Background effects are not supported in this browser');
+        setError("Background effects are not supported in this browser");
         return;
       }
 
@@ -127,7 +127,7 @@ export function useBackgroundEffects(
 
         // Apply new effect based on type
         switch (type) {
-          case 'blur': {
+          case "blur": {
             const radius = effectOptions?.blurRadius ?? appliedBlurRadius;
             const blurProcessor = BackgroundBlur(radius);
             await localVideoTrack.setProcessor(blurProcessor);
@@ -135,18 +135,18 @@ export function useBackgroundEffects(
             break;
           }
 
-          case 'virtual': {
+          case "virtual": {
             try {
               const virtualBgProcessor = VirtualBackground(backgroundImage);
               await localVideoTrack.setProcessor(virtualBgProcessor);
             } catch (err) {
-              console.error('Failed to apply virtual background:', err);
-              setError('Failed to apply virtual background');
+              console.error("Failed to apply virtual background:", err);
+              setError("Failed to apply virtual background");
             }
             break;
           }
 
-          case 'none':
+          case "none":
           default:
             // Processor already stopped above
             break;
@@ -157,14 +157,14 @@ export function useBackgroundEffects(
         const errorMessage =
           err instanceof Error
             ? err.message
-            : 'Failed to apply background effect';
-        console.error('Background effect error:', err);
+            : "Failed to apply background effect";
+        console.error("Background effect error:", err);
         setError(errorMessage);
       } finally {
         setIsProcessing(false);
       }
     },
-    [cameraTrack, isSupported, appliedBlurRadius]
+    [cameraTrack, isSupported, appliedBlurRadius],
   );
 
   const clearError = useCallback(() => {
@@ -183,13 +183,13 @@ export function useBackgroundEffects(
       }
 
       // Only apply blur effect if blur is currently active, with debounce
-      if (activeEffect === 'blur') {
+      if (activeEffect === "blur") {
         blurTimeoutRef.current = setTimeout(() => {
-          applyEffect('blur', { blurRadius: radius });
+          applyEffect("blur", { blurRadius: radius });
         }, blurDebounceMs);
       }
     },
-    [activeEffect, applyEffect, blurDebounceMs]
+    [activeEffect, applyEffect, blurDebounceMs],
   );
 
   // Clean up timeout on unmount

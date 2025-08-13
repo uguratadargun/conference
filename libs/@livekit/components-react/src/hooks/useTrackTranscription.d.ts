@@ -1,5 +1,5 @@
-import { type ReceivedTranscriptionSegment, type TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import type { TranscriptionSegment } from 'livekit-client';
+import { type ReceivedTranscriptionSegment, type TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import type { TranscriptionSegment } from "livekit-client";
 /**
  * @alpha
  */

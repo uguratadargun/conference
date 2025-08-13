@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useRoomInfo } from '../hooks';
+import * as React from "react";
+import { useRoomInfo } from "../hooks";
 
 /** @public */
 export interface RoomNameProps extends React.HTMLAttributes<HTMLSpanElement> {
-  childrenPosition?: 'before' | 'after';
+  childrenPosition?: "before" | "after";
 }
 
 /**
@@ -23,17 +23,17 @@ export const RoomName: React.FC<
   RoomNameProps & React.RefAttributes<HTMLSpanElement>
 > = /* @__PURE__ */ React.forwardRef<HTMLSpanElement, RoomNameProps>(
   function RoomName(
-    { childrenPosition = 'before', children, ...htmlAttributes }: RoomNameProps,
-    ref
+    { childrenPosition = "before", children, ...htmlAttributes }: RoomNameProps,
+    ref,
   ) {
     const { name } = useRoomInfo();
 
     return (
       <span ref={ref} {...htmlAttributes}>
-        {childrenPosition === 'before' && children}
+        {childrenPosition === "before" && children}
         {name}
-        {childrenPosition === 'after' && children}
+        {childrenPosition === "after" && children}
       </span>
     );
-  }
+  },
 );

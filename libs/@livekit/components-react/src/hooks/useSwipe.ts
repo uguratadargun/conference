@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 /**
  * @alpha
@@ -24,7 +24,7 @@ export type UseSwipeOptions = {
  */
 export function useSwipe(
   element: React.RefObject<HTMLElement>,
-  options: UseSwipeOptions = {}
+  options: UseSwipeOptions = {},
 ) {
   const touchStart = React.useRef<number | null>(null);
   const touchEnd = React.useRef<number | null>(null);
@@ -56,17 +56,17 @@ export function useSwipe(
   React.useEffect(() => {
     const elementCopy = element.current;
     if (elementCopy) {
-      elementCopy.addEventListener('touchstart', onTouchStart, {
+      elementCopy.addEventListener("touchstart", onTouchStart, {
         passive: true,
       });
-      elementCopy.addEventListener('touchmove', onTouchMove, { passive: true });
-      elementCopy.addEventListener('touchend', onTouchEnd, { passive: true });
+      elementCopy.addEventListener("touchmove", onTouchMove, { passive: true });
+      elementCopy.addEventListener("touchend", onTouchEnd, { passive: true });
     }
     return () => {
       if (elementCopy) {
-        elementCopy.removeEventListener('touchstart', onTouchStart);
-        elementCopy.removeEventListener('touchmove', onTouchMove);
-        elementCopy.removeEventListener('touchend', onTouchEnd);
+        elementCopy.removeEventListener("touchstart", onTouchStart);
+        elementCopy.removeEventListener("touchmove", onTouchMove);
+        elementCopy.removeEventListener("touchend", onTouchEnd);
       }
     };
   }, [element, onTouchEnd]);

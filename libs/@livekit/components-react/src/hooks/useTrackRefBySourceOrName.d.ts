@@ -1,5 +1,5 @@
-import type { TrackReferenceOrPlaceholder, TrackSource } from '@livekit/components-core';
-import { Track } from 'livekit-client';
+import type { TrackReferenceOrPlaceholder, TrackSource } from "@livekit/components-core";
+import { Track } from "livekit-client";
 /**
  * @internal
  */

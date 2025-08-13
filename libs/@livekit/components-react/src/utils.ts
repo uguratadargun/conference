@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { mergeProps as mergePropsReactAria } from './mergeProps';
-import { log } from '@livekit/components-core';
-import clsx from 'clsx';
+import * as React from "react";
+import { mergeProps as mergePropsReactAria } from "./mergeProps";
+import { log } from "@livekit/components-core";
+import clsx from "clsx";
 
 /** @internal */
 export function isProp<
@@ -23,9 +23,9 @@ export function mergeProps<
 export function cloneSingleChild(
   children: React.ReactNode | React.ReactNode[],
   props?: Record<string, any>,
-  key?: any
+  key?: any,
 ) {
-  return React.Children.map(children, child => {
+  return React.Children.map(children, (child) => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
     if (React.isValidElement(child) && React.Children.only(children)) {
@@ -46,20 +46,20 @@ export function cloneSingleChild(
  */
 export function warnAboutMissingStyles(el?: HTMLElement) {
   if (
-    typeof window !== 'undefined' &&
-    typeof process !== 'undefined' &&
+    typeof window !== "undefined" &&
+    typeof process !== "undefined" &&
     // eslint-disable-next-line turbo/no-undeclared-env-vars
-    (process?.env?.NODE_ENV === 'dev' ||
+    (process?.env?.NODE_ENV === "dev" ||
       // eslint-disable-next-line turbo/no-undeclared-env-vars
-      process?.env?.NODE_ENV === 'development')
+      process?.env?.NODE_ENV === "development")
   ) {
-    const target = el ?? document.querySelector('.lk-room-container');
+    const target = el ?? document.querySelector(".lk-room-container");
     if (
       target &&
-      !getComputedStyle(target).getPropertyValue('--lk-has-imported-styles')
+      !getComputedStyle(target).getPropertyValue("--lk-has-imported-styles")
     ) {
       log.warn(
-        "It looks like you're not using the `@livekit/components-styles package`. To render the UI with the default styling, please import it in your layout or page."
+        "It looks like you're not using the `@livekit/components-styles package`. To render the UI with the default styling, please import it in your layout or page.",
       );
     }
   }
@@ -72,11 +72,11 @@ export function warnAboutMissingStyles(el?: HTMLElement) {
  * Replaces processors and e2ee options with strings.
  */
 export function roomOptionsStringifyReplacer(key: string, val: unknown) {
-  if (key === 'processor' && val && typeof val === 'object' && 'name' in val) {
+  if (key === "processor" && val && typeof val === "object" && "name" in val) {
     return val.name;
   }
-  if (key === 'e2ee' && val) {
-    return 'e2ee-enabled';
+  if (key === "e2ee" && val) {
+    return "e2ee-enabled";
   }
   return val;
 }

@@ -1,8 +1,8 @@
-import type { ToggleSource } from '@livekit/components-core';
-import * as React from 'react';
-import type { TrackToggleProps } from '../components';
+import type { ToggleSource } from "@livekit/components-core";
+import * as React from "react";
+import type { TrackToggleProps } from "../components";
 /** @public */
-export interface UseTrackToggleProps<T extends ToggleSource> extends Omit<TrackToggleProps<T>, 'showIcon'> {
+export interface UseTrackToggleProps<T extends ToggleSource> extends Omit<TrackToggleProps<T>, "showIcon"> {
 }
 /**
  * The `useTrackToggle` hook is used to implement the `TrackToggle` component and returns state
@@ -16,10 +16,10 @@ export interface UseTrackToggleProps<T extends ToggleSource> extends Omit<TrackT
  * @public
  */
 export declare function useTrackToggle<T extends ToggleSource>({ source, onChange, initialState, captureOptions, publishOptions, onDeviceError, ...rest }: UseTrackToggleProps<T>): {
-    toggle: ((forceState?: boolean) => Promise<void>) | ((forceState?: boolean, captureOptions?: import("@livekit/components-core").CaptureOptionsBySource<T>) => Promise<boolean | undefined>);
+    toggle: ((forceState?: boolean) => Promise<void>) | ((forceState?: boolean, captureOptions?: import("@livekit/components-core").CaptureOptionsBySource<T> | undefined) => Promise<boolean | undefined>);
     enabled: boolean;
     pending: boolean;
-    track: import("livekit-client").LocalTrackPublication;
+    track: import("livekit-client").LocalTrackPublication | undefined;
     buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement>;
 };
 //# sourceMappingURL=useTrackToggle.d.ts.map

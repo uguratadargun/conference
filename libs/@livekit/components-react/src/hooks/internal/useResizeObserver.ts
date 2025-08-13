@@ -1,6 +1,6 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-underscore-dangle */
-import * as React from 'react';
+import * as React from "react";
 
 const useLatest = <T>(current: T) => {
   const storedValue = React.useRef(current);
@@ -18,7 +18,7 @@ const useLatest = <T>(current: T) => {
  */
 export function useResizeObserver<T extends HTMLElement>(
   target: React.RefObject<T>,
-  callback: UseResizeObserverCallback
+  callback: UseResizeObserverCallback,
 ) {
   const resizeObserver = getResizeObserver();
   const storedCallback = useLatest(callback);
@@ -51,7 +51,7 @@ function createResizeObserver() {
 
   const callbacks: Map<unknown, Array<UseResizeObserverCallback>> = new Map();
 
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return;
   }
 
@@ -65,14 +65,14 @@ function createResizeObserver() {
             if (triggered.has(allEntries[i].target)) continue;
             triggered.add(allEntries[i].target);
             const cbs = callbacks.get(allEntries[i].target);
-            cbs?.forEach(cb => cb(allEntries[i], obs));
+            cbs?.forEach((cb) => cb(allEntries[i], obs));
           }
           allEntries = [];
           ticking = false;
         });
       }
       ticking = true;
-    }
+    },
   );
 
   return {
@@ -106,7 +106,7 @@ const getResizeObserver = () =>
 
 export type UseResizeObserverCallback = (
   entry: ResizeObserverEntry,
-  observer: ResizeObserver
+  observer: ResizeObserver,
 ) => unknown;
 
 export const useSize = (target: React.RefObject<HTMLDivElement>) => {
@@ -120,7 +120,7 @@ export const useSize = (target: React.RefObject<HTMLDivElement>) => {
 
   const resizeCallback = React.useCallback(
     (entry: ResizeObserverEntry) => setSize(entry.contentRect),
-    []
+    [],
   );
   // Where the magic happens
   useResizeObserver(target, resizeCallback);

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { ConnectionQuality, Track } from 'livekit-client';
+import * as React from "react";
+import { ConnectionQuality, Track } from "livekit-client";
 
 import {
   MicIcon,
@@ -12,7 +12,7 @@ import {
   QualityPoorIcon,
   ScreenShareIcon,
   ScreenShareStopIcon,
-} from './index';
+} from "./index";
 
 /**
  * @internal

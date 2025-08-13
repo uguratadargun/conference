@@ -2,10 +2,10 @@ import {
   type ParticipantIdentifier,
   connectedParticipantObserver,
   participantByIdentifierObserver,
-} from '@livekit/components-core';
-import type { ParticipantEvent, RemoteParticipant } from 'livekit-client';
-import * as React from 'react';
-import { useRoomContext } from '../context';
+} from "@livekit/components-core";
+import type { ParticipantEvent, RemoteParticipant } from "livekit-client";
+import * as React from "react";
+import { useRoomContext } from "../context";
 
 /** @public */
 export interface UseRemoteParticipantOptions {
@@ -29,7 +29,7 @@ export interface UseRemoteParticipantOptions {
  */
 export function useRemoteParticipant(
   identifier: ParticipantIdentifier,
-  options?: UseRemoteParticipantOptions
+  options?: UseRemoteParticipantOptions,
 ): RemoteParticipant | undefined;
 /**
  * The `useRemoteParticipant` hook returns the first RemoteParticipant by either identity or based on the participant kind.
@@ -44,17 +44,17 @@ export function useRemoteParticipant(
  */
 export function useRemoteParticipant(
   identity: string,
-  options?: UseRemoteParticipantOptions
+  options?: UseRemoteParticipantOptions,
 ): RemoteParticipant | undefined;
 export function useRemoteParticipant(
   identityOrIdentifier: string | ParticipantIdentifier,
-  options: UseRemoteParticipantOptions = {}
+  options: UseRemoteParticipantOptions = {},
 ): RemoteParticipant | undefined {
   const room = useRoomContext();
   const [updateOnlyOn] = React.useState(options.updateOnlyOn);
 
   const observable = React.useMemo(() => {
-    if (typeof identityOrIdentifier === 'string') {
+    if (typeof identityOrIdentifier === "string") {
       return connectedParticipantObserver(room, identityOrIdentifier, {
         additionalEvents: updateOnlyOn,
       });
@@ -71,7 +71,7 @@ export function useRemoteParticipant(
     p: undefined as RemoteParticipant | undefined,
   });
   React.useEffect(() => {
-    const listener = observable.subscribe(p => setParticipantWrapper({ p }));
+    const listener = observable.subscribe((p) => setParticipantWrapper({ p }));
     return () => listener.unsubscribe();
   }, [observable]);
 

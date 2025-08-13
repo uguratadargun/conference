@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /** @public */
 export interface DisconnectButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     stopTracks?: boolean;

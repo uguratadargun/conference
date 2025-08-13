@@ -1,17 +1,17 @@
-import * as React from 'react';
-import type { Participant } from 'livekit-client';
-import { Track } from 'livekit-client';
+import * as React from "react";
+import type { Participant } from "livekit-client";
+import { Track } from "livekit-client";
 import type {
   ParticipantClickEvent,
   TrackReferenceOrPlaceholder,
-} from '@livekit/components-core';
+} from "@livekit/components-core";
 import {
   isTrackReference,
   isTrackReferencePinned,
-} from '@livekit/components-core';
-import { ConnectionQualityIndicator } from './ConnectionQualityIndicator';
-import { ParticipantName } from './ParticipantName';
-import { TrackMutedIndicator } from './TrackMutedIndicator';
+} from "@livekit/components-core";
+import { ConnectionQualityIndicator } from "./ConnectionQualityIndicator";
+import { ParticipantName } from "./ParticipantName";
+import { TrackMutedIndicator } from "./TrackMutedIndicator";
 import {
   ParticipantContext,
   TrackRefContext,
@@ -20,14 +20,14 @@ import {
   useMaybeLayoutContext,
   useMaybeParticipantContext,
   useMaybeTrackRefContext,
-} from '../../context';
-import { FocusToggle } from '../controls/FocusToggle';
-import { ParticipantPlaceholder } from '../../assets/images';
-import { LockLockedIcon, ScreenShareIcon } from '../../assets/icons';
-import { VideoTrack } from './VideoTrack';
-import { AudioTrack } from './AudioTrack';
-import { useParticipantTile } from '../../hooks';
-import { useIsEncrypted } from '../../hooks/useIsEncrypted';
+} from "../../context";
+import { FocusToggle } from "../controls/FocusToggle";
+import { ParticipantPlaceholder } from "../../assets/images";
+import { LockLockedIcon, ScreenShareIcon } from "../../assets/icons";
+import { VideoTrack } from "./VideoTrack";
+import { AudioTrack } from "./AudioTrack";
+import { useParticipantTile } from "../../hooks";
+import { useIsEncrypted } from "../../hooks/useIsEncrypted";
 
 /**
  * The `ParticipantContextIfNeeded` component only creates a `ParticipantContext`
@@ -43,7 +43,7 @@ import { useIsEncrypted } from '../../hooks/useIsEncrypted';
 export function ParticipantContextIfNeeded(
   props: React.PropsWithChildren<{
     participant?: Participant;
-  }>
+  }>,
 ) {
   const hasContext = !!useMaybeParticipantContext();
   return props.participant && !hasContext ? (
@@ -62,7 +62,7 @@ export function ParticipantContextIfNeeded(
 export function TrackRefContextIfNeeded(
   props: React.PropsWithChildren<{
     trackRef?: TrackReferenceOrPlaceholder;
-  }>
+  }>,
 ) {
   const hasContext = !!useMaybeTrackRefContext();
   return props.trackRef && !hasContext ? (
@@ -101,7 +101,7 @@ export interface ParticipantTileProps
  * @public
  */
 export const ParticipantTile: (
-  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>
+  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   ParticipantTileProps
@@ -113,7 +113,7 @@ export const ParticipantTile: (
     disableSpeakingIndicator,
     ...htmlProps
   }: ParticipantTileProps,
-  ref
+  ref,
 ) {
   const trackReference = useEnsureTrackRef(trackRef);
 
@@ -137,20 +137,20 @@ export const ParticipantTile: (
         layoutContext.pin.dispatch &&
         isTrackReferencePinned(trackReference, layoutContext.pin.state)
       ) {
-        layoutContext.pin.dispatch({ msg: 'clear_pin' });
+        layoutContext.pin.dispatch({ msg: "clear_pin" });
       }
     },
-    [trackReference, layoutContext]
+    [trackReference, layoutContext],
   );
 
   return (
-    <div ref={ref} style={{ position: 'relative' }} {...elementProps}>
+    <div ref={ref} style={{ position: "relative" }} {...elementProps}>
       <TrackRefContextIfNeeded trackRef={trackReference}>
         <ParticipantContextIfNeeded participant={trackReference.participant}>
           {children ?? (
             <>
               {isTrackReference(trackReference) &&
-              (trackReference.publication?.kind === 'video' ||
+              (trackReference.publication?.kind === "video" ||
                 trackReference.source === Track.Source.Camera ||
                 trackReference.source === Track.Source.ScreenShare) ? (
                 <VideoTrack
@@ -174,20 +174,20 @@ export const ParticipantTile: (
                   {trackReference.source === Track.Source.Camera ? (
                     <>
                       {isEncrypted && (
-                        <LockLockedIcon style={{ marginRight: '0.25rem' }} />
+                        <LockLockedIcon style={{ marginRight: "0.25rem" }} />
                       )}
                       <TrackMutedIndicator
                         trackRef={{
                           participant: trackReference.participant,
                           source: Track.Source.Microphone,
                         }}
-                        show={'muted'}
+                        show={"muted"}
                       ></TrackMutedIndicator>
                       <ParticipantName />
                     </>
                   ) : (
                     <>
-                      <ScreenShareIcon style={{ marginRight: '0.25rem' }} />
+                      <ScreenShareIcon style={{ marginRight: "0.25rem" }} />
                       <ParticipantName>&apos;s screen</ParticipantName>
                     </>
                   )}

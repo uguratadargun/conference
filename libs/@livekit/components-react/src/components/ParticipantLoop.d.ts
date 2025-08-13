@@ -1,5 +1,5 @@
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
+import type { Participant } from "livekit-client";
+import * as React from "react";
 /** @public */
 export interface ParticipantLoopProps {
     /** The participants to loop over. Use `useParticipants()` hook to get participants. */

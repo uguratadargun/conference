@@ -118,12 +118,30 @@ export function supportsVP9(): boolean {
   return hasVP9;
 }
 
+export function supportsH265(): boolean {
+  if (!('getCapabilities' in RTCRtpSender)) {
+    return false;
+  }
+
+  const capabilities = RTCRtpSender.getCapabilities('video');
+  let hasH265 = false;
+  if (capabilities) {
+    for (const codec of capabilities.codecs) {
+      if (codec.mimeType === 'video/H265') {
+        hasH265 = true;
+        break;
+      }
+    }
+  }
+  return hasH265;
+}
+
 export function isSVCCodec(codec?: string): boolean {
   return codec === 'av1' || codec === 'vp9';
 }
 
 export function supportsSetSinkId(elm?: HTMLMediaElement): boolean {
-  if (!document) {
+  if (!document || isSafariBased()) {
     return false;
   }
   if (!elm) {
@@ -400,6 +418,12 @@ export class Future<T> {
 
   onFinally?: () => void;
 
+  get isResolved(): boolean {
+    return this._isResolved;
+  }
+
+  private _isResolved: boolean = false;
+
   constructor(
     futureBase?: (resolve: (arg: T) => void, reject: (e: any) => void) => void,
     onFinally?: () => void,
@@ -411,7 +435,10 @@ export class Future<T> {
       if (futureBase) {
         await futureBase(resolve, reject);
       }
-    }).finally(() => this.onFinally?.());
+    }).finally(() => {
+      this._isResolved = true;
+      this.onFinally?.();
+    });
   }
 }
 
@@ -511,13 +538,13 @@ export function unwrapConstraint(constraint: ConstrainDOMString | ConstrainULong
   if (Array.isArray(constraint)) {
     return constraint[0];
   }
-  if (constraint.exact) {
+  if (constraint.exact !== undefined) {
     if (Array.isArray(constraint.exact)) {
       return constraint.exact[0];
     }
     return constraint.exact;
   }
-  if (constraint.ideal) {
+  if (constraint.ideal !== undefined) {
     if (Array.isArray(constraint.ideal)) {
       return constraint.ideal[0];
     }

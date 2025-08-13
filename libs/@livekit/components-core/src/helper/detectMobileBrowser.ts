@@ -2,7 +2,7 @@
  * @internal
  */
 export function isWeb(): boolean {
-  return typeof document !== 'undefined';
+  return typeof document !== "undefined";
 }
 
 /**

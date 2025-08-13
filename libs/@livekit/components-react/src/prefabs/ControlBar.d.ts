@@ -1,5 +1,5 @@
-import { Track } from 'livekit-client';
-import * as React from 'react';
+import { Track } from "livekit-client";
+import * as React from "react";
 /** @public */
 export type ControlBarControls = {
     microphone?: boolean;
@@ -15,7 +15,7 @@ export interface ControlBarProps extends React.HTMLAttributes<HTMLDivElement> {
         source: Track.Source;
         error: Error;
     }) => void;
-    variation?: 'minimal' | 'verbose' | 'textOnly';
+    variation?: "minimal" | "verbose" | "textOnly";
     controls?: ControlBarControls;
     /**
      * If `true`, the user's device choices will be persisted.

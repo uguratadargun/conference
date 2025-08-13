@@ -1,8 +1,8 @@
-import type { PinState, WidgetState } from '@livekit/components-core';
-import { log } from '@livekit/components-core';
-import * as React from 'react';
-import type { LayoutContextType } from '../../context';
-import { LayoutContext, useEnsureCreateLayoutContext } from '../../context';
+import type { PinState, WidgetState } from "@livekit/components-core";
+import { log } from "@livekit/components-core";
+import * as React from "react";
+import type { LayoutContextType } from "../../context";
+import { LayoutContext, useEnsureCreateLayoutContext } from "../../context";
 
 /** @alpha */
 export interface LayoutContextProviderProps {
@@ -21,13 +21,13 @@ export function LayoutContextProvider({
   const layoutContextValue = useEnsureCreateLayoutContext(value);
 
   React.useEffect(() => {
-    log.debug('PinState Updated', { state: layoutContextValue.pin.state });
+    log.debug("PinState Updated", { state: layoutContextValue.pin.state });
     if (onPinChange && layoutContextValue.pin.state)
       onPinChange(layoutContextValue.pin.state);
   }, [layoutContextValue.pin.state, onPinChange]);
 
   React.useEffect(() => {
-    log.debug('Widget Updated', {
+    log.debug("Widget Updated", {
       widgetState: layoutContextValue.widget.state,
     });
     if (onWidgetChange && layoutContextValue.widget.state) {

@@ -133,6 +133,7 @@ message ParticipantInfo {
     DENIED = 6;
     NO_ANSWER = 7;
     NOT_REACHABLE = 8;
+    INVITED = 9;
   }
   enum Kind {
     // standard participants, e.g. web clients

@@ -1,4 +1,4 @@
-import { type LocalAudioTrack, type LocalVideoTrack, type Room } from 'livekit-client';
+import { type LocalAudioTrack, type LocalVideoTrack, type Room } from "livekit-client";
 export type SetMediaDeviceOptions = {
     /**
      *  If true, adds an `exact` constraint to the getUserMedia request.

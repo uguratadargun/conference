@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /**
  * The `Toast` component is a rudimentary way to display a message to the user.
  * This message should be short lived and not require user interaction.

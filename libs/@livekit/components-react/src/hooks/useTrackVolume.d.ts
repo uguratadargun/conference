@@ -1,5 +1,5 @@
-import type { LocalAudioTrack, RemoteAudioTrack, AudioAnalyserOptions } from 'livekit-client';
-import { type TrackReference, type TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import type { LocalAudioTrack, RemoteAudioTrack, AudioAnalyserOptions } from "livekit-client";
+import { type TrackReference, type TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /**
  * @alpha
  * Hook for tracking the volume of an audio track using the Web Audio API.

@@ -1,5 +1,5 @@
-import { type TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
+import { type TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
 /** @public */
 export interface UseIsMutedOptions {
     participant?: Participant;

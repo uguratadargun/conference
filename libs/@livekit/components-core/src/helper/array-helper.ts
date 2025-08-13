@@ -5,7 +5,7 @@ export function chunk<T>(input: Array<T>, size: number) {
         ? [...arr, [item]]
         : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
     },
-    [] as Array<Array<T>>
+    [] as Array<Array<T>>,
   );
 }
 
@@ -19,7 +19,7 @@ export function zip<T, U>(a1: Array<T>, a2: Array<U>) {
 export function differenceBy<T>(
   a1: Array<T>,
   a2: Array<T>,
-  by: (arg: T) => string
+  by: (arg: T) => string,
 ) {
-  return a1.filter(c => !a2.map(v => by(v)).includes(by(c)));
+  return a1.filter((c) => !a2.map((v) => by(v)).includes(by(c)));
 }

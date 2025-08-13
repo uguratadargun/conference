@@ -1,9 +1,9 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { getScrollBarWidth } from '@livekit/components-core';
-import * as React from 'react';
-import { useSize } from '../../hooks/internal';
-import { useVisualStableUpdate } from '../../hooks';
-import { TrackLoop } from '../TrackLoop';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import { getScrollBarWidth } from "@livekit/components-core";
+import * as React from "react";
+import { useSize } from "../../hooks/internal";
+import { useVisualStableUpdate } from "../../hooks";
+import { TrackLoop } from "../TrackLoop";
 
 const MIN_HEIGHT = 130;
 const MIN_WIDTH = 140;
@@ -18,7 +18,7 @@ export interface CarouselLayoutProps
   children: React.ReactNode;
   /** Place the tiles vertically or horizontally next to each other.
    * If undefined orientation is guessed by the dimensions of the container. */
-  orientation?: 'vertical' | 'horizontal';
+  orientation?: "vertical" | "horizontal";
 }
 
 /**
@@ -47,17 +47,17 @@ export function CarouselLayout({
   const carouselOrientation = orientation
     ? orientation
     : height >= width
-      ? 'vertical'
-      : 'horizontal';
+      ? "vertical"
+      : "horizontal";
 
   const tileSpan =
-    carouselOrientation === 'vertical'
+    carouselOrientation === "vertical"
       ? Math.max(width * ASPECT_RATIO_INVERT, MIN_HEIGHT)
       : Math.max(height * ASPECT_RATIO, MIN_WIDTH);
   const scrollBarWidth = getScrollBarWidth();
 
   const tilesThatFit =
-    carouselOrientation === 'vertical'
+    carouselOrientation === "vertical"
       ? Math.max((height - scrollBarWidth) / tileSpan, MIN_VISIBLE_TILES)
       : Math.max((width - scrollBarWidth) / tileSpan, MIN_VISIBLE_TILES);
 
@@ -74,8 +74,8 @@ export function CarouselLayout({
     if (asideEl.current) {
       asideEl.current.dataset.lkOrientation = carouselOrientation;
       asideEl.current.style.setProperty(
-        '--lk-max-visible-tiles',
-        maxVisibleTiles.toString()
+        "--lk-max-visible-tiles",
+        maxVisibleTiles.toString(),
       );
     }
   }, [maxVisibleTiles, carouselOrientation]);

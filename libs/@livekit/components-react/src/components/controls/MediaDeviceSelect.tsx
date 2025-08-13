@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { useMaybeRoomContext } from '../../context';
-import { mergeProps } from '../../utils';
+import * as React from "react";
+import { useMaybeRoomContext } from "../../context";
+import { mergeProps } from "../../utils";
 import {
   RoomEvent,
   type LocalAudioTrack,
   type LocalVideoTrack,
-} from 'livekit-client';
-import { useMediaDeviceSelect } from '../../hooks';
+} from "livekit-client";
+import { useMediaDeviceSelect } from "../../hooks";
 
 /** @public */
 export interface MediaDeviceSelectProps
-  extends Omit<React.HTMLAttributes<HTMLUListElement>, 'onError'> {
+  extends Omit<React.HTMLAttributes<HTMLUListElement>, "onError"> {
   kind: MediaDeviceKind;
   onActiveDeviceChange?: (deviceId: string) => void;
   onDeviceListChange?: (devices: MediaDeviceInfo[]) => void;
@@ -47,7 +47,7 @@ export interface MediaDeviceSelectProps
  * @public
  */
 export const MediaDeviceSelect: (
-  props: MediaDeviceSelectProps & React.RefAttributes<HTMLUListElement>
+  props: MediaDeviceSelectProps & React.RefAttributes<HTMLUListElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLUListElement,
   MediaDeviceSelectProps
@@ -64,10 +64,10 @@ export const MediaDeviceSelect: (
     onError,
     ...props
   }: MediaDeviceSelectProps,
-  ref
+  ref,
 ) {
   const room = useMaybeRoomContext();
-  const previousActiveDeviceId = React.useRef<string>('default');
+  const previousActiveDeviceId = React.useRef<string>("default");
   const handleError = React.useCallback(
     (e: Error) => {
       if (room) {
@@ -76,7 +76,7 @@ export const MediaDeviceSelect: (
       }
       onError?.(e);
     },
-    [room, onError]
+    [room, onError],
   );
   const { devices, activeDeviceId, setActiveMediaDevice, className } =
     useMediaDeviceSelect({
@@ -93,7 +93,7 @@ export const MediaDeviceSelect: (
   }, [setActiveMediaDevice]);
 
   React.useEffect(() => {
-    if (typeof onDeviceListChange === 'function') {
+    if (typeof onDeviceListChange === "function") {
       onDeviceListChange(devices);
     }
   }, [onDeviceListChange, devices]);
@@ -118,18 +118,18 @@ export const MediaDeviceSelect: (
   };
   // Merge Props
   const mergedProps = React.useMemo(
-    () => mergeProps(props, { className }, { className: 'lk-list' }),
-    [className, props]
+    () => mergeProps(props, { className }, { className: "lk-list" }),
+    [className, props],
   );
 
-  const hasDefault = !!devices.find(info =>
-    info.label.toLowerCase().startsWith('default')
+  const hasDefault = !!devices.find((info) =>
+    info.label.toLowerCase().startsWith("default"),
   );
 
   function isActive(deviceId: string, activeDeviceId: string, index: number) {
     return (
       deviceId === activeDeviceId ||
-      (!hasDefault && index === 0 && activeDeviceId === 'default')
+      (!hasDefault && index === 0 && activeDeviceId === "default")
     );
   }
 

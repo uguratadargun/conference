@@ -1,5 +1,5 @@
-import type { UnprefixedClassNames as ComponentNoPrefixClasses } from '@livekit/components-styles/dist/types_unprefixed/index.scss';
-import type { UnprefixedClassNames as PrefabNoPrefixClasses } from '@livekit/components-styles/dist/types_unprefixed/prefabs/index.scss';
+import type { UnprefixedClassNames as ComponentNoPrefixClasses } from "@livekit/components-styles/dist/types_unprefixed/index.scss";
+import type { UnprefixedClassNames as PrefabNoPrefixClasses } from "@livekit/components-styles/dist/types_unprefixed/prefabs/index.scss";
 type UnprefixedClassNames = ComponentNoPrefixClasses | PrefabNoPrefixClasses;
 /**
  * This function is a type safe way to add a prefix to a HTML class attribute.

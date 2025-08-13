@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import clsx from 'clsx';
+import clsx from "clsx";
 
 /**
  * Calls all functions in the order they were chained with the same arguments.
@@ -19,7 +19,7 @@ import clsx from 'clsx';
 export function chain(...callbacks: any[]): (...args: any[]) => void {
   return (...args: any[]) => {
     for (const callback of callbacks) {
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         try {
           callback(...args);
         } catch (e) {
@@ -39,7 +39,7 @@ type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V }
   ? V
   : never;
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
+  k: infer I,
 ) => void
   ? I
   : never;
@@ -66,11 +66,11 @@ export function mergeProps<T extends Props[]>(
 
       // Chain events
       if (
-        typeof a === 'function' &&
-        typeof b === 'function' &&
+        typeof a === "function" &&
+        typeof b === "function" &&
         // This is a lot faster than a regex.
-        key[0] === 'o' &&
-        key[1] === 'n' &&
+        key[0] === "o" &&
+        key[1] === "n" &&
         key.charCodeAt(2) >= /* 'A' */ 65 &&
         key.charCodeAt(2) <= /* 'Z' */ 90
       ) {
@@ -78,9 +78,9 @@ export function mergeProps<T extends Props[]>(
 
         // Merge classnames, sometimes classNames are empty string which eval to false, so we just need to do a type check
       } else if (
-        (key === 'className' || key === 'UNSAFE_className') &&
-        typeof a === 'string' &&
-        typeof b === 'string'
+        (key === "className" || key === "UNSAFE_className") &&
+        typeof a === "string" &&
+        typeof b === "string"
       ) {
         result[key] = clsx(a, b);
       } else {

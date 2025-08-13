@@ -1,4 +1,4 @@
-import type { ChatOptions, ReceivedChatMessage } from '@livekit/components-core';
+import type { ChatOptions, ReceivedChatMessage } from "@livekit/components-core";
 /**
  * The `useChat` hook provides chat functionality for a LiveKit room.
  *

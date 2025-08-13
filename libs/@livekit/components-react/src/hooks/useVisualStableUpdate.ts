@@ -1,16 +1,16 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 import {
   log,
   sortTrackReferences,
   updatePages,
-} from '@livekit/components-core';
-import * as React from 'react';
+} from "@livekit/components-core";
+import * as React from "react";
 
 /** @public */
 export interface UseVisualStableUpdateOptions {
   /** Overwrites the default sort function. */
   customSortFunction?: (
-    trackReferences: TrackReferenceOrPlaceholder[]
+    trackReferences: TrackReferenceOrPlaceholder[],
   ) => TrackReferenceOrPlaceholder[];
 }
 
@@ -35,14 +35,14 @@ export function useVisualStableUpdate(
   /** `TrackReference`s to display in the grid.  */
   trackReferences: TrackReferenceOrPlaceholder[],
   maxItemsOnPage: number,
-  options: UseVisualStableUpdateOptions = {}
+  options: UseVisualStableUpdateOptions = {},
 ): TrackReferenceOrPlaceholder[] {
   const lastTrackRefs = React.useRef<TrackReferenceOrPlaceholder[]>([]);
   const lastMaxItemsOnPage = React.useRef<number>(-1);
   const layoutChanged = maxItemsOnPage !== lastMaxItemsOnPage.current;
 
   const sortedTrackRefs =
-    typeof options.customSortFunction === 'function'
+    typeof options.customSortFunction === "function"
       ? options.customSortFunction(trackReferences)
       : sortTrackReferences(trackReferences);
 
@@ -52,10 +52,10 @@ export function useVisualStableUpdate(
       updatedTrackRefs = updatePages(
         lastTrackRefs.current,
         sortedTrackRefs,
-        maxItemsOnPage
+        maxItemsOnPage,
       );
     } catch (error) {
-      log.error('Error while running updatePages(): ', error);
+      log.error("Error while running updatePages(): ", error);
     }
   }
 

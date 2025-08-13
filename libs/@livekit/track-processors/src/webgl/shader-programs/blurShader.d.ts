@@ -5,10 +5,10 @@ export declare function createBlurProgram(gl: WebGL2RenderingContext): {
     vertexShader: WebGLShader;
     uniforms: {
         position: number;
-        texture: WebGLUniformLocation;
-        texelSize: WebGLUniformLocation;
-        direction: WebGLUniformLocation;
-        radius: WebGLUniformLocation;
+        texture: WebGLUniformLocation | null;
+        texelSize: WebGLUniformLocation | null;
+        direction: WebGLUniformLocation | null;
+        radius: WebGLUniformLocation | null;
     };
 };
 export declare function applyBlur(gl: WebGL2RenderingContext, sourceTexture: WebGLTexture, width: number, height: number, blurRadius: number, blurProgram: WebGLProgram, blurUniforms: any, vertexBuffer: WebGLBuffer, processFramebuffers: WebGLFramebuffer[], processTextures: WebGLTexture[]): WebGLTexture;

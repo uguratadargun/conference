@@ -1,11 +1,11 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 import {
   setupFocusToggle,
   isTrackReferencePinned,
-} from '@livekit/components-core';
-import { useEnsureTrackRef, useMaybeLayoutContext } from '../context';
-import { mergeProps } from '../mergeProps';
-import * as React from 'react';
+} from "@livekit/components-core";
+import { useEnsureTrackRef, useMaybeLayoutContext } from "../context";
+import { mergeProps } from "../mergeProps";
+import * as React from "react";
 
 /** @public */
 export interface UseFocusToggleProps {
@@ -45,17 +45,17 @@ export function useFocusToggle({ trackRef, props }: UseFocusToggleProps) {
           // Set or clear focus based on current focus state.
           if (inFocus) {
             layoutContext?.pin.dispatch?.({
-              msg: 'clear_pin',
+              msg: "clear_pin",
             });
           } else {
             layoutContext?.pin.dispatch?.({
-              msg: 'set_pin',
+              msg: "set_pin",
               trackReference,
             });
           }
         },
       }),
-    [props, className, trackReference, inFocus, layoutContext?.pin]
+    [props, className, trackReference, inFocus, layoutContext?.pin],
   );
 
   return { mergedProps, inFocus };

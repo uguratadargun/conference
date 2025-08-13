@@ -1,15 +1,15 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ConnectionQualityIndicator } from './ConnectionQualityIndicator';
-import { ParticipantName } from './ParticipantName';
-import { TrackMutedIndicator } from './TrackMutedIndicator';
-import { TrackRefContext, useEnsureTrackRef } from '../../context';
+import { ConnectionQualityIndicator } from "./ConnectionQualityIndicator";
+import { ParticipantName } from "./ParticipantName";
+import { TrackMutedIndicator } from "./TrackMutedIndicator";
+import { TrackRefContext, useEnsureTrackRef } from "../../context";
 
-import type { ParticipantTileProps } from './ParticipantTile';
-import { AudioTrack } from './AudioTrack';
-import { useParticipantTile } from '../../hooks';
-import { isTrackReference } from '@livekit/components-core';
-import { BarVisualizer } from './BarVisualizer';
+import type { ParticipantTileProps } from "./ParticipantTile";
+import { AudioTrack } from "./AudioTrack";
+import { useParticipantTile } from "../../hooks";
+import { isTrackReference } from "@livekit/components-core";
+import { BarVisualizer } from "./BarVisualizer";
 
 /**
  * The `ParticipantAudioTile` component is the base utility wrapper for displaying a visual representation of a participant.
@@ -22,7 +22,7 @@ import { BarVisualizer } from './BarVisualizer';
  * @public
  */
 export const ParticipantAudioTile: (
-  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>
+  props: ParticipantTileProps & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   ParticipantTileProps
@@ -34,7 +34,7 @@ export const ParticipantAudioTile: (
     trackRef,
     ...htmlProps
   }: ParticipantTileProps,
-  ref
+  ref,
 ) {
   const trackReference = useEnsureTrackRef(trackRef);
   const { elementProps } = useParticipantTile({
@@ -47,7 +47,7 @@ export const ParticipantAudioTile: (
   return (
     <div
       ref={ref}
-      style={{ position: 'relative', minHeight: '160px' }}
+      style={{ position: "relative", minHeight: "160px" }}
       {...elementProps}
     >
       <TrackRefContext.Provider value={trackReference}>

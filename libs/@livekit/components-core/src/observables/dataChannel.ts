@@ -5,27 +5,27 @@ import {
   type Participant,
   type Room,
   type SendTextOptions,
-} from 'livekit-client';
-import type { Subscriber } from 'rxjs';
-import { Observable, filter, map } from 'rxjs';
-import { createChatObserver, createDataObserver } from './room';
-import { ReceivedChatMessage } from '../components/chat';
+} from "livekit-client";
+import type { Subscriber } from "rxjs";
+import { Observable, filter, map } from "rxjs";
+import { createChatObserver, createDataObserver } from "./room";
+import { ReceivedChatMessage } from "../components/chat";
 
 export const DataTopic = {
-  CHAT: 'lk.chat',
-  TRANSCRIPTION: 'lk.transcription',
+  CHAT: "lk.chat",
+  TRANSCRIPTION: "lk.transcription",
 } as const;
 
 /** @deprecated */
 export const LegacyDataTopic = {
-  CHAT: 'lk-chat-topic',
+  CHAT: "lk-chat-topic",
 } as const;
 
 /** Publish data from the LocalParticipant. */
 export async function sendMessage(
   localParticipant: LocalParticipant,
   payload: Uint8Array,
-  options: DataPublishOptions = {}
+  options: DataPublishOptions = {},
 ) {
   const { reliable, destinationIdentities, topic } = options;
 
@@ -49,7 +49,7 @@ export interface ReceivedDataMessage<T extends string | undefined = string>
 export function setupDataMessageHandler<T extends string>(
   room: Room,
   topic?: T | [T, ...T[]],
-  onMessage?: (msg: ReceivedDataMessage<T>) => void
+  onMessage?: (msg: ReceivedDataMessage<T>) => void,
 ) {
   const topics = Array.isArray(topic) ? topic : [topic];
   /** Setup a Observable that returns all data messages belonging to a topic. */
@@ -57,7 +57,7 @@ export function setupDataMessageHandler<T extends string>(
     filter(
       ([, , , messageTopic]) =>
         topic === undefined ||
-        (messageTopic !== undefined && topics.includes(messageTopic as T))
+        (messageTopic !== undefined && topics.includes(messageTopic as T)),
     ),
     map(([payload, participant, , messageTopic]) => {
       const msg = {
@@ -67,17 +67,17 @@ export function setupDataMessageHandler<T extends string>(
       } satisfies ReceivedDataMessage<T>;
       onMessage?.(msg);
       return msg;
-    })
+    }),
   );
 
   let isSendingSubscriber: Subscriber<boolean>;
-  const isSendingObservable = new Observable<boolean>(subscriber => {
+  const isSendingObservable = new Observable<boolean>((subscriber) => {
     isSendingSubscriber = subscriber;
   });
 
   const send = async (
     payload: Uint8Array,
-    options: DataPublishOptions = {}
+    options: DataPublishOptions = {},
   ) => {
     isSendingSubscriber.next(true);
     try {
@@ -98,7 +98,7 @@ export function setupChatMessageHandler(room: Room) {
 
   const send = async (
     text: string,
-    options: SendTextOptions
+    options: SendTextOptions,
   ): Promise<ReceivedChatMessage> => {
     const msg = await room.localParticipant.sendChatMessage(text, options);
     await room.localParticipant.sendText(text, options);

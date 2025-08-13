@@ -1,6 +1,6 @@
-import type { ReceivedChatMessage } from '@livekit/components-core';
-import { tokenize, createDefaultGrammar } from '@livekit/components-core';
-import * as React from 'react';
+import type { ReceivedChatMessage } from "@livekit/components-core";
+import { tokenize, createDefaultGrammar } from "@livekit/components-core";
+import * as React from "react";
 
 /** @public */
 export type MessageFormatter = (message: string) => React.ReactNode;
@@ -34,7 +34,7 @@ export interface ChatEntryProps extends React.HTMLAttributes<HTMLLIElement> {
  * @public
  */
 export const ChatEntry: (
-  props: ChatEntryProps & React.RefAttributes<HTMLLIElement>
+  props: ChatEntryProps & React.RefAttributes<HTMLLIElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLLIElement,
   ChatEntryProps
@@ -46,7 +46,7 @@ export const ChatEntry: (
     messageFormatter,
     ...props
   }: ChatEntryProps,
-  ref
+  ref,
 ) {
   const formattedMessage = React.useMemo(() => {
     return messageFormatter ? messageFormatter(entry.message) : entry.message;
@@ -54,7 +54,7 @@ export const ChatEntry: (
   const hasBeenEdited = !!entry.editTimestamp;
   const time = new Date(entry.timestamp);
   const locale =
-    typeof navigator !== 'undefined' ? navigator.language : 'en-US';
+    typeof navigator !== "undefined" ? navigator.language : "en-US";
 
   const name = entry.from?.name ?? entry.from?.identity;
 
@@ -62,8 +62,8 @@ export const ChatEntry: (
     <li
       ref={ref}
       className="lk-chat-entry"
-      title={time.toLocaleTimeString(locale, { timeStyle: 'full' })}
-      data-lk-message-origin={entry.from?.isLocal ? 'local' : 'remote'}
+      title={time.toLocaleTimeString(locale, { timeStyle: "full" })}
+      data-lk-message-origin={entry.from?.isLocal ? "local" : "remote"}
       {...props}
     >
       {(!hideTimestamp || !hideName || hasBeenEdited) && (
@@ -72,8 +72,8 @@ export const ChatEntry: (
 
           {(!hideTimestamp || hasBeenEdited) && (
             <span className="lk-timestamp">
-              {hasBeenEdited && 'edited '}
-              {time.toLocaleTimeString(locale, { timeStyle: 'short' })}
+              {hasBeenEdited && "edited "}
+              {time.toLocaleTimeString(locale, { timeStyle: "short" })}
             </span>
           )}
         </span>
@@ -82,15 +82,15 @@ export const ChatEntry: (
       <span className="lk-message-body">{formattedMessage}</span>
       <span className="lk-message-attachements">
         {entry.attachedFiles?.map(
-          file =>
-            file.type.startsWith('image/') && (
+          (file) =>
+            file.type.startsWith("image/") && (
               <img
-                style={{ maxWidth: '300px', maxHeight: '300px' }}
+                style={{ maxWidth: "300px", maxHeight: "300px" }}
                 key={file.name}
                 src={URL.createObjectURL(file)}
                 alt={file.name}
               />
-            )
+            ),
         )}
       </span>
     </li>

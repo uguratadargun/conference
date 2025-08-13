@@ -1,18 +1,18 @@
-import type { ToggleSource } from '@livekit/components-core';
+import type { ToggleSource } from "@livekit/components-core";
 import {
   setupMediaToggle,
   setupManualToggle,
   log,
-} from '@livekit/components-core';
-import * as React from 'react';
-import type { TrackToggleProps } from '../components';
-import { useMaybeRoomContext } from '../context';
-import { mergeProps } from '../mergeProps';
-import { useObservableState } from './internal';
+} from "@livekit/components-core";
+import * as React from "react";
+import type { TrackToggleProps } from "../components";
+import { useMaybeRoomContext } from "../context";
+import { mergeProps } from "../mergeProps";
+import { useObservableState } from "./internal";
 
 /** @public */
 export interface UseTrackToggleProps<T extends ToggleSource>
-  extends Omit<TrackToggleProps<T>, 'showIcon'> {}
+  extends Omit<TrackToggleProps<T>, "showIcon"> {}
 
 /**
  * The `useTrackToggle` hook is used to implement the `TrackToggle` component and returns state
@@ -47,16 +47,16 @@ export function useTrackToggle<T extends ToggleSource>({
             room,
             captureOptions,
             publishOptions,
-            onDeviceError
+            onDeviceError,
           )
         : setupManualToggle(),
-    [room, source, JSON.stringify(captureOptions), publishOptions]
+    [room, source, JSON.stringify(captureOptions), publishOptions],
   );
 
   const pending = useObservableState(pendingObserver, false);
   const enabled = useObservableState(
     enabledObserver,
-    initialState ?? !!track?.isEnabled
+    initialState ?? !!track?.isEnabled,
   );
 
   React.useEffect(() => {
@@ -66,7 +66,7 @@ export function useTrackToggle<T extends ToggleSource>({
 
   React.useEffect(() => {
     if (initialState !== undefined) {
-      log.debug('forcing initial toggle state', source, initialState);
+      log.debug("forcing initial toggle state", source, initialState);
       toggle(initialState);
     }
     // only execute once at the beginning
@@ -75,17 +75,17 @@ export function useTrackToggle<T extends ToggleSource>({
 
   const newProps = React.useMemo(
     () => mergeProps(rest, { className }),
-    [rest, className]
+    [rest, className],
   );
 
   const clickHandler: React.MouseEventHandler<HTMLButtonElement> =
     React.useCallback(
-      evt => {
+      (evt) => {
         userInteractionRef.current = true;
         toggle().catch(() => (userInteractionRef.current = false));
         rest.onClick?.(evt);
       },
-      [rest, toggle]
+      [rest, toggle],
     );
 
   return {
@@ -95,9 +95,9 @@ export function useTrackToggle<T extends ToggleSource>({
     track,
     buttonProps: {
       ...newProps,
-      'aria-pressed': enabled,
-      'data-lk-source': source,
-      'data-lk-enabled': enabled,
+      "aria-pressed": enabled,
+      "data-lk-source": source,
+      "data-lk-enabled": enabled,
       disabled: pending,
       onClick: clickHandler,
     } as React.ButtonHTMLAttributes<HTMLButtonElement>,

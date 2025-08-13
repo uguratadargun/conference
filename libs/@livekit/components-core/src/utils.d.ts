@@ -1,6 +1,6 @@
-import type { Participant, TrackPublication } from 'livekit-client';
-import type { TrackReference } from './track-reference';
-import type { PinState } from './types';
+import type { Participant, TrackPublication } from "livekit-client";
+import type { TrackReference } from "./track-reference";
+import type { PinState } from "./types";
 export declare function isLocal(p: Participant): boolean;
 export declare function isRemote(p: Participant): boolean;
 export declare const attachIfSubscribed: (publication: TrackPublication | undefined, element: HTMLMediaElement | null | undefined) => void;

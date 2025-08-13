@@ -1,5 +1,5 @@
-import * as React from 'react';
-import type { ParticipantClickEvent, TrackReference } from '@livekit/components-core';
+import * as React from "react";
+import type { ParticipantClickEvent, TrackReference } from "@livekit/components-core";
 /** @public */
 export interface VideoTrackProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
     /** The track reference of the track to render. */

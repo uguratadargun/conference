@@ -1,16 +1,16 @@
-import { Track } from 'livekit-client';
-import * as React from 'react';
-import { MediaDeviceMenu } from './MediaDeviceMenu';
-import { TrackToggle } from '../components/controls/TrackToggle';
+import { Track } from "livekit-client";
+import * as React from "react";
+import { MediaDeviceMenu } from "./MediaDeviceMenu";
+import { TrackToggle } from "../components/controls/TrackToggle";
 import {
   useLocalParticipant,
   useLocalParticipantPermissions,
   usePersistentUserChoices,
-} from '../hooks';
-import { mergeProps } from '../utils';
-import { StartMediaButton } from '../components/controls/StartMediaButton';
-import { BarVisualizer, DisconnectButton } from '../components';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+} from "../hooks";
+import { mergeProps } from "../utils";
+import { StartMediaButton } from "../components/controls/StartMediaButton";
+import { BarVisualizer, DisconnectButton } from "../components";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 
 /** @beta */
 export type VoiceAssistantControlBarControls = {
@@ -65,7 +65,7 @@ export function VoiceAssistantControlBar({
     visibleControls.microphone ??= localPermissions.canPublish;
   }
 
-  const htmlProps = mergeProps({ className: 'lk-agent-control-bar' }, props);
+  const htmlProps = mergeProps({ className: "lk-agent-control-bar" }, props);
 
   const { saveAudioInputEnabled, saveAudioInputDeviceId } =
     usePersistentUserChoices({
@@ -78,7 +78,7 @@ export function VoiceAssistantControlBar({
         saveAudioInputEnabled(enabled);
       }
     },
-    [saveAudioInputEnabled]
+    [saveAudioInputEnabled],
   );
 
   return (
@@ -89,7 +89,7 @@ export function VoiceAssistantControlBar({
             source={Track.Source.Microphone}
             showIcon={true}
             onChange={microphoneOnChange}
-            onDeviceError={error =>
+            onDeviceError={(error) =>
               onDeviceError?.({ source: Track.Source.Microphone, error })
             }
           >
@@ -103,7 +103,7 @@ export function VoiceAssistantControlBar({
             <MediaDeviceMenu
               kind="audioinput"
               onActiveDeviceChange={(_kind, deviceId) =>
-                saveAudioInputDeviceId(deviceId ?? 'default')
+                saveAudioInputDeviceId(deviceId ?? "default")
               }
             />
           </div>
@@ -111,7 +111,7 @@ export function VoiceAssistantControlBar({
       )}
 
       {visibleControls.leave && (
-        <DisconnectButton>{'Disconnect'}</DisconnectButton>
+        <DisconnectButton>{"Disconnect"}</DisconnectButton>
       )}
       <StartMediaButton />
     </div>

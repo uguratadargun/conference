@@ -1,8 +1,8 @@
-import { getTrackReferenceId } from '@livekit/components-core';
-import { Track } from 'livekit-client';
-import * as React from 'react';
-import { useTracks } from '../hooks';
-import { AudioTrack } from './participant/AudioTrack';
+import { getTrackReferenceId } from "@livekit/components-core";
+import { Track } from "livekit-client";
+import * as React from "react";
+import { useTracks } from "../hooks";
+import { AudioTrack } from "./participant/AudioTrack";
 
 /** @public */
 export interface RoomAudioRendererProps {
@@ -39,14 +39,15 @@ export function RoomAudioRenderer({ volume, muted }: RoomAudioRendererProps) {
     {
       updateOnlyOn: [],
       onlySubscribed: true,
-    }
+    },
   ).filter(
-    ref => !ref.participant.isLocal && ref.publication.kind === Track.Kind.Audio
+    (ref) =>
+      !ref.participant.isLocal && ref.publication.kind === Track.Kind.Audio,
   );
 
   return (
-    <div style={{ display: 'none' }}>
-      {tracks.map(trackRef => (
+    <div style={{ display: "none" }}>
+      {tracks.map((trackRef) => (
         <AudioTrack
           key={getTrackReferenceId(trackRef)}
           trackRef={trackRef}

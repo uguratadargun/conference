@@ -1,5 +1,5 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
 
 /**
  * This context provides a `TrackReferenceOrPlaceholder` to all child components.
@@ -18,7 +18,7 @@ export function useTrackRefContext() {
   const trackReference = React.useContext(TrackRefContext);
   if (!trackReference) {
     throw Error(
-      'tried to access track context outside of track context provider'
+      "tried to access track context outside of track context provider",
     );
   }
   return trackReference;
@@ -42,7 +42,7 @@ export function useEnsureTrackRef(trackRef?: TrackReferenceOrPlaceholder) {
   const ref = trackRef ?? context;
   if (!ref) {
     throw new Error(
-      'No TrackRef, make sure you are inside a TrackRefContext or pass the TrackRef explicitly'
+      "No TrackRef, make sure you are inside a TrackRefContext or pass the TrackRef explicitly",
     );
   }
   return ref;

@@ -3,11 +3,11 @@ import type {
   ParticipantKind,
   Track,
   TrackPublication,
-} from 'livekit-client';
+} from "livekit-client";
 import type {
   TrackReference,
   TrackReferenceOrPlaceholder,
-} from './track-reference';
+} from "./track-reference";
 
 // ## PinState Type
 /** @public */
@@ -37,13 +37,13 @@ export type SourcesArray = Track.Source[] | TrackSourceWithOptions[];
 
 // ### Track Source Type Predicates
 export function isSourceWitOptions(
-  source: SourcesArray[number]
+  source: SourcesArray[number],
 ): source is TrackSourceWithOptions {
-  return typeof source === 'object';
+  return typeof source === "object";
 }
 
 export function isSourcesWithOptions(
-  sources: SourcesArray
+  sources: SourcesArray,
 ): sources is TrackSourceWithOptions[] {
   return (
     Array.isArray(sources) &&
@@ -53,9 +53,9 @@ export function isSourcesWithOptions(
 
 // ## Loop Filter Types
 export type TrackReferenceFilter = Parameters<
-  TrackReferenceOrPlaceholder[]['filter']
->['0'];
-export type ParticipantFilter = Parameters<Participant[]['filter']>['0'];
+  TrackReferenceOrPlaceholder[]["filter"]
+>["0"];
+export type ParticipantFilter = Parameters<Participant[]["filter"]>["0"];
 
 // ## Other Types
 /** @internal */
@@ -66,12 +66,12 @@ export interface ParticipantClickEvent {
 
 export type TrackSource<T extends Track.Source> = RequireAtLeastOne<
   { source: T; name: string; participant: Participant },
-  'name' | 'source'
+  "name" | "source"
 >;
 
 export type ParticipantTrackIdentifier = RequireAtLeastOne<
   { sources: Track.Source[]; name: string; kind: Track.Kind },
-  'sources' | 'name' | 'kind'
+  "sources" | "name" | "kind"
 >;
 
 /**
@@ -79,7 +79,7 @@ export type ParticipantTrackIdentifier = RequireAtLeastOne<
  */
 export type ParticipantIdentifier = RequireAtLeastOne<
   { kind: ParticipantKind; identity: string },
-  'identity' | 'kind'
+  "identity" | "kind"
 >;
 
 /**

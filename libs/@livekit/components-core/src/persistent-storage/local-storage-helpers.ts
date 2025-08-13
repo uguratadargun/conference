@@ -1,4 +1,4 @@
-import { log } from '../logger';
+import { log } from "../logger";
 
 type JsonPrimitive = string | number | boolean | null;
 type JsonArray = JsonValue[];
@@ -10,15 +10,15 @@ type JsonValue = JsonPrimitive | JsonArray | JsonObject;
  * @internal
  */
 function saveToLocalStorage<T extends JsonValue>(key: string, value: T): void {
-  if (typeof localStorage === 'undefined') {
-    log.error('Local storage is not available.');
+  if (typeof localStorage === "undefined") {
+    log.error("Local storage is not available.");
     return;
   }
 
   try {
     if (value) {
       const nonEmptySettings = Object.fromEntries(
-        Object.entries(value).filter(([, value]) => value !== '')
+        Object.entries(value).filter(([, value]) => value !== ""),
       );
       localStorage.setItem(key, JSON.stringify(nonEmptySettings));
     }
@@ -32,8 +32,8 @@ function saveToLocalStorage<T extends JsonValue>(key: string, value: T): void {
  * @internal
  */
 function loadFromLocalStorage<T extends JsonValue>(key: string): T | undefined {
-  if (typeof localStorage === 'undefined') {
-    log.error('Local storage is not available.');
+  if (typeof localStorage === "undefined") {
+    log.error("Local storage is not available.");
     return undefined;
   }
 
@@ -55,7 +55,7 @@ function loadFromLocalStorage<T extends JsonValue>(key: string): T | undefined {
  * @internal
  */
 export function createLocalStorageInterface<T extends JsonValue>(
-  key: string
+  key: string,
 ): { load: () => T | undefined; save: (value: T) => void } {
   return {
     load: () => loadFromLocalStorage<T>(key),

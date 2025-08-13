@@ -1,4 +1,4 @@
-import type { Participant } from 'livekit-client';
+import type { Participant } from "livekit-client";
 /**
  * The `useParticipantAttributes` hook returns the attributes of a given participant and allows to set them.
  * It requires a `Participant` object passed as property or via the `ParticipantContext`.

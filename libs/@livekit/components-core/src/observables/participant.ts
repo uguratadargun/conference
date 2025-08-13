@@ -2,48 +2,48 @@ import type {
   ParticipantPermission,
   ParticipantInfo,
   ParticipantInfo_State,
-} from '@livekit/protocol';
+} from "@livekit/protocol";
 import {
   Participant,
   RemoteParticipant,
   Room,
   TrackPublication,
-} from 'livekit-client';
-import { ParticipantEvent, RoomEvent, Track } from 'livekit-client';
+} from "livekit-client";
+import { ParticipantEvent, RoomEvent, Track } from "livekit-client";
 // @ts-ignore some module resolutions (other than 'node') choke on this
-import type { ParticipantEventCallbacks } from 'livekit-client/dist/src/room/participant/Participant';
-import type { Subscriber } from 'rxjs';
-import { Observable, map, startWith, switchMap } from 'rxjs';
-import { getTrackByIdentifier } from '../components/mediaTrack';
+import type { ParticipantEventCallbacks } from "livekit-client/dist/src/room/participant/Participant";
+import type { Subscriber } from "rxjs";
+import { Observable, map, startWith, switchMap } from "rxjs";
+import { getTrackByIdentifier } from "../components/mediaTrack";
 import {
   allParticipantEvents,
   allParticipantRoomEvents,
-} from '../helper/eventGroups';
-import type { TrackReferenceOrPlaceholder } from '../track-reference';
-import type { ParticipantIdentifier, TrackIdentifier } from '../types';
-import { observeRoomEvents } from './room';
+} from "../helper/eventGroups";
+import type { TrackReferenceOrPlaceholder } from "../track-reference";
+import type { ParticipantIdentifier, TrackIdentifier } from "../types";
+import { observeRoomEvents } from "./room";
 
 export function observeParticipantEvents<T extends Participant>(
   participant: T,
   ...events: ParticipantEvent[]
 ) {
-  const observable = new Observable<T>(subscribe => {
+  const observable = new Observable<T>((subscribe) => {
     const onParticipantUpdate = () => {
       subscribe.next(participant);
     };
 
-    events.forEach(evt => {
+    events.forEach((evt) => {
       participant.on(
         evt as keyof ParticipantEventCallbacks,
-        onParticipantUpdate
+        onParticipantUpdate,
       );
     });
 
     const unsubscribe = () => {
-      events.forEach(evt => {
+      events.forEach((evt) => {
         participant.off(
           evt as keyof ParticipantEventCallbacks,
-          onParticipantUpdate
+          onParticipantUpdate,
         );
       });
     };
@@ -74,10 +74,10 @@ export function observeParticipantMedia<T extends Participant>(participant: T) {
     ParticipantEvent.LocalTrackPublished,
     ParticipantEvent.LocalTrackUnpublished,
     ParticipantEvent.MediaDevicesError,
-    ParticipantEvent.TrackSubscriptionStatusChanged
+    ParticipantEvent.TrackSubscriptionStatusChanged,
     // ParticipantEvent.ConnectionQualityChanged,
   ).pipe(
-    map(p => {
+    map((p) => {
       const { isMicrophoneEnabled, isCameraEnabled, isScreenShareEnabled } = p;
       const microphoneTrack = p.getTrackPublication(Track.Source.Microphone);
       const cameraTrack = p.getTrackPublication(Track.Source.Camera);
@@ -90,7 +90,7 @@ export function observeParticipantMedia<T extends Participant>(participant: T) {
         participant: p,
       };
       return participantMedia;
-    })
+    }),
   );
 
   return participantObserver;
@@ -98,12 +98,12 @@ export function observeParticipantMedia<T extends Participant>(participant: T) {
 
 export function createTrackObserver(
   participant: Participant,
-  options: TrackIdentifier
+  options: TrackIdentifier,
 ) {
   return observeParticipantMedia(participant).pipe(
     map(() => {
       return { publication: getTrackByIdentifier(options) };
-    })
+    }),
   );
 }
 
@@ -114,7 +114,7 @@ export function participantInfoObserver(participant?: Participant) {
   const observer = observeParticipantEvents(
     participant,
     ParticipantEvent.ParticipantMetadataChanged,
-    ParticipantEvent.ParticipantNameChanged
+    ParticipantEvent.ParticipantNameChanged,
   ).pipe(
     map(({ name, identity, metadata }) => {
       return {
@@ -127,7 +127,7 @@ export function participantInfoObserver(participant?: Participant) {
       name: participant.name,
       identity: participant.identity,
       metadata: participant.metadata,
-    })
+    }),
   );
   return observer;
 }
@@ -135,23 +135,23 @@ export function participantInfoObserver(participant?: Participant) {
 export function createConnectionQualityObserver(participant: Participant) {
   const observer = participantEventSelector(
     participant,
-    ParticipantEvent.ConnectionQualityChanged
+    ParticipantEvent.ConnectionQualityChanged,
   ).pipe(
     map(([quality]) => quality),
-    startWith(participant.connectionQuality)
+    startWith(participant.connectionQuality),
   );
   return observer;
 }
 
 export function participantEventSelector<T extends ParticipantEvent>(
   participant: Participant,
-  event: T
+  event: T,
 ) {
   const observable = new Observable<
     Parameters<
       ParticipantEventCallbacks[Extract<T, keyof ParticipantEventCallbacks>]
     >
-  >(subscribe => {
+  >((subscribe) => {
     const update = (
       ...params: Parameters<
         ParticipantEventCallbacks[Extract<T, keyof ParticipantEventCallbacks>]
@@ -180,9 +180,9 @@ export function mutedObserver(trackRef: TrackReferenceOrPlaceholder) {
     ParticipantEvent.TrackSubscribed,
     ParticipantEvent.TrackUnsubscribed,
     ParticipantEvent.LocalTrackPublished,
-    ParticipantEvent.LocalTrackUnpublished
+    ParticipantEvent.LocalTrackUnpublished,
   ).pipe(
-    map(participant => {
+    map((participant) => {
       const pub =
         trackRef.publication ??
         participant.getTrackPublication(trackRef.source);
@@ -191,15 +191,15 @@ export function mutedObserver(trackRef: TrackReferenceOrPlaceholder) {
     startWith(
       trackRef.publication?.isMuted ??
         trackRef.participant.getTrackPublication(trackRef.source)?.isMuted ??
-        true
-    )
+        true,
+    ),
   );
 }
 
 export function createIsSpeakingObserver(participant: Participant) {
   return participantEventSelector(
     participant,
-    ParticipantEvent.IsSpeakingChanged
+    ParticipantEvent.IsSpeakingChanged,
   ).pipe(map(([isSpeaking]) => isSpeaking));
 }
 
@@ -209,11 +209,11 @@ type ConnectedParticipantsObserverOptions = {
 
 export function connectedParticipantsObserver(
   room: Room,
-  options: ConnectedParticipantsObserverOptions = {}
+  options: ConnectedParticipantsObserverOptions = {},
 ) {
   let subscriber: Subscriber<RemoteParticipant[]> | undefined;
 
-  const observable = new Observable<RemoteParticipant[]>(sub => {
+  const observable = new Observable<RemoteParticipant[]>((sub) => {
     subscriber = sub;
     return () => listener.unsubscribe();
   }).pipe(startWith(Array.from(room.remoteParticipants.values())));
@@ -227,11 +227,11 @@ export function connectedParticipantsObserver(
       RoomEvent.ParticipantDisconnected,
       RoomEvent.ConnectionStateChanged,
       ...additionalRoomEvents,
-    ])
+    ]),
   );
 
-  const listener = observeRoomEvents(room, ...roomEvents).subscribe(r =>
-    subscriber?.next(Array.from(r.remoteParticipants.values()))
+  const listener = observeRoomEvents(room, ...roomEvents).subscribe((r) =>
+    subscriber?.next(Array.from(r.remoteParticipants.values())),
   );
   if (room.remoteParticipants.size > 0) {
     subscriber?.next(Array.from(room.remoteParticipants.values()));
@@ -241,7 +241,7 @@ export function connectedParticipantsObserver(
 
 export function listParticipantsObserver(
   room: Room,
-  options: ConnectedParticipantsObserverOptions = {}
+  options: ConnectedParticipantsObserverOptions = {},
 ): Observable<{
   ringingParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   deniedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
@@ -277,7 +277,7 @@ export function listParticipantsObserver(
 
   let subscriber: Subscriber<ParticipantsList> | undefined;
 
-  const observable = new Observable<ParticipantsList>(sub => {
+  const observable = new Observable<ParticipantsList>((sub) => {
     subscriber = sub;
     return () => listener.unsubscribe();
   });
@@ -285,11 +285,11 @@ export function listParticipantsObserver(
   const additionalRoomEvents = options.additionalRoomEvents ?? [];
 
   const roomEvents = Array.from(
-    new Set([RoomEvent.ParticipantListChanged, ...additionalRoomEvents])
+    new Set([RoomEvent.ParticipantListChanged, ...additionalRoomEvents]),
   );
 
-  const listener = observeRoomEvents(room, ...roomEvents).subscribe(r =>
-    subscriber?.next(r.participantsList)
+  const listener = observeRoomEvents(room, ...roomEvents).subscribe((r) =>
+    subscriber?.next(r.participantsList),
   );
 
   // Only emit initial state if there's actual data, otherwise wait for the first real update
@@ -307,44 +307,44 @@ export type ConnectedParticipantObserverOptions = {
 export function connectedParticipantObserver(
   room: Room,
   identity: string,
-  options: ConnectedParticipantObserverOptions = {}
+  options: ConnectedParticipantObserverOptions = {},
 ) {
   const additionalEvents = options.additionalEvents ?? allParticipantEvents;
   const observable = observeRoomEvents(
     room,
     RoomEvent.ParticipantConnected,
     RoomEvent.ParticipantDisconnected,
-    RoomEvent.ConnectionStateChanged
+    RoomEvent.ConnectionStateChanged,
   ).pipe(
-    switchMap(r => {
+    switchMap((r) => {
       const participant = r.getParticipantByIdentity(identity) as
         | RemoteParticipant
         | undefined;
       if (participant) {
         return observeParticipantEvents(participant, ...additionalEvents);
       } else {
-        return new Observable<undefined>(subscribe =>
-          subscribe.next(undefined)
+        return new Observable<undefined>((subscribe) =>
+          subscribe.next(undefined),
         );
       }
     }),
     startWith(
-      room.getParticipantByIdentity(identity) as RemoteParticipant | undefined
-    )
+      room.getParticipantByIdentity(identity) as RemoteParticipant | undefined,
+    ),
   );
 
   return observable;
 }
 
 export function participantPermissionObserver(
-  participant: Participant
+  participant: Participant,
 ): Observable<ParticipantPermission | undefined> {
   const observer = participantEventSelector(
     participant,
-    ParticipantEvent.ParticipantPermissionsChanged
+    ParticipantEvent.ParticipantPermissionsChanged,
   ).pipe(
     map(() => participant.permissions),
-    startWith(participant.permissions)
+    startWith(participant.permissions),
   );
   return observer;
 }
@@ -352,7 +352,7 @@ export function participantPermissionObserver(
 export function participantByIdentifierObserver(
   room: Room,
   { kind, identity }: ParticipantIdentifier,
-  options: ConnectedParticipantObserverOptions = {}
+  options: ConnectedParticipantObserverOptions = {},
 ): Observable<RemoteParticipant | undefined> {
   const additionalEvents = options.additionalEvents ?? allParticipantEvents;
   const matchesIdentifier = (participant: RemoteParticipant) => {
@@ -369,51 +369,51 @@ export function participantByIdentifierObserver(
     room,
     RoomEvent.ParticipantConnected,
     RoomEvent.ParticipantDisconnected,
-    RoomEvent.ConnectionStateChanged
+    RoomEvent.ConnectionStateChanged,
   ).pipe(
-    switchMap(r => {
-      const participant = Array.from(r.remoteParticipants.values()).find(p =>
-        matchesIdentifier(p)
+    switchMap((r) => {
+      const participant = Array.from(r.remoteParticipants.values()).find((p) =>
+        matchesIdentifier(p),
       );
       if (participant) {
         return observeParticipantEvents(participant, ...additionalEvents);
       } else {
-        return new Observable<undefined>(subscribe =>
-          subscribe.next(undefined)
+        return new Observable<undefined>((subscribe) =>
+          subscribe.next(undefined),
         );
       }
     }),
     startWith(
-      Array.from(room.remoteParticipants.values()).find(p =>
-        matchesIdentifier(p)
-      )
-    )
+      Array.from(room.remoteParticipants.values()).find((p) =>
+        matchesIdentifier(p),
+      ),
+    ),
   );
 
   return observable;
 }
 
 export function participantAttributesObserver(
-  participant: Participant
+  participant: Participant,
 ): Observable<{
   changed: Readonly<Record<string, string>>;
   attributes: Readonly<Record<string, string>>;
 }>;
 export function participantAttributesObserver(
-  participant: undefined
+  participant: undefined,
 ): Observable<{
   changed: undefined;
   attributes: undefined;
 }>;
 export function participantAttributesObserver(
-  participant: Participant | undefined
+  participant: Participant | undefined,
 ) {
-  if (typeof participant === 'undefined') {
+  if (typeof participant === "undefined") {
     return new Observable<{ changed: undefined; attributes: undefined }>();
   }
   return participantEventSelector(
     participant,
-    ParticipantEvent.AttributesChanged
+    ParticipantEvent.AttributesChanged,
   ).pipe(
     map(([changedAttributes]) => {
       return {
@@ -424,6 +424,6 @@ export function participantAttributesObserver(
     startWith({
       changed: participant.attributes,
       attributes: participant.attributes,
-    })
+    }),
   );
 }

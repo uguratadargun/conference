@@ -1,4 +1,4 @@
-import type { ParticipantPermission } from '@livekit/protocol';
+import type { ParticipantPermission } from "@livekit/protocol";
 /**
  * The `useLocalParticipantPermissions` hook returns the local participant's permissions.
  *

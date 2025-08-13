@@ -1,5 +1,5 @@
-import * as React from 'react';
-import type { TrackReference } from '@livekit/components-core';
+import * as React from "react";
+import type { TrackReference } from "@livekit/components-core";
 /** @public */
 export interface AudioTrackProps extends React.AudioHTMLAttributes<HTMLAudioElement> {
     /** The track reference of the track from which the audio is to be rendered. */

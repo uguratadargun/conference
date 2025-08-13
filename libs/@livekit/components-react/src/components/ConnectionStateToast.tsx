@@ -1,9 +1,9 @@
-import type { Room } from 'livekit-client';
-import { ConnectionState } from 'livekit-client';
-import * as React from 'react';
-import { SpinnerIcon } from '../assets/icons';
-import { useConnectionState } from '../hooks';
-import { Toast } from './Toast';
+import type { Room } from "livekit-client";
+import { ConnectionState } from "livekit-client";
+import * as React from "react";
+import { SpinnerIcon } from "../assets/icons";
+import { useConnectionState } from "../hooks";
+import { Toast } from "./Toast";
 
 /** @public */
 export interface ConnectionStateToastProps
@@ -28,14 +28,14 @@ export function ConnectionStateToast(props: ConnectionStateToastProps) {
         setNotification(
           <>
             <SpinnerIcon className="lk-spinner" /> Reconnecting
-          </>
+          </>,
         );
         break;
       case ConnectionState.Connecting:
         setNotification(
           <>
             <SpinnerIcon className="lk-spinner" /> Connecting
-          </>
+          </>,
         );
         break;
       case ConnectionState.Disconnected:

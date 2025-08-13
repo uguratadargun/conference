@@ -1,12 +1,12 @@
-import { log, setupLiveKitRoom } from '@livekit/components-core';
-import type { DisconnectReason } from 'livekit-client';
-import { Room, MediaDeviceFailure, RoomEvent } from 'livekit-client';
-import * as React from 'react';
-import type { HTMLAttributes } from 'react';
+import { log, setupLiveKitRoom } from "@livekit/components-core";
+import type { DisconnectReason } from "livekit-client";
+import { Room, MediaDeviceFailure, RoomEvent } from "livekit-client";
+import * as React from "react";
+import type { HTMLAttributes } from "react";
 
-import type { LiveKitRoomProps } from '../components';
-import { mergeProps } from '../mergeProps';
-import { roomOptionsStringifyReplacer } from '../utils';
+import type { LiveKitRoomProps } from "../components";
+import { mergeProps } from "../mergeProps";
+import { roomOptionsStringifyReplacer } from "../utils";
 
 const defaultRoomProps: Partial<LiveKitRoomProps> = {
   connect: true,
@@ -26,7 +26,7 @@ const defaultRoomProps: Partial<LiveKitRoomProps> = {
  * @public
  */
 export function useLiveKitRoom<T extends HTMLElement>(
-  props: LiveKitRoomProps
+  props: LiveKitRoomProps,
 ): {
   room: Room | undefined;
   htmlProps: HTMLAttributes<T>;
@@ -52,7 +52,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
   } = { ...defaultRoomProps, ...props };
   if (options && passedRoom) {
     log.warn(
-      'when using a manually created room, the options object will be ignored. set the desired options directly when creating the room instead.'
+      "when using a manually created room, the options object will be ignored. set the desired options directly when creating the room instead.",
     );
   }
 
@@ -74,21 +74,21 @@ export function useLiveKitRoom<T extends HTMLElement>(
     const onSignalConnected = () => {
       const localP = room.localParticipant;
 
-      log.debug('trying to publish local tracks');
+      log.debug("trying to publish local tracks");
       Promise.all([
         localP.setMicrophoneEnabled(
           !!audio,
-          typeof audio !== 'boolean' ? audio : undefined
+          typeof audio !== "boolean" ? audio : undefined,
         ),
         localP.setCameraEnabled(
           !!video,
-          typeof video !== 'boolean' ? video : undefined
+          typeof video !== "boolean" ? video : undefined,
         ),
         localP.setScreenShareEnabled(
           !!screen,
-          typeof screen !== 'boolean' ? screen : undefined
+          typeof screen !== "boolean" ? screen : undefined,
         ),
-      ]).catch(e => {
+      ]).catch((e) => {
         log.warn(e);
         onError?.(e as Error);
       });
@@ -153,24 +153,26 @@ export function useLiveKitRoom<T extends HTMLElement>(
 
     if (connect) {
       shouldConnect.current = true;
-      log.debug('connecting');
+      log.debug("connecting");
       if (!token) {
-        log.debug('no token yet');
+        log.debug("no token yet");
         return;
       }
       if (!serverUrl) {
-        log.warn('no livekit url provided');
-        onError?.(Error('no livekit url provided'));
+        log.warn("no livekit url provided");
+        onError?.(Error("no livekit url provided"));
         return;
       }
-      room.connect(serverUrl, token, connectOptions, startAsActive).catch(e => {
-        log.warn(e);
-        if (shouldConnect.current === true) {
-          onError?.(e as Error);
-        }
-      });
+      room
+        .connect(serverUrl, token, connectOptions, startAsActive)
+        .catch((e) => {
+          log.warn(e);
+          if (shouldConnect.current === true) {
+            onError?.(e as Error);
+          }
+        });
     } else {
-      log.debug('disconnecting because connect is false');
+      log.debug("disconnecting because connect is false");
       shouldConnect.current = false;
       room.disconnect();
     }
@@ -187,7 +189,7 @@ export function useLiveKitRoom<T extends HTMLElement>(
   React.useEffect(() => {
     if (!room) return;
     return () => {
-      log.info('disconnecting on onmount');
+      log.info("disconnecting on onmount");
       room.disconnect();
     };
   }, [room]);

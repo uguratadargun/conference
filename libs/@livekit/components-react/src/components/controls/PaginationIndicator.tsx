@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export interface PaginationIndicatorProps {
   totalPageCount: number;
@@ -6,15 +6,15 @@ export interface PaginationIndicatorProps {
 }
 
 export const PaginationIndicator: (
-  props: PaginationIndicatorProps & React.RefAttributes<HTMLDivElement>
+  props: PaginationIndicatorProps & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   PaginationIndicatorProps
 >(function PaginationIndicator(
   { totalPageCount, currentPage }: PaginationIndicatorProps,
-  ref
+  ref,
 ) {
-  const bubbles = new Array(totalPageCount).fill('').map((_, index) => {
+  const bubbles = new Array(totalPageCount).fill("").map((_, index) => {
     if (index + 1 === currentPage) {
       return <span data-lk-active key={index} />;
     } else {

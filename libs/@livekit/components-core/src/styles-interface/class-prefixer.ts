@@ -1,6 +1,6 @@
-import type { UnprefixedClassNames as ComponentNoPrefixClasses } from '@livekit/components-styles/dist/types_unprefixed/index.scss';
-import type { UnprefixedClassNames as PrefabNoPrefixClasses } from '@livekit/components-styles/dist/types_unprefixed/prefabs/index.scss';
-import { cssPrefix } from './../constants';
+import type { UnprefixedClassNames as ComponentNoPrefixClasses } from "@livekit/components-styles/dist/types_unprefixed/index.scss";
+import type { UnprefixedClassNames as PrefabNoPrefixClasses } from "@livekit/components-styles/dist/types_unprefixed/prefabs/index.scss";
+import { cssPrefix } from "./../constants";
 
 type UnprefixedClassNames = ComponentNoPrefixClasses | PrefabNoPrefixClasses;
 
@@ -10,7 +10,7 @@ type UnprefixedClassNames = ComponentNoPrefixClasses | PrefabNoPrefixClasses;
  * @internal
  */
 export function prefixClass<T extends UnprefixedClassNames>(
-  unprefixedClassName: T
+  unprefixedClassName: T,
 ) {
   return `${cssPrefix}-${unprefixedClassName}` as const;
 }

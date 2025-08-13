@@ -40,7 +40,7 @@ export const generateToken = async (): Promise<{
     department: 'Ulak',
   };
   const token = await at.toJwt();
-  const url = `10.0.2.148:7880`;
+  const url = `10.0.2.152:7880`;
 
   return { url, token, roomId: LIVEKIT_CONFIG.roomName, identity };
 };

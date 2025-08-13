@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /** @public */
 export interface AllowAudioPlaybackProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     label: string;

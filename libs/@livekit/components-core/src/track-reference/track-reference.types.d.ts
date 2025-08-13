@@ -2,7 +2,7 @@
  * The TrackReference type is a logical grouping of participant publication and/or subscribed track.
  *
  */
-import type { Participant, Track, TrackPublication } from 'livekit-client';
+import type { Participant, Track, TrackPublication } from "livekit-client";
 /** @public */
 export type TrackReferencePlaceholder = {
     participant: Participant;

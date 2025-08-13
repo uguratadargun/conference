@@ -16,5 +16,5 @@ export interface UseTokenOptions {
  * const token = useToken(<token-endpoint>, roomName, { userInfo: { identity, name }});
  * ```
  * @public */
-export declare function useToken(tokenEndpoint: string | undefined, roomName: string, options?: UseTokenOptions): string;
+export declare function useToken(tokenEndpoint: string | undefined, roomName: string, options?: UseTokenOptions): string | undefined;
 //# sourceMappingURL=useToken.d.ts.map

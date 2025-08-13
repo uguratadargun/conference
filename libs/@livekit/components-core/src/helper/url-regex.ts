@@ -34,20 +34,20 @@ export function createUrlRegExp(options: RegExOptions) {
   };
 
   const protocol = `(?:(?:[a-z]+:)?//)?`;
-  const auth = '(?:\\S+(?::\\S*)?@)?';
+  const auth = "(?:\\S+(?::\\S*)?@)?";
   const ip = new RegExp(
-    '(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}',
-    'g'
+    "(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}",
+    "g",
   ).source;
-  const host = '(?:(?:[a-z\\u00a1-\\uffff0-9][-_]*)*[a-z\\u00a1-\\uffff0-9]+)';
+  const host = "(?:(?:[a-z\\u00a1-\\uffff0-9][-_]*)*[a-z\\u00a1-\\uffff0-9]+)";
   const domain =
-    '(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*';
+    "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*";
   const tld = `(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?`;
-  const port = '(?::\\d{2,5})?';
+  const port = "(?::\\d{2,5})?";
   const path = '(?:[/?#][^\\s"]*)?';
   const regex = `(?:${protocol}|www\\.)${auth}(?:localhost|${ip}|${host}${domain}${tld})${port}${path}`;
 
   return options.exact
-    ? new RegExp(`(?:^${regex}$)`, 'i')
-    : new RegExp(regex, 'ig');
+    ? new RegExp(`(?:^${regex}$)`, "i")
+    : new RegExp(regex, "ig");
 }

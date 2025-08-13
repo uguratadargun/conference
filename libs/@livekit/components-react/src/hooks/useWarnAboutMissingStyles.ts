@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { warnAboutMissingStyles } from '../utils';
+import * as React from "react";
+import { warnAboutMissingStyles } from "../utils";
 
 /**
  * @internal

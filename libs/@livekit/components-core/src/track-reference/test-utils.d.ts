@@ -3,9 +3,9 @@
  *
  * @internal
  */
-import { Track } from 'livekit-client';
-import type { UpdatableItem } from '../sorting/tile-array-update';
-import type { TrackReference, TrackReferencePlaceholder } from './track-reference.types';
+import { Track } from "livekit-client";
+import type { UpdatableItem } from "../sorting/tile-array-update";
+import type { TrackReference, TrackReferencePlaceholder } from "./track-reference.types";
 export declare const mockTrackReferencePlaceholder: (id: string, source: Track.Source) => TrackReferencePlaceholder;
 export declare const mockTrackReferencePublished: (id: string, source: Track.Source) => TrackReference;
 type mockTrackReferenceSubscribedOptions = {

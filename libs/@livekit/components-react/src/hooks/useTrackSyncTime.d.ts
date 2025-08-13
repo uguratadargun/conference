@@ -1,4 +1,4 @@
-import { type TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import { type TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /**
  * @internal
  */

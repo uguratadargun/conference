@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useBarAnimator } from './animators/useBarAnimator';
-import { useMultibandTrackVolume, type AgentState } from '../../hooks';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { useMaybeTrackRefContext } from '../../context';
-import { cloneSingleChild, mergeProps } from '../../utils';
+import * as React from "react";
+import { useBarAnimator } from "./animators/useBarAnimator";
+import { useMultibandTrackVolume, type AgentState } from "../../hooks";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import { useMaybeTrackRefContext } from "../../context";
+import { cloneSingleChild, mergeProps } from "../../utils";
 
 /**
  * @beta
@@ -30,15 +30,15 @@ export interface BarVisualizerProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 const sequencerIntervals = new Map<AgentState, number>([
-  ['connecting', 2000],
-  ['initializing', 2000],
-  ['listening', 500],
-  ['thinking', 150],
+  ["connecting", 2000],
+  ["initializing", 2000],
+  ["listening", 500],
+  ["thinking", 150],
 ]);
 
 const getSequencerInterval = (
   state: AgentState | undefined,
-  barCount: number
+  barCount: number,
 ): number | undefined => {
   if (state === undefined) {
     return 1000;
@@ -46,7 +46,7 @@ const getSequencerInterval = (
   let interval = sequencerIntervals.get(state);
   if (interval) {
     switch (state) {
-      case 'connecting':
+      case "connecting":
         // case 'thinking':
         interval /= barCount;
         break;
@@ -116,10 +116,10 @@ export const BarVisualizer = /* @__PURE__ */ React.forwardRef<
     children,
     ...props
   }: BarVisualizerProps,
-  ref
+  ref,
 ) {
   const elementProps = mergeProps(props, {
-    className: 'lk-audio-bar-visualizer',
+    className: "lk-audio-bar-visualizer",
   });
   let trackReference = useMaybeTrackRefContext();
 
@@ -138,7 +138,7 @@ export const BarVisualizer = /* @__PURE__ */ React.forwardRef<
   const highlightedIndices = useBarAnimator(
     state,
     barCount,
-    getSequencerInterval(state, barCount) ?? 100
+    getSequencerInterval(state, barCount) ?? 100,
   );
 
   return (
@@ -146,9 +146,9 @@ export const BarVisualizer = /* @__PURE__ */ React.forwardRef<
       {volumeBands.map((volume, idx) =>
         children ? (
           cloneSingleChild(children, {
-            'data-lk-highlighted': highlightedIndices.includes(idx),
-            'data-lk-bar-index': idx,
-            className: 'lk-audio-bar',
+            "data-lk-highlighted": highlightedIndices.includes(idx),
+            "data-lk-bar-index": idx,
+            className: "lk-audio-bar",
             style: {
               height: `${Math.min(maxHeight, Math.max(minHeight, volume * 100 + 5))}%`,
             },
@@ -158,14 +158,14 @@ export const BarVisualizer = /* @__PURE__ */ React.forwardRef<
             key={idx}
             data-lk-highlighted={highlightedIndices.includes(idx)}
             data-lk-bar-index={idx}
-            className={`lk-audio-bar ${highlightedIndices.includes(idx) && 'lk-highlighted'}`}
+            className={`lk-audio-bar ${highlightedIndices.includes(idx) && "lk-highlighted"}`}
             style={{
               // TODO transform animations would be more performant, however the border-radius gets distorted when using scale transforms. a 9-slice approach (or 3 in this case) could work
               // transform: `scale(1, ${Math.min(maxHeight, Math.max(minHeight, volume))}`,
               height: `${Math.min(maxHeight, Math.max(minHeight, volume * 100 + 5))}%`,
             }}
           ></span>
-        )
+        ),
       )}
     </div>
   );

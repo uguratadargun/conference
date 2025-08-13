@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useRoomContext } from '../../context';
-import { useStartAudio, useStartVideo } from '../../hooks';
+import * as React from "react";
+import { useRoomContext } from "../../context";
+import { useStartAudio, useStartVideo } from "../../hooks";
 
 /** @public */
 export interface AllowMediaPlaybackProps
@@ -24,7 +24,7 @@ export interface AllowMediaPlaybackProps
  * @public
  */
 export const StartMediaButton: (
-  props: AllowMediaPlaybackProps & React.RefAttributes<HTMLButtonElement>
+  props: AllowMediaPlaybackProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   AllowMediaPlaybackProps
@@ -39,11 +39,11 @@ export const StartMediaButton: (
     props: audioProps,
   });
   const { style, ...restProps } = mergedProps;
-  style.display = canPlayAudio && canPlayVideo ? 'none' : 'block';
+  style.display = canPlayAudio && canPlayVideo ? "none" : "block";
 
   return (
     <button ref={ref} style={style} {...restProps}>
-      {label ?? `Start ${!canPlayAudio ? 'Audio' : 'Video'}`}
+      {label ?? `Start ${!canPlayAudio ? "Audio" : "Video"}`}
     </button>
   );
 });

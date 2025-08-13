@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useClearPinButton } from '../../hooks';
+import * as React from "react";
+import { useClearPinButton } from "../../hooks";
 
 /** @public */
 export interface ClearPinButtonProps
@@ -20,7 +20,7 @@ export interface ClearPinButtonProps
  * @public
  */
 export const ClearPinButton: (
-  props: ClearPinButtonProps & React.RefAttributes<HTMLButtonElement>
+  props: ClearPinButtonProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   ClearPinButtonProps

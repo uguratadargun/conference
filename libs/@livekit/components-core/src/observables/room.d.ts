@@ -1,7 +1,7 @@
-import type { Participant, TrackPublication } from 'livekit-client';
-import { LocalParticipant, Room, RoomEvent } from 'livekit-client';
-import { Observable } from 'rxjs';
-import type { RoomEventCallbacks } from 'livekit-client/dist/src/room/Room';
+import type { Participant, TrackPublication } from "livekit-client";
+import { LocalParticipant, Room, RoomEvent } from "livekit-client";
+import { Observable } from "rxjs";
+import type { RoomEventCallbacks } from "livekit-client/dist/src/room/Room";
 export declare function observeRoomEvents(room: Room, ...events: RoomEvent[]): Observable<Room>;
 export declare function roomEventSelector<T extends RoomEvent>(room: Room, event: T): Observable<Parameters<RoomEventCallbacks[T]>>;
 export declare function roomObserver(room: Room): Observable<Room>;
@@ -13,12 +13,12 @@ export type ScreenShareTrackMap = Array<{
 export declare function screenShareObserver(room: Room): Observable<ScreenShareTrackMap>;
 export declare function roomInfoObserver(room: Room): Observable<{
     name: string;
-    metadata: string;
+    metadata: string | undefined;
 }>;
 export declare function activeSpeakerObserver(room: Room): Observable<Participant[]>;
 export declare function createMediaDeviceObserver(kind?: MediaDeviceKind, onError?: (e: Error) => void, requestPermissions?: boolean): Observable<MediaDeviceInfo[]>;
-export declare function createDataObserver(room: Room): Observable<[payload: Uint8Array<ArrayBufferLike>, participant?: import("livekit-client").RemoteParticipant, kind?: import("livekit-client").DataPacket_Kind, topic?: string]>;
-export declare function createChatObserver(room: Room): Observable<[message: import("livekit-client").ChatMessage, participant?: LocalParticipant | import("livekit-client").RemoteParticipant]>;
+export declare function createDataObserver(room: Room): Observable<[payload: Uint8Array<ArrayBufferLike>, participant?: import("livekit-client").RemoteParticipant | undefined, kind?: import("livekit-client").DataPacket_Kind | undefined, topic?: string | undefined]>;
+export declare function createChatObserver(room: Room): Observable<[message: import("livekit-client").ChatMessage, participant?: LocalParticipant | import("livekit-client").RemoteParticipant | undefined]>;
 export declare function roomAudioPlaybackAllowedObservable(room: Room): Observable<{
     canPlayAudio: boolean;
 }>;

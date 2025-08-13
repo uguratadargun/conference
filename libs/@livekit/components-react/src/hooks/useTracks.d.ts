@@ -1,6 +1,6 @@
-import type { SourcesArray, TrackReference, TrackReferenceOrPlaceholder, TrackSourceWithOptions } from '@livekit/components-core';
-import type { Participant, Room, RoomEvent } from 'livekit-client';
-import { Track } from 'livekit-client';
+import type { SourcesArray, TrackReference, TrackReferenceOrPlaceholder, TrackSourceWithOptions } from "@livekit/components-core";
+import type { Participant, Room, RoomEvent } from "livekit-client";
+import { Track } from "livekit-client";
 /** @public */
 export type UseTracksOptions = {
     updateOnlyOn?: RoomEvent[];
@@ -26,5 +26,5 @@ export type UseTracksHookReturnType<T> = T extends Track.Source[] ? TrackReferen
  * @public
  */
 export declare function useTracks<T extends SourcesArray = Track.Source[]>(sources?: T, options?: UseTracksOptions): UseTracksHookReturnType<T>;
-export declare function requiredPlaceholders<T extends SourcesArray>(sources: T, participants: Participant[]): Map<Participant['identity'], Track.Source[]>;
+export declare function requiredPlaceholders<T extends SourcesArray>(sources: T, participants: Participant[]): Map<Participant["identity"], Track.Source[]>;
 //# sourceMappingURL=useTracks.d.ts.map

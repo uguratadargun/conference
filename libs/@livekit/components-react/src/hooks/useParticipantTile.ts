@@ -1,15 +1,15 @@
 import type {
   ParticipantClickEvent,
   TrackReferenceOrPlaceholder,
-} from '@livekit/components-core';
-import { setupParticipantTile } from '@livekit/components-core';
-import * as React from 'react';
-import { useEnsureTrackRef } from '../context';
-import { mergeProps } from '../mergeProps';
-import { useFacingMode } from './useFacingMode';
-import { useIsMuted } from './useIsMuted';
-import { useIsSpeaking } from './useIsSpeaking';
-import { Track } from 'livekit-client';
+} from "@livekit/components-core";
+import { setupParticipantTile } from "@livekit/components-core";
+import * as React from "react";
+import { useEnsureTrackRef } from "../context";
+import { mergeProps } from "../mergeProps";
+import { useFacingMode } from "./useFacingMode";
+import { useIsMuted } from "./useIsMuted";
+import { useIsSpeaking } from "./useIsSpeaking";
+import { Track } from "livekit-client";
 
 /** @public */
 export interface UseParticipantTileProps<T extends HTMLElement>
@@ -43,11 +43,11 @@ export function useParticipantTile<T extends HTMLElement>({
       className,
       onClick: (event: React.MouseEvent<T, MouseEvent>) => {
         htmlProps.onClick?.(event);
-        if (typeof onParticipantClick === 'function') {
+        if (typeof onParticipantClick === "function") {
           const track =
             trackReference.publication ??
             trackReference.participant.getTrackPublication(
-              trackReference.source
+              trackReference.source,
             );
           onParticipantClick({
             participant: trackReference.participant,
@@ -65,7 +65,7 @@ export function useParticipantTile<T extends HTMLElement>({
   ]);
 
   const micTrack = trackReference.participant.getTrackPublication(
-    Track.Source.Microphone
+    Track.Source.Microphone,
   );
   const micRef = React.useMemo(() => {
     return {
@@ -80,13 +80,13 @@ export function useParticipantTile<T extends HTMLElement>({
   const facingMode = useFacingMode(trackReference);
   return {
     elementProps: {
-      'data-lk-audio-muted': isAudioMuted,
-      'data-lk-video-muted': isVideoMuted,
-      'data-lk-speaking':
+      "data-lk-audio-muted": isAudioMuted,
+      "data-lk-video-muted": isVideoMuted,
+      "data-lk-speaking":
         disableSpeakingIndicator === true ? false : isSpeaking,
-      'data-lk-local-participant': trackReference.participant.isLocal,
-      'data-lk-source': trackReference.source,
-      'data-lk-facing-mode': facingMode,
+      "data-lk-local-participant": trackReference.participant.isLocal,
+      "data-lk-source": trackReference.source,
+      "data-lk-facing-mode": facingMode,
       ...mergedProps,
     } as React.HTMLAttributes<T>,
   };

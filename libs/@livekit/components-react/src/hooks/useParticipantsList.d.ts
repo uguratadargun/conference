@@ -1,5 +1,5 @@
-import type { RoomEvent, RemoteParticipant, Room } from 'livekit-client';
-import type { ParticipantInfo, ParticipantInfo_State } from '@livekit/protocol';
+import type { RoomEvent, RemoteParticipant, Room } from "livekit-client";
+import type { ParticipantInfo, ParticipantInfo_State } from "@livekit/protocol";
 /** @public */
 export interface UseParticipantsListOptions {
     /**

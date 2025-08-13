@@ -1,6 +1,6 @@
-import type { Room } from 'livekit-client';
-import * as React from 'react';
-import { useConnectionState } from '../hooks';
+import type { Room } from "livekit-client";
+import * as React from "react";
+import { useConnectionState } from "../hooks";
 
 /** @public */
 export interface ConnectionStatusProps
@@ -24,7 +24,7 @@ export interface ConnectionStatusProps
  * @public
  */
 export const ConnectionState: (
-  props: ConnectionStatusProps & React.RefAttributes<HTMLDivElement>
+  props: ConnectionStatusProps & React.RefAttributes<HTMLDivElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   ConnectionStatusProps

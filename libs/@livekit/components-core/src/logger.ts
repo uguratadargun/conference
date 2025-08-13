@@ -2,11 +2,11 @@ import {
   setLogLevel as setClientSdkLogLevel,
   setLogExtension as setClientSdkLogExtension,
   LogLevel as LogLevelEnum,
-} from 'livekit-client';
-import loglevel from 'loglevel';
+} from "livekit-client";
+import loglevel from "loglevel";
 
-export const log = loglevel.getLogger('lk-components-js');
-log.setDefaultLevel('WARN');
+export const log = loglevel.getLogger("lk-components-js");
+log.setDefaultLevel("WARN");
 
 type LogLevel = Parameters<typeof setClientSdkLogLevel>[0];
 type SetLogLevelOptions = {
@@ -20,7 +20,7 @@ type SetLogLevelOptions = {
  */
 export function setLogLevel(
   level: LogLevel,
-  options: SetLogLevelOptions = {}
+  options: SetLogLevelOptions = {},
 ): void {
   log.setLevel(level);
   setClientSdkLogLevel(options.liveKitClientLogLevel ?? level);
@@ -38,7 +38,7 @@ type SetLogExtensionOptions = {
  */
 export function setLogExtension(
   extension: LogExtension,
-  options: SetLogExtensionOptions = {}
+  options: SetLogExtensionOptions = {},
 ) {
   const originalFactory = log.methodFactory;
 

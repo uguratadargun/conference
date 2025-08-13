@@ -1,11 +1,11 @@
 import type {
   TrackReference,
   TrackReferenceOrPlaceholder,
-} from '@livekit/components-core';
-import * as React from 'react';
-import { TrackRefContext } from '../context/track-reference-context';
-import { cloneSingleChild } from '../utils';
-import { getTrackReferenceId } from '@livekit/components-core';
+} from "@livekit/components-core";
+import * as React from "react";
+import { TrackRefContext } from "../context/track-reference-context";
+import { cloneSingleChild } from "../utils";
+import { getTrackReferenceId } from "@livekit/components-core";
 
 /** @public */
 export interface TrackLoopProps {
@@ -33,7 +33,7 @@ export interface TrackLoopProps {
 export function TrackLoop({ tracks, ...props }: TrackLoopProps) {
   return (
     <>
-      {tracks.map(trackReference => {
+      {tracks.map((trackReference) => {
         return (
           <TrackRefContext.Provider
             value={trackReference}

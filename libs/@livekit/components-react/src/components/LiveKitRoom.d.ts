@@ -1,9 +1,9 @@
-import type { AudioCaptureOptions, DisconnectReason, RoomConnectOptions, RoomOptions, ScreenShareCaptureOptions, VideoCaptureOptions } from 'livekit-client';
-import type { MediaDeviceFailure, Room } from 'livekit-client';
-import * as React from 'react';
-import { type FeatureFlags } from '../context';
+import type { AudioCaptureOptions, DisconnectReason, RoomConnectOptions, RoomOptions, ScreenShareCaptureOptions, VideoCaptureOptions } from "livekit-client";
+import type { MediaDeviceFailure, Room } from "livekit-client";
+import * as React from "react";
+import { type FeatureFlags } from "../context";
 /** @public */
-export interface LiveKitRoomProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface LiveKitRoomProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
     /**
      * URL to the LiveKit server.
      * For example: `wss://<domain>.livekit.cloud`

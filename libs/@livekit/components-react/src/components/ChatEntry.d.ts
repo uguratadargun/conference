@@ -1,5 +1,5 @@
-import type { ReceivedChatMessage } from '@livekit/components-core';
-import * as React from 'react';
+import type { ReceivedChatMessage } from "@livekit/components-core";
+import * as React from "react";
 /** @public */
 export type MessageFormatter = (message: string) => React.ReactNode;
 /**

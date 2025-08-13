@@ -4,7 +4,7 @@
  *
  * @internal
  */
-export * from './useResizeObserver';
-export * from './useObservableState';
-export * from './useMediaQuery';
+export * from "./useResizeObserver";
+export * from "./useObservableState";
+export * from "./useMediaQuery";
 //# sourceMappingURL=index.d.ts.map

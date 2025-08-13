@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useChatToggle } from '../../hooks';
+import * as React from "react";
+import { useChatToggle } from "../../hooks";
 
 /** @public */
 export interface ChatToggleProps
@@ -19,7 +19,7 @@ export interface ChatToggleProps
  * @public
  */
 export const ChatToggle: (
-  props: ChatToggleProps & React.RefAttributes<HTMLButtonElement>
+  props: ChatToggleProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   ChatToggleProps

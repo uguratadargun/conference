@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { LayoutContext, useMaybeTrackRefContext } from '../../context';
-import { FocusToggleIcon, UnfocusToggleIcon } from '../../assets/icons';
-import { useFocusToggle } from '../../hooks';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import * as React from "react";
+import { LayoutContext, useMaybeTrackRefContext } from "../../context";
+import { FocusToggleIcon, UnfocusToggleIcon } from "../../assets/icons";
+import { useFocusToggle } from "../../hooks";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 
 /** @public */
 export interface FocusToggleProps
@@ -24,7 +24,7 @@ export interface FocusToggleProps
  * @public
  */
 export const FocusToggle: (
-  props: FocusToggleProps & React.RefAttributes<HTMLButtonElement>
+  props: FocusToggleProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   FocusToggleProps
@@ -38,7 +38,7 @@ export const FocusToggle: (
 
   return (
     <LayoutContext.Consumer>
-      {layoutContext =>
+      {(layoutContext) =>
         layoutContext !== undefined && (
           <button ref={ref} {...mergedProps}>
             {props.children ? (

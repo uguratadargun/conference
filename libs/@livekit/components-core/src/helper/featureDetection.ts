@@ -3,7 +3,7 @@
  */
 export function supportsScreenSharing(): boolean {
   return (
-    typeof navigator !== 'undefined' &&
+    typeof navigator !== "undefined" &&
     navigator.mediaDevices &&
     !!navigator.mediaDevices.getDisplayMedia
   );

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /** @public */
 export interface UseChatToggleProps {
     props: React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -14,8 +14,8 @@ export declare function useChatToggle({ props }: UseChatToggleProps): {
     mergedProps: React.ButtonHTMLAttributes<HTMLButtonElement> & {
         className: string;
         onClick: () => void;
-        'aria-pressed': string;
-        'data-lk-unread-msgs': string;
+        "aria-pressed": string;
+        "data-lk-unread-msgs": string;
     };
 };
 //# sourceMappingURL=useChatToggle.d.ts.map

@@ -1,9 +1,9 @@
-import type { RemoteParticipant } from 'livekit-client';
-import type { ReceivedTranscriptionSegment, TrackReference } from '@livekit/components-core';
+import type { RemoteParticipant } from "livekit-client";
+import type { ReceivedTranscriptionSegment, TrackReference } from "@livekit/components-core";
 /**
  * @beta
  */
-export type AgentState = 'disconnected' | 'connecting' | 'initializing' | 'listening' | 'thinking' | 'speaking';
+export type AgentState = "disconnected" | "connecting" | "initializing" | "listening" | "thinking" | "speaking";
 /**
  * @beta
  */
@@ -31,7 +31,7 @@ export interface VoiceAssistant {
     /**
      * The agent's participant attributes.
      */
-    agentAttributes: RemoteParticipant['attributes'] | undefined;
+    agentAttributes: RemoteParticipant["attributes"] | undefined;
 }
 /**
  * This hook looks for the first agent-participant in the room.

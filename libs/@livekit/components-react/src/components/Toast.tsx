@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { mergeProps } from '../utils';
+import * as React from "react";
+import { mergeProps } from "../utils";
 
 /**
  * The `Toast` component is a rudimentary way to display a message to the user.
@@ -14,8 +14,8 @@ import { mergeProps } from '../utils';
  */
 export function Toast(props: React.HTMLAttributes<HTMLDivElement>) {
   const htmlProps = React.useMemo(
-    () => mergeProps(props, { className: 'lk-toast' }),
-    [props]
+    () => mergeProps(props, { className: "lk-toast" }),
+    [props],
   );
   return <div {...htmlProps}>{props.children}</div>;
 }

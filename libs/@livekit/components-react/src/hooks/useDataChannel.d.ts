@@ -1,5 +1,5 @@
-import type { ReceivedDataMessage } from '@livekit/components-core';
-import type { DataPublishOptions } from 'livekit-client';
+import type { ReceivedDataMessage } from "@livekit/components-core";
+import type { DataPublishOptions } from "livekit-client";
 type UseDataChannelReturnType<T extends string | undefined = undefined> = {
     isSending: boolean;
     send: (payload: Uint8Array, options: DataPublishOptions) => Promise<void>;

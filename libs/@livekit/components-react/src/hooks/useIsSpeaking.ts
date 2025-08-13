@@ -1,8 +1,8 @@
-import { createIsSpeakingObserver } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureParticipant } from '../context';
-import { useObservableState } from './internal';
+import { createIsSpeakingObserver } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { useEnsureParticipant } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useIsSpeaking` hook returns a `boolean` that indicates if the participant is speaking or not.

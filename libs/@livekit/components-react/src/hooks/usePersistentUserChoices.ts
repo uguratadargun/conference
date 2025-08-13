@@ -1,6 +1,6 @@
-import type { LocalUserChoices } from '@livekit/components-core';
-import { loadUserChoices, saveUserChoices } from '@livekit/components-core';
-import * as React from 'react';
+import type { LocalUserChoices } from "@livekit/components-core";
+import { loadUserChoices, saveUserChoices } from "@livekit/components-core";
+import * as React from "react";
 
 /**
  * Options for the `usePersistentDeviceSettings` hook.
@@ -29,26 +29,26 @@ export interface UsePersistentUserChoicesOptions {
  * @alpha
  */
 export function usePersistentUserChoices(
-  options: UsePersistentUserChoicesOptions = {}
+  options: UsePersistentUserChoicesOptions = {},
 ) {
   const [userChoices, setSettings] = React.useState<LocalUserChoices>(
-    loadUserChoices(options.defaults, options.preventLoad ?? false)
+    loadUserChoices(options.defaults, options.preventLoad ?? false),
   );
 
   const saveAudioInputEnabled = React.useCallback((isEnabled: boolean) => {
-    setSettings(prev => ({ ...prev, audioEnabled: isEnabled }));
+    setSettings((prev) => ({ ...prev, audioEnabled: isEnabled }));
   }, []);
   const saveVideoInputEnabled = React.useCallback((isEnabled: boolean) => {
-    setSettings(prev => ({ ...prev, videoEnabled: isEnabled }));
+    setSettings((prev) => ({ ...prev, videoEnabled: isEnabled }));
   }, []);
   const saveAudioInputDeviceId = React.useCallback((deviceId: string) => {
-    setSettings(prev => ({ ...prev, audioDeviceId: deviceId }));
+    setSettings((prev) => ({ ...prev, audioDeviceId: deviceId }));
   }, []);
   const saveVideoInputDeviceId = React.useCallback((deviceId: string) => {
-    setSettings(prev => ({ ...prev, videoDeviceId: deviceId }));
+    setSettings((prev) => ({ ...prev, videoDeviceId: deviceId }));
   }, []);
   const saveUsername = React.useCallback((username: string) => {
-    setSettings(prev => ({ ...prev, username: username }));
+    setSettings((prev) => ({ ...prev, username: username }));
   }, []);
 
   React.useEffect(() => {

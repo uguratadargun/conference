@@ -38,7 +38,7 @@ import {
   supportsAV1,
   supportsVP9,
 } from '../../src/index';
-import { isSVCCodec, sleep } from '../../src/room/utils';
+import { isSVCCodec, sleep, supportsH265 } from '../../src/room/utils';
 
 setLogLevel(LogLevel.debug);
 
@@ -56,6 +56,8 @@ const state = {
 let currentRoom: Room | undefined;
 
 let startTime: number;
+
+let streamReaderAbortController: AbortController | undefined;
 
 const searchParams = new URLSearchParams(window.location.search);
 const storedUrl = searchParams.get('url') ?? 'ws://localhost:7880';
@@ -114,7 +116,7 @@ const appActions = {
       },
       publishDefaults: {
         simulcast,
-        videoSimulcastLayers: [VideoPresets.h90, VideoPresets.h216],
+        videoSimulcastLayers: [VideoPresets.h180, VideoPresets.h360],
         videoCodec: preferredCodec || 'vp8',
         dtx: true,
         red: true,
@@ -166,7 +168,14 @@ const appActions = {
     await room.prepareConnection(url, token);
     const prewarmTime = Date.now() - startTime;
     appendLog(`prewarmed connection in ${prewarmTime}ms`);
-
+    room.localParticipant.on(ParticipantEvent.LocalTrackCpuConstrained, (track, publication) => {
+      console.log('track is cpu constrained, lowering capture resolution', track, publication);
+      // track.restartTrack({
+      //   resolution: VideoPresets.h360.resolution,
+      //   frameRate: 15,
+      // });
+      track.prioritizePerformance();
+    });
     room
       .on(RoomEvent.ParticipantConnected, participantConnected)
       .on(RoomEvent.ParticipantDisconnected, participantDisconnected)
@@ -252,30 +261,44 @@ const appActions = {
       });
 
     room.registerTextStreamHandler('lk.chat', async (reader, participant) => {
+      streamReaderAbortController = new AbortController();
+      (<HTMLButtonElement>$('cancel-chat-receive-button')).style.display = 'block';
+
       const info = reader.info;
-      if (info.size) {
+
+      let message = '';
+      try {
+        for await (const chunk of reader.withAbortSignal(streamReaderAbortController.signal)) {
+          message += chunk;
+          handleChatMessage(
+            {
+              id: info.id,
+              timestamp: info.timestamp,
+              message,
+            },
+            room.getParticipantByIdentity(participant?.identity),
+          );
+        }
+      } catch (err) {
+        message += 'ERROR';
         handleChatMessage(
           {
             id: info.id,
             timestamp: info.timestamp,
-            message: await reader.readAll(),
+            message,
           },
           room.getParticipantByIdentity(participant?.identity),
         );
-      } else {
-        handleChatMessage(
-          {
-            id: info.id,
-            timestamp: info.timestamp,
-            message: await reader.readAll(),
-          },
+        throw err;
+      }
 
-          room.getParticipantByIdentity(participant?.identity),
-        );
-
+      if (!info.size) {
         appendLog('text stream finished');
       }
       console.log('final info including close extensions', reader.info);
+
+      streamReaderAbortController = undefined;
+      (<HTMLButtonElement>$('cancel-chat-receive-button')).style.display = 'none';
     });
 
     room.registerByteStreamHandler('files', async (reader, participant) => {
@@ -298,6 +321,9 @@ const appActions = {
 
       appendLog(`Started receiving file "${info.name}" from ${participant?.identity}`);
 
+      streamReaderAbortController = new AbortController();
+      (<HTMLButtonElement>$('cancel-chat-receive-button')).style.display = 'block';
+
       reader.onProgress = (progress) => {
         console.log(`"progress ${progress ? (progress * 100).toFixed(0) : 'undefined'}%`);
 
@@ -307,8 +333,20 @@ const appActions = {
         }
       };
 
-      const result = new Blob(await reader.readAll(), { type: info.mimeType });
+      let byteContents;
+      try {
+        byteContents = await reader.readAll({
+          signal: streamReaderAbortController.signal,
+        });
+      } catch (err) {
+        progressLabel.innerText = `Receiving "${info.name}" - readAll aborted!`;
+        throw err;
+      }
+      const result = new Blob(byteContents, { type: info.mimeType });
       appendLog(`Completely received file "${info.name}" from ${participant?.identity}`);
+
+      streamReaderAbortController = undefined;
+      (<HTMLButtonElement>$('cancel-chat-receive-button')).style.display = 'none';
 
       progressContainer.remove();
 
@@ -530,6 +568,15 @@ const appActions = {
     }
   },
 
+  cancelChatReceive: () => {
+    if (!streamReaderAbortController) {
+      return;
+    }
+    streamReaderAbortController.abort();
+
+    (<HTMLButtonElement>$('cancel-chat-receive-button')).style.display = 'none';
+  },
+
   disconnectRoom: () => {
     if (currentRoom) {
       currentRoom.disconnect();
@@ -635,7 +682,7 @@ async function sendGreetingTo(participant: Participant) {
 
   for (const char of greeting) {
     await streamWriter.write(char);
-    await sleep(20);
+    await sleep(50);
   }
   await streamWriter.close();
 }
@@ -1119,6 +1166,9 @@ function populateSupportedCodecs() {
   }
   if (supportsAV1()) {
     options.push(['av1', 'AV1']);
+  }
+  if (supportsH265()) {
+    options.push(['h265', 'H.265']);
   }
   for (const o of options) {
     const n = document.createElement('option');

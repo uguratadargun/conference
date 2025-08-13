@@ -1,4 +1,4 @@
-import { Room, type LocalAudioTrack, type LocalVideoTrack } from 'livekit-client';
+import { Room, type LocalAudioTrack, type LocalVideoTrack } from "livekit-client";
 /** @public */
 export interface UseMediaDeviceSelectProps {
     kind: MediaDeviceKind;

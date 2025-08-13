@@ -1,5 +1,5 @@
-import type { NoiseFilterOptions } from '@livekit/krisp-noise-filter';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import type { NoiseFilterOptions } from "@livekit/krisp-noise-filter";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /**
  * @beta
  */

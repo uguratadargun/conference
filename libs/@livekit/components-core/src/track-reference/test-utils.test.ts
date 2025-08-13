@@ -1,19 +1,19 @@
-import { describe, test, expect, expectTypeOf } from 'vitest';
+import { describe, test, expect, expectTypeOf } from "vitest";
 import {
   mockTrackReferencePlaceholder,
   mockTrackReferenceSubscribed,
-} from './test-utils';
-import type { Participant, TrackPublication } from 'livekit-client';
-import { Track } from 'livekit-client';
-import { getTrackReferenceId } from './track-reference.utils';
+} from "./test-utils";
+import type { Participant, TrackPublication } from "livekit-client";
+import { Track } from "livekit-client";
+import { getTrackReferenceId } from "./track-reference.utils";
 
-describe('Test mocking functions ', () => {
-  test('mockTrackReferenceSubscribed without options.', () => {
-    const mock = mockTrackReferenceSubscribed('MOCK_ID', Track.Source.Camera);
+describe("Test mocking functions ", () => {
+  test("mockTrackReferenceSubscribed without options.", () => {
+    const mock = mockTrackReferenceSubscribed("MOCK_ID", Track.Source.Camera);
     expect(mock).toBeDefined();
     // Check if the participant is mocked correctly:
     expect(mock.participant).toBeDefined();
-    expect(mock.participant.identity).toBe('MOCK_ID');
+    expect(mock.participant.identity).toBe("MOCK_ID");
     expectTypeOf(mock.participant).toMatchTypeOf<Participant>();
 
     // Check if the publication is mocked correctly:
@@ -28,34 +28,34 @@ describe('Test mocking functions ', () => {
   });
 });
 
-describe('Test mockTrackReferencePlaceholder() produces valid id with getTrackReferenceId()', () => {
+describe("Test mockTrackReferencePlaceholder() produces valid id with getTrackReferenceId()", () => {
   test.each([
     {
-      participantId: 'participantA',
+      participantId: "participantA",
       trackSource: Track.Source.Camera,
-      expected: 'participantA_camera_placeholder',
+      expected: "participantA_camera_placeholder",
     },
   ])(
-    'mockTrackReferencePlaceholder id',
+    "mockTrackReferencePlaceholder id",
     ({ participantId, trackSource, expected }) => {
       const mock = mockTrackReferencePlaceholder(participantId, trackSource);
       const trackRefId = getTrackReferenceId(mock);
       expect(trackRefId.startsWith(participantId));
-      expect(trackRefId.endsWith('_placeholder'));
+      expect(trackRefId.endsWith("_placeholder"));
       expect(trackRefId).toBe(expected);
-    }
+    },
   );
 });
 
-describe('Test mockTrackReferenceSubscribed() produces valid id with getTrackReferenceId()', () => {
+describe("Test mockTrackReferenceSubscribed() produces valid id with getTrackReferenceId()", () => {
   test.each([
     {
-      participantId: 'participantA',
+      participantId: "participantA",
       trackSource: Track.Source.Camera,
-      expected: 'participantA_camera_publicationId(participantA)',
+      expected: "participantA_camera_publicationId(participantA)",
     },
   ])(
-    'mockTrackReferencePlaceholder id',
+    "mockTrackReferencePlaceholder id",
     ({ participantId, trackSource, expected }) => {
       const mock = mockTrackReferenceSubscribed(participantId, trackSource, {
         mockPublication: true,
@@ -63,6 +63,6 @@ describe('Test mockTrackReferenceSubscribed() produces valid id with getTrackRef
       const trackRefId = getTrackReferenceId(mock);
       expect(trackRefId.startsWith(participantId));
       expect(trackRefId).toBe(expected);
-    }
+    },
   );
 });

@@ -2,10 +2,10 @@ import {
   type TrackReferenceOrPlaceholder,
   setupTrackMutedIndicator,
   getTrackReferenceId,
-} from '@livekit/components-core';
-import * as React from 'react';
-import { useEnsureTrackRef } from '../context';
-import { useObservableState } from './internal';
+} from "@livekit/components-core";
+import * as React from "react";
+import { useEnsureTrackRef } from "../context";
+import { useObservableState } from "./internal";
 
 interface TrackMutedIndicatorReturnType {
   isMuted: boolean;
@@ -23,13 +23,13 @@ interface TrackMutedIndicatorReturnType {
  * @public
  */
 export function useTrackMutedIndicator(
-  trackRef?: TrackReferenceOrPlaceholder
+  trackRef?: TrackReferenceOrPlaceholder,
 ): TrackMutedIndicatorReturnType {
   const trackReference = useEnsureTrackRef(trackRef);
 
   const { className, mediaMutedObserver } = React.useMemo(
     () => setupTrackMutedIndicator(trackReference),
-    [getTrackReferenceId(trackReference)]
+    [getTrackReferenceId(trackReference)],
   );
 
   const isMuted = useObservableState(
@@ -38,7 +38,7 @@ export function useTrackMutedIndicator(
       trackReference.publication?.isMuted ||
       trackReference.participant.getTrackPublication(trackReference.source)
         ?.isMuted
-    )
+    ),
   );
 
   return { isMuted, className };

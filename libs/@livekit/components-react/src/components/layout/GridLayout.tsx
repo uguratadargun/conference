@@ -1,16 +1,16 @@
-import * as React from 'react';
-import type { UseParticipantsOptions } from '../../hooks';
-import { useGridLayout, usePagination, useSwipe } from '../../hooks';
-import { mergeProps } from '../../utils';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { TrackLoop } from '../TrackLoop';
-import { PaginationControl } from '../controls/PaginationControl';
-import { PaginationIndicator } from '../controls/PaginationIndicator';
+import * as React from "react";
+import type { UseParticipantsOptions } from "../../hooks";
+import { useGridLayout, usePagination, useSwipe } from "../../hooks";
+import { mergeProps } from "../../utils";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import { TrackLoop } from "../TrackLoop";
+import { PaginationControl } from "../controls/PaginationControl";
+import { PaginationIndicator } from "../controls/PaginationIndicator";
 
 /** @public */
 export interface GridLayoutProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    Pick<UseParticipantsOptions, 'updateOnlyOn'> {
+    Pick<UseParticipantsOptions, "updateOnlyOn"> {
   children: React.ReactNode;
   tracks: TrackReferenceOrPlaceholder[];
 }
@@ -35,8 +35,8 @@ export function GridLayout({ tracks, ...props }: GridLayoutProps) {
   const gridEl = React.createRef<HTMLDivElement>();
 
   const elementProps = React.useMemo(
-    () => mergeProps(props, { className: 'lk-grid-layout' }),
-    [props]
+    () => mergeProps(props, { className: "lk-grid-layout" }),
+    [props],
   );
   const { layout } = useGridLayout(gridEl, tracks.length);
   const pagination = usePagination(layout.maxTiles, tracks);

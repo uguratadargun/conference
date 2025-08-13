@@ -1,6 +1,6 @@
-import * as React from 'react';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import type { ParticipantClickEvent } from '@livekit/components-core';
+import * as React from "react";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import type { ParticipantClickEvent } from "@livekit/components-core";
 /** @public */
 export interface FocusLayoutContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }

@@ -1,4 +1,4 @@
-import type { TranscriptionSegment } from 'livekit-client';
+import type { TranscriptionSegment } from "livekit-client";
 
 export type ReceivedTranscriptionSegment = TranscriptionSegment & {
   receivedAtMediaTimestamp: number;
@@ -8,9 +8,9 @@ export type ReceivedTranscriptionSegment = TranscriptionSegment & {
 export function getActiveTranscriptionSegments(
   segments: ReceivedTranscriptionSegment[],
   syncTimes: { timestamp: number; rtpTimestamp?: number },
-  maxAge = 0
+  maxAge = 0,
 ) {
-  return segments.filter(segment => {
+  return segments.filter((segment) => {
     const hasTrackSync = !!syncTimes.rtpTimestamp;
     const currentTrackTime =
       syncTimes.rtpTimestamp ?? performance.timeOrigin + performance.now();
@@ -29,7 +29,7 @@ export function getActiveTranscriptionSegments(
 
 export function addMediaTimestampToTranscription(
   segment: TranscriptionSegment,
-  timestamps: { timestamp: number; rtpTimestamp?: number }
+  timestamps: { timestamp: number; rtpTimestamp?: number },
 ): ReceivedTranscriptionSegment {
   return {
     ...segment,
@@ -44,11 +44,11 @@ export function addMediaTimestampToTranscription(
 export function dedupeSegments<T extends TranscriptionSegment>(
   prevSegments: T[],
   newSegments: T[],
-  windowSize: number
+  windowSize: number,
 ) {
   return [...prevSegments, ...newSegments]
     .reduceRight((acc, segment) => {
-      if (!acc.find(val => val.id === segment.id)) {
+      if (!acc.find((val) => val.id === segment.id)) {
         acc.unshift(segment);
       }
       return acc;
@@ -58,20 +58,20 @@ export function dedupeSegments<T extends TranscriptionSegment>(
 
 export function didActiveSegmentsChange<T extends TranscriptionSegment>(
   prevActive: T[],
-  newActive: T[]
+  newActive: T[],
 ) {
   if (newActive.length !== prevActive.length) {
     return true;
   }
-  return !newActive.every(newSegment => {
+  return !newActive.every((newSegment) => {
     return prevActive.find(
-      prevSegment =>
+      (prevSegment) =>
         prevSegment.id === newSegment.id &&
         prevSegment.text === newSegment.text &&
         prevSegment.final === newSegment.final &&
         prevSegment.language === newSegment.language &&
         prevSegment.startTime === newSegment.startTime &&
-        prevSegment.endTime === newSegment.endTime
+        prevSegment.endTime === newSegment.endTime,
     );
   });
 }

@@ -5,15 +5,15 @@ import type {
   RoomOptions,
   ScreenShareCaptureOptions,
   VideoCaptureOptions,
-} from 'livekit-client';
-import type { MediaDeviceFailure, Room } from 'livekit-client';
-import * as React from 'react';
-import { type FeatureFlags, LKFeatureContext, RoomContext } from '../context';
-import { useLiveKitRoom } from '../hooks';
+} from "livekit-client";
+import type { MediaDeviceFailure, Room } from "livekit-client";
+import * as React from "react";
+import { type FeatureFlags, LKFeatureContext, RoomContext } from "../context";
+import { useLiveKitRoom } from "../hooks";
 
 /** @public */
 export interface LiveKitRoomProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onError'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
   /**
    * URL to the LiveKit server.
    * For example: `wss://<domain>.livekit.cloud`
@@ -70,7 +70,7 @@ export interface LiveKitRoomProps
   onError?: (error: Error) => void;
   onMediaDeviceFailure?: (
     failure?: MediaDeviceFailure,
-    kind?: MediaDeviceKind
+    kind?: MediaDeviceKind,
   ) => void;
   onEncryptionError?: (error: Error) => void;
   /**
@@ -109,7 +109,7 @@ export interface LiveKitRoomProps
  */
 export const LiveKitRoom: (
   props: React.PropsWithChildren<LiveKitRoomProps> &
-    React.RefAttributes<HTMLDivElement>
+    React.RefAttributes<HTMLDivElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLDivElement,
   React.PropsWithChildren<LiveKitRoomProps>

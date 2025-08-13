@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useTextStream } from './useTextStream';
-import { DataTopic } from '@livekit/components-core';
+import * as React from "react";
+import { useTextStream } from "./useTextStream";
+import { DataTopic } from "@livekit/components-core";
 
 /**
  * @beta
@@ -27,19 +27,19 @@ export function useTranscriptions(opts?: UseTranscriptionsOptions) {
   const filteredMessages = React.useMemo(
     () =>
       textStreams
-        .filter(stream =>
+        .filter((stream) =>
           participantIdentities
             ? participantIdentities.includes(stream.participantInfo.identity)
-            : true
+            : true,
         )
-        .filter(stream =>
+        .filter((stream) =>
           trackSids
             ? trackSids.includes(
-                stream.streamInfo.attributes?.['lk.transcribed_track_id'] ?? ''
+                stream.streamInfo.attributes?.["lk.transcribed_track_id"] ?? "",
               )
-            : true
+            : true,
         ),
-    [textStreams, participantIdentities, trackSids]
+    [textStreams, participantIdentities, trackSids],
   );
 
   return filteredMessages;

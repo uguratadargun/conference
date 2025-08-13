@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { type LocalAudioTrack, type LocalVideoTrack } from 'livekit-client';
+import * as React from "react";
+import { type LocalAudioTrack, type LocalVideoTrack } from "livekit-client";
 /** @public */
-export interface MediaDeviceSelectProps extends Omit<React.HTMLAttributes<HTMLUListElement>, 'onError'> {
+export interface MediaDeviceSelectProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "onError"> {
     kind: MediaDeviceKind;
     onActiveDeviceChange?: (deviceId: string) => void;
     onDeviceListChange?: (devices: MediaDeviceInfo[]) => void;

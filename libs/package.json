@@ -1,7 +1,7 @@
 {
   "name": "libs",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "LiveKit JavaScript/TypeScript libraries monorepo",
   "devDependencies": {
     "@livekit/components-core": "file:./@livekit/components-core",
@@ -19,16 +19,9 @@
     "build:livekit-client": "cd livekit-client && npm run build",
     "build:track-processors": "cd @livekit/track-processors && npm run build",
     "build": "npm run build:protocol && npm run build:mutex && npm run build:livekit-client && npm run build:track-processors && npm run build:components-core && npm run build:components-react",
-    "update:all": "./update-repos.sh",
-    "update:single": "./update-single-repo.sh",
-    "fix:deps": "./fix-dependencies.sh",
-    "update:components-react": "./update-single-repo.sh components-react",
-    "update:components-core": "./update-single-repo.sh components-core",
-    "update:livekit-client": "./update-single-repo.sh livekit-client",
-    "update:mutex": "./update-single-repo.sh mutex",
-    "update:protocol": "./update-single-repo.sh protocol",
-    "update:track-processors": "./update-single-repo.sh track-processors",
-    "add:remotes": "./add-remotes.sh"
+    "clean:dist": "./clean-dist-changes.sh",
+    "setup:livekit": "./setup_livekit.sh",
+    "setup:submodules": "./setup_submodules.sh"
   },
   "engines": {
     "node": ">=18"

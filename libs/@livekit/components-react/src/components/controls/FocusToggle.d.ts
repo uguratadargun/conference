@@ -1,5 +1,5 @@
-import * as React from 'react';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import * as React from "react";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /** @public */
 export interface FocusToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     trackRef?: TrackReferenceOrPlaceholder;

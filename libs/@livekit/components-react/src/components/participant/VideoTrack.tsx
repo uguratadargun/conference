@@ -1,12 +1,12 @@
-import { RemoteTrackPublication } from 'livekit-client';
-import * as React from 'react';
-import { useMediaTrackBySourceOrName } from '../../hooks/useMediaTrackBySourceOrName';
+import { RemoteTrackPublication } from "livekit-client";
+import * as React from "react";
+import { useMediaTrackBySourceOrName } from "../../hooks/useMediaTrackBySourceOrName";
 import type {
   ParticipantClickEvent,
   TrackReference,
-} from '@livekit/components-core';
-import { useEnsureTrackRef } from '../../context';
-import * as useHooks from 'usehooks-ts';
+} from "@livekit/components-core";
+import { useEnsureTrackRef } from "../../context";
+import * as useHooks from "usehooks-ts";
 
 /** @public */
 export interface VideoTrackProps
@@ -30,7 +30,7 @@ export interface VideoTrackProps
  * @public
  */
 export const VideoTrack: (
-  props: VideoTrackProps & React.RefAttributes<HTMLVideoElement>
+  props: VideoTrackProps & React.RefAttributes<HTMLVideoElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLVideoElement,
   VideoTrackProps
@@ -43,7 +43,7 @@ export const VideoTrack: (
     manageSubscription,
     ...props
   }: VideoTrackProps,
-  ref
+  ref,
 ) {
   const trackReference = useEnsureTrackRef(trackRef);
 
@@ -56,7 +56,7 @@ export const VideoTrack: (
 
   const [debouncedIntersectionEntry] = useHooks.useDebounceValue(
     intersectionEntry,
-    3000
+    3000,
   );
 
   React.useEffect(() => {
@@ -94,7 +94,7 @@ export const VideoTrack: (
   }, [isSubscribed, onSubscriptionStatusChanged]);
 
   const clickHandler = (
-    evt: React.MouseEvent<HTMLVideoElement, MouseEvent>
+    evt: React.MouseEvent<HTMLVideoElement, MouseEvent>,
   ) => {
     onClick?.(evt);
     onTrackClick?.({ participant: trackReference?.participant, track: pub });

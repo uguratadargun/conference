@@ -1,6 +1,6 @@
-import type { Track } from 'livekit-client';
-import type { PinState } from '../types';
-import type { TrackReferenceOrPlaceholder } from './track-reference.types';
+import type { Track } from "livekit-client";
+import type { PinState } from "../types";
+import type { TrackReferenceOrPlaceholder } from "./track-reference.types";
 /**
  * Returns a id to identify the `TrackReference` or `TrackReferencePlaceholder` based on
  * participant, track source and trackSid.

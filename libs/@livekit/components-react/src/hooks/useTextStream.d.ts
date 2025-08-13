@@ -1,4 +1,4 @@
-import { type TextStreamData } from '@livekit/components-core';
+import { type TextStreamData } from "@livekit/components-core";
 /**
  * @beta
  * @param topic - the topic to listen to

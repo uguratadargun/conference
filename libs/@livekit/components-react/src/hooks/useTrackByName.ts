@@ -1,6 +1,6 @@
-import type { Participant } from 'livekit-client';
-import { useEnsureParticipant } from '../context';
-import { useTrackRefBySourceOrName } from './useTrackRefBySourceOrName';
+import type { Participant } from "livekit-client";
+import { useEnsureParticipant } from "../context";
+import { useTrackRefBySourceOrName } from "./useTrackRefBySourceOrName";
 
 /**
  * This function `useTrackByName` allows you to access a track by referencing its track name.

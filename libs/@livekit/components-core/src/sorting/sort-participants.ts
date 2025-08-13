@@ -1,11 +1,11 @@
-import type { Participant } from 'livekit-client';
-import { LocalParticipant } from 'livekit-client';
+import type { Participant } from "livekit-client";
+import { LocalParticipant } from "livekit-client";
 import {
   sortParticipantsByAudioLevel,
   sortParticipantsByIsSpeaking,
   sortParticipantsByJoinedAt,
   sortParticipantsByLastSpokenAT,
-} from './base-sort-functions';
+} from "./base-sort-functions";
 
 // Track the last stable order and when it was last updated
 let lastStableOrder: string[] = [];
@@ -62,7 +62,7 @@ export function sortParticipants(participants: Participant[]): Participant[] {
 
   // Move local participant to front
   const localParticipant = ideallySortedParticipants.find(
-    p => p.isLocal
+    (p) => p.isLocal,
   ) as LocalParticipant;
   if (localParticipant) {
     const localIdx = ideallySortedParticipants.indexOf(localParticipant);
@@ -77,8 +77,8 @@ export function sortParticipants(participants: Participant[]): Participant[] {
   }
 
   // Check if we should apply the new order or stick with the stable one
-  const idealOrder = ideallySortedParticipants.map(p => p.identity);
-  const currentParticipantIds = new Set(participants.map(p => p.identity));
+  const idealOrder = ideallySortedParticipants.map((p) => p.identity);
+  const currentParticipantIds = new Set(participants.map((p) => p.identity));
 
   // If enough time has passed or this is the first sort, update the stable order
   if (
@@ -92,7 +92,7 @@ export function sortParticipants(participants: Participant[]): Participant[] {
 
   // Otherwise, try to maintain the last stable order
   const stableParticipants: Participant[] = [];
-  const participantMap = new Map(participants.map(p => [p.identity, p]));
+  const participantMap = new Map(participants.map((p) => [p.identity, p]));
 
   // First, add participants in their last stable order (if they still exist)
   for (const participantId of lastStableOrder) {

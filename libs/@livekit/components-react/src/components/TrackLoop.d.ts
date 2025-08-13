@@ -1,5 +1,5 @@
-import type { TrackReference, TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
+import type { TrackReference, TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
 /** @public */
 export interface TrackLoopProps {
     /** Track references to loop over. You can the use `useTracks()` hook to get TrackReferences. */

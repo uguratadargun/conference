@@ -1,5 +1,5 @@
-import * as React from 'react';
-import type { ConnectionQualityIndicatorOptions } from '../../hooks';
+import * as React from "react";
+import type { ConnectionQualityIndicatorOptions } from "../../hooks";
 /** @public */
 export interface ConnectionQualityIndicatorProps extends React.HTMLAttributes<HTMLDivElement>, ConnectionQualityIndicatorOptions {
 }

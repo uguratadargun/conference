@@ -1,4 +1,4 @@
-import type { Room } from 'livekit-client';
+import type { Room } from "livekit-client";
 /**
  * The `useConnectionState` hook allows you to simply implement your own `ConnectionState` component.
  *

@@ -1,5 +1,5 @@
-import { createEmailRegExp } from './emailRegex';
-import { createUrlRegExp } from './url-regex';
+import { createEmailRegExp } from "./emailRegex";
+import { createUrlRegExp } from "./url-regex";
 
 export type TokenizeGrammar = { [type: string]: RegExp };
 
@@ -18,7 +18,7 @@ export function tokenize<T extends TokenizeGrammar>(input: string, grammar: T) {
         weight,
         content,
         index: index ?? 0,
-      }))
+      })),
     )
     .flat()
     .sort((a, b) => {

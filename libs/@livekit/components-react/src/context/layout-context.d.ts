@@ -1,13 +1,13 @@
-import * as React from 'react';
-import type { PinContextType } from './pin-context';
-import type { WidgetContextType } from './chat-context';
+import * as React from "react";
+import type { PinContextType } from "./pin-context";
+import type { WidgetContextType } from "./chat-context";
 /** @public */
 export type LayoutContextType = {
     pin: PinContextType;
     widget: WidgetContextType;
 };
 /** @public */
-export declare const LayoutContext: React.Context<LayoutContextType>;
+export declare const LayoutContext: React.Context<LayoutContextType | undefined>;
 /**
  * Ensures that a layout context is provided via context.
  * If no layout context is provided, an error is thrown.

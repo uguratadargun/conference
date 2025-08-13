@@ -1,4 +1,4 @@
-import type { Participant } from 'livekit-client';
+import type { Participant } from "livekit-client";
 /** @public */
 export interface ConnectionQualityIndicatorOptions {
     participant?: Participant;

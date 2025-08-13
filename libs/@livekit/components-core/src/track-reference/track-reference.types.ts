@@ -3,7 +3,7 @@
  *
  */
 
-import type { Participant, Track, TrackPublication } from 'livekit-client';
+import type { Participant, Track, TrackPublication } from "livekit-client";
 // ## TrackReference Types
 
 /** @public */
@@ -28,9 +28,9 @@ export type TrackReferenceOrPlaceholder =
 // ### TrackReference Type Predicates
 /** @internal */
 export function isTrackReference(
-  trackReference: unknown
+  trackReference: unknown,
 ): trackReference is TrackReference {
-  if (typeof trackReference === 'undefined') {
+  if (typeof trackReference === "undefined") {
     return false;
   }
   return (
@@ -40,42 +40,42 @@ export function isTrackReference(
 }
 
 function isTrackReferenceSubscribed(
-  trackReference?: TrackReferenceOrPlaceholder
+  trackReference?: TrackReferenceOrPlaceholder,
 ): boolean {
   if (!trackReference) {
     return false;
   }
   return (
-    trackReference.hasOwnProperty('participant') &&
-    trackReference.hasOwnProperty('source') &&
-    trackReference.hasOwnProperty('track') &&
-    typeof trackReference.publication?.track !== 'undefined'
+    trackReference.hasOwnProperty("participant") &&
+    trackReference.hasOwnProperty("source") &&
+    trackReference.hasOwnProperty("track") &&
+    typeof trackReference.publication?.track !== "undefined"
   );
 }
 
 function isTrackReferencePublished(
-  trackReference?: TrackReferenceOrPlaceholder
+  trackReference?: TrackReferenceOrPlaceholder,
 ): boolean {
   if (!trackReference) {
     return false;
   }
   return (
-    trackReference.hasOwnProperty('participant') &&
-    trackReference.hasOwnProperty('source') &&
-    trackReference.hasOwnProperty('publication') &&
-    typeof trackReference.publication !== 'undefined'
+    trackReference.hasOwnProperty("participant") &&
+    trackReference.hasOwnProperty("source") &&
+    trackReference.hasOwnProperty("publication") &&
+    typeof trackReference.publication !== "undefined"
   );
 }
 
 export function isTrackReferencePlaceholder(
-  trackReference?: TrackReferenceOrPlaceholder
+  trackReference?: TrackReferenceOrPlaceholder,
 ): trackReference is TrackReferencePlaceholder {
   if (!trackReference) {
     return false;
   }
   return (
-    trackReference.hasOwnProperty('participant') &&
-    trackReference.hasOwnProperty('source') &&
-    typeof trackReference.publication === 'undefined'
+    trackReference.hasOwnProperty("participant") &&
+    trackReference.hasOwnProperty("source") &&
+    typeof trackReference.publication === "undefined"
   );
 }

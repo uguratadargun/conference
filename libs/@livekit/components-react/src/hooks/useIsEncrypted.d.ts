@@ -1,4 +1,4 @@
-import type { Participant, Room } from 'livekit-client';
+import type { Participant, Room } from "livekit-client";
 /**
  * @alpha
  */

@@ -1,8 +1,8 @@
-import { participantAttributesObserver } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureParticipant, useMaybeParticipantContext } from '../context';
-import { useObservableState } from './internal';
+import { participantAttributesObserver } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { useEnsureParticipant, useMaybeParticipantContext } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useParticipantAttributes` hook returns the attributes of a given participant and allows to set them.
@@ -20,7 +20,7 @@ export interface UseParticipantAttributesOptions {
 
 /** @public */
 export function useParticipantAttributes(
-  props: UseParticipantAttributesOptions = {}
+  props: UseParticipantAttributesOptions = {},
 ) {
   const participantContext = useMaybeParticipantContext();
   const p = props.participant ?? participantContext;
@@ -28,7 +28,7 @@ export function useParticipantAttributes(
     // weird typescript constraint
     () =>
       p ? participantAttributesObserver(p) : participantAttributesObserver(p),
-    [p]
+    [p],
   );
   const attributeState = useObservableState(attributeObserver, {
     attributes: p?.attributes,
@@ -49,7 +49,7 @@ export function useParticipantAttributes(
  */
 export function useParticipantAttribute(
   attributeKey: string,
-  options: UseParticipantAttributesOptions = {}
+  options: UseParticipantAttributesOptions = {},
 ) {
   const p = useEnsureParticipant(options.participant);
   const [attribute, setAttribute] = React.useState(p.attributes[attributeKey]);
@@ -58,7 +58,7 @@ export function useParticipantAttribute(
     if (!p) {
       return;
     }
-    const subscription = participantAttributesObserver(p).subscribe(val => {
+    const subscription = participantAttributesObserver(p).subscribe((val) => {
       if (val.changed[attributeKey] !== undefined) {
         setAttribute(val.attributes[attributeKey]);
       }

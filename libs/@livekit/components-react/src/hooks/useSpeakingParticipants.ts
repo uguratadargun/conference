@@ -1,7 +1,7 @@
-import { activeSpeakerObserver } from '@livekit/components-core';
-import * as React from 'react';
-import { useRoomContext } from '../context';
-import { useObservableState } from './internal';
+import { activeSpeakerObserver } from "@livekit/components-core";
+import * as React from "react";
+import { useRoomContext } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useSpeakingParticipants` hook returns only the active speakers of all participants.
@@ -16,11 +16,11 @@ export function useSpeakingParticipants() {
   const room = useRoomContext();
   const speakerObserver = React.useMemo(
     () => activeSpeakerObserver(room),
-    [room]
+    [room],
   );
   const activeSpeakers = useObservableState(
     speakerObserver,
-    room.activeSpeakers
+    room.activeSpeakers,
   );
   return activeSpeakers;
 }

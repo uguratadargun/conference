@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useSettingsToggle } from '../../hooks/useSettingsToggle';
+import * as React from "react";
+import { useSettingsToggle } from "../../hooks/useSettingsToggle";
 
 /** @alpha */
 export interface SettingsMenuToggleProps
@@ -13,7 +13,7 @@ export interface SettingsMenuToggleProps
  * @alpha
  */
 export const SettingsMenuToggle: (
-  props: SettingsMenuToggleProps & React.RefAttributes<HTMLButtonElement>
+  props: SettingsMenuToggleProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   SettingsMenuToggleProps

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { LocalAudioTrack } from 'livekit-client';
-import { log } from '@livekit/components-core';
+import * as React from "react";
+import { LocalAudioTrack } from "livekit-client";
+import { log } from "@livekit/components-core";
 import type {
   KrispNoiseFilterProcessor,
   NoiseFilterOptions,
-} from '@livekit/krisp-noise-filter';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { useLocalParticipant } from '../../..';
+} from "@livekit/krisp-noise-filter";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import { useLocalParticipant } from "../../..";
 
 /**
  * @beta
@@ -57,18 +57,18 @@ export function useKrispNoiseFilter(options: useKrispNoiseFilterOptions = {}) {
   const setNoiseFilterEnabled = React.useCallback(async (enable: boolean) => {
     if (enable) {
       const { KrispNoiseFilter, isKrispNoiseFilterSupported } = await import(
-        '@livekit/krisp-noise-filter'
+        "@livekit/krisp-noise-filter"
       );
 
       if (!isKrispNoiseFilterSupported()) {
-        log.warn('LiveKit-Krisp noise filter is not supported in this browser');
+        log.warn("LiveKit-Krisp noise filter is not supported in this browser");
         return;
       }
       if (!krispProcessor) {
         setKrispProcessor(KrispNoiseFilter(options.filterOptions));
       }
     }
-    setShouldEnable(prev => {
+    setShouldEnable((prev) => {
       if (prev !== enable) {
         setIsNoiseFilterPending(true);
       }
@@ -85,7 +85,7 @@ export function useKrispNoiseFilter(options: useKrispNoiseFilterOptions = {}) {
       const currentProcessor = micPublication.track.getProcessor();
       if (
         currentProcessor &&
-        currentProcessor.name === 'livekit-noise-filter'
+        currentProcessor.name === "livekit-noise-filter"
       ) {
         setIsNoiseFilterPending(true);
         (currentProcessor as KrispNoiseFilterProcessor)
@@ -104,7 +104,7 @@ export function useKrispNoiseFilter(options: useKrispNoiseFilterOptions = {}) {
           })
           .catch((e: any) => {
             setIsNoiseFilterEnabled(false);
-            log.error('Krisp hook: error enabling filter', e);
+            log.error("Krisp hook: error enabling filter", e);
           })
           .finally(() => {
             setIsNoiseFilterPending(false);

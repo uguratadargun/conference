@@ -1,11 +1,11 @@
-import type { PinState, TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import type * as React from 'react';
+import type { PinState, TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import type * as React from "react";
 /** @internal */
 export type PinAction = {
-    msg: 'set_pin';
+    msg: "set_pin";
     trackReference: TrackReferenceOrPlaceholder;
 } | {
-    msg: 'clear_pin';
+    msg: "clear_pin";
 };
 /** @internal */
 export type PinContextType = {

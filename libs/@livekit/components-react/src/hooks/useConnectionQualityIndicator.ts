@@ -1,8 +1,8 @@
-import { setupConnectionQualityIndicator } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureParticipant } from '../context';
-import { useObservableState } from './internal';
+import { setupConnectionQualityIndicator } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { useEnsureParticipant } from "../context";
+import { useObservableState } from "./internal";
 
 /** @public */
 export interface ConnectionQualityIndicatorOptions {
@@ -20,18 +20,18 @@ export interface ConnectionQualityIndicatorOptions {
  * @public
  */
 export function useConnectionQualityIndicator(
-  options: ConnectionQualityIndicatorOptions = {}
+  options: ConnectionQualityIndicatorOptions = {},
 ) {
   const p = useEnsureParticipant(options.participant);
 
   const { className, connectionQualityObserver } = React.useMemo(
     () => setupConnectionQualityIndicator(p),
-    [p]
+    [p],
   );
 
   const quality = useObservableState(
     connectionQualityObserver,
-    p.connectionQuality
+    p.connectionQuality,
   );
 
   return { className, quality };

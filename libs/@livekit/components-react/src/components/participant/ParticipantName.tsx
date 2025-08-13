@@ -1,9 +1,9 @@
-import { setupParticipantName } from '@livekit/components-core';
-import * as React from 'react';
-import { useEnsureParticipant } from '../../context';
-import { useObservableState } from '../../hooks/internal/useObservableState';
-import { mergeProps } from '../../utils';
-import type { UseParticipantInfoOptions } from '../../hooks';
+import { setupParticipantName } from "@livekit/components-core";
+import * as React from "react";
+import { useEnsureParticipant } from "../../context";
+import { useObservableState } from "../../hooks/internal/useObservableState";
+import { mergeProps } from "../../utils";
+import type { UseParticipantInfoOptions } from "../../hooks";
 
 /** @public */
 export interface ParticipantNameProps
@@ -21,13 +21,13 @@ export interface ParticipantNameProps
  * @public
  */
 export const ParticipantName: (
-  props: ParticipantNameProps & React.RefAttributes<HTMLSpanElement>
+  props: ParticipantNameProps & React.RefAttributes<HTMLSpanElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLSpanElement,
   ParticipantNameProps
 >(function ParticipantName(
   { participant, ...props }: ParticipantNameProps,
-  ref
+  ref,
 ) {
   const p = useEnsureParticipant(participant);
 
@@ -42,12 +42,12 @@ export const ParticipantName: (
   });
 
   const mergedProps = React.useMemo(() => {
-    return mergeProps(props, { className, 'data-lk-participant-name': name });
+    return mergeProps(props, { className, "data-lk-participant-name": name });
   }, [props, className, name]);
 
   return (
     <span ref={ref} {...mergedProps}>
-      {name !== '' ? name : identity}
+      {name !== "" ? name : identity}
       {props.children}
     </span>
   );

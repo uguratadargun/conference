@@ -1,9 +1,9 @@
-import { setupStartVideo } from '@livekit/components-core';
-import type { Room } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureRoom } from '../context';
-import { mergeProps } from '../mergeProps';
-import { useObservableState } from './internal';
+import { setupStartVideo } from "@livekit/components-core";
+import type { Room } from "livekit-client";
+import * as React from "react";
+import { useEnsureRoom } from "../context";
+import { mergeProps } from "../mergeProps";
+import { useObservableState } from "./internal";
 
 /** @alpha */
 export interface UseStartVideoProps {
@@ -28,7 +28,7 @@ export function useStartVideo({ room, props }: UseStartVideoProps) {
   } = React.useMemo(() => setupStartVideo(), []);
   const observable = React.useMemo(
     () => roomVideoPlaybackAllowedObservable(roomEnsured),
-    [roomEnsured, roomVideoPlaybackAllowedObservable]
+    [roomEnsured, roomVideoPlaybackAllowedObservable],
   );
   const { canPlayVideo } = useObservableState(observable, {
     canPlayVideo: roomEnsured.canPlaybackVideo,
@@ -41,9 +41,9 @@ export function useStartVideo({ room, props }: UseStartVideoProps) {
         onClick: () => {
           handleStartVideoPlayback(roomEnsured);
         },
-        style: { display: canPlayVideo ? 'none' : 'block' },
+        style: { display: canPlayVideo ? "none" : "block" },
       }),
-    [props, className, canPlayVideo, handleStartVideoPlayback, roomEnsured]
+    [props, className, canPlayVideo, handleStartVideoPlayback, roomEnsured],
   );
 
   return { mergedProps, canPlayVideo };

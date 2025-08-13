@@ -1,4 +1,4 @@
-import type { Room } from 'livekit-client';
+import type { Room } from "livekit-client";
 /**
  * The `useIsRecording` hook returns a `boolean` that indicates if the room is currently being recorded.
  * @example

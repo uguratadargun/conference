@@ -1,4 +1,4 @@
-import type { Participant } from 'livekit-client';
+import type { Participant } from "livekit-client";
 /**
  * The `useSortedParticipants` hook returns the participants sorted by importance.
  * @public

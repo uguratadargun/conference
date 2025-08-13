@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 /** @internal */
 export interface FeatureFlags {
@@ -11,21 +11,21 @@ type FeatureContext<T extends boolean = false> = T extends true
 
 /** @internal */
 export const LKFeatureContext = React.createContext<FeatureFlags | undefined>(
-  undefined
+  undefined,
 );
 
 /**
  * @internal
  */
 export function useFeatureContext<T extends boolean>(
-  require?: T
+  require?: T,
 ): FeatureContext<T> {
   const ctx = React.useContext(LKFeatureContext) as FeatureContext<T>;
   if (require === true) {
     if (ctx) {
       return ctx;
     } else {
-      throw Error('tried to access feature context, but none is present');
+      throw Error("tried to access feature context, but none is present");
     }
   }
   return ctx;

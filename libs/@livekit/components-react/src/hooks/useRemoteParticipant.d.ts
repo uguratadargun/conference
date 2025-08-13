@@ -1,5 +1,5 @@
-import { type ParticipantIdentifier } from '@livekit/components-core';
-import type { ParticipantEvent, RemoteParticipant } from 'livekit-client';
+import { type ParticipantIdentifier } from "@livekit/components-core";
+import type { ParticipantEvent, RemoteParticipant } from "livekit-client";
 /** @public */
 export interface UseRemoteParticipantOptions {
     /**

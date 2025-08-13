@@ -1,15 +1,15 @@
-import * as React from 'react';
+import * as React from "react";
 import type {
   LocalAudioTrack,
   RemoteAudioTrack,
   AudioAnalyserOptions,
-} from 'livekit-client';
-import { Track, createAudioAnalyser } from 'livekit-client';
+} from "livekit-client";
+import { Track, createAudioAnalyser } from "livekit-client";
 import {
   type TrackReference,
   isTrackReference,
   type TrackReferenceOrPlaceholder,
-} from '@livekit/components-core';
+} from "@livekit/components-core";
 
 /**
  * @alpha
@@ -17,7 +17,7 @@ import {
  */
 export function useTrackVolume(
   trackOrTrackReference?: LocalAudioTrack | RemoteAudioTrack | TrackReference,
-  options: AudioAnalyserOptions = { fftSize: 32, smoothingTimeConstant: 0 }
+  options: AudioAnalyserOptions = { fftSize: 32, smoothingTimeConstant: 0 },
 ) {
   const track = isTrackReference(trackOrTrackReference)
     ? <LocalAudioTrack | RemoteAudioTrack | undefined>(
@@ -67,7 +67,7 @@ const normalizeFrequencies = (frequencies: Float32Array) => {
   };
 
   // Normalize all frequency values
-  return frequencies.map(value => {
+  return frequencies.map((value) => {
     if (value === -Infinity) {
       return 0;
     }
@@ -115,7 +115,7 @@ export function useMultibandTrackVolume(
     | LocalAudioTrack
     | RemoteAudioTrack
     | TrackReferenceOrPlaceholder,
-  options: MultiBandTrackVolumeOptions = {}
+  options: MultiBandTrackVolumeOptions = {},
 ) {
   const track =
     trackOrTrackReference instanceof Track
@@ -125,7 +125,7 @@ export function useMultibandTrackVolume(
         );
   const opts = { ...multibandDefaults, ...options };
   const [frequencyBands, setFrequencyBands] = React.useState<Array<number>>(
-    new Array(opts.bands).fill(0)
+    new Array(opts.bands).fill(0),
   );
 
   React.useEffect(() => {
@@ -134,7 +134,7 @@ export function useMultibandTrackVolume(
     }
     const { analyser, cleanup } = createAudioAnalyser(
       track,
-      opts.analyserOptions
+      opts.analyserOptions,
     );
 
     const bufferLength = analyser.frequencyBinCount;
@@ -195,7 +195,7 @@ export function useAudioWaveform(
     | LocalAudioTrack
     | RemoteAudioTrack
     | TrackReferenceOrPlaceholder,
-  options: AudioWaveformOptions = {}
+  options: AudioWaveformOptions = {},
 ) {
   const track =
     trackOrTrackReference instanceof Track
@@ -214,10 +214,10 @@ export function useAudioWaveform(
     setBars(
       Array.from(
         filterData(wave, opts.barCount).map(
-          v => Math.sqrt(v) * opts.volMultiplier
-        )
+          (v) => Math.sqrt(v) * opts.volMultiplier,
+        ),
         // wave.slice(0, opts.barCount).map((v) => sigmoid(v * opts.volMultiplier, 0.08, 0.2)),
-      )
+      ),
     );
   }, []);
 
@@ -239,7 +239,7 @@ export function useAudioWaveform(
       updates.current += 1;
 
       if (performance.now() - timeRef.current >= opts.updateInterval) {
-        const newData = dataArray.map(v => v / updates.current);
+        const newData = dataArray.map((v) => v / updates.current);
         onUpdate(newData);
         timeRef.current = performance.now();
         updates.current = 0;

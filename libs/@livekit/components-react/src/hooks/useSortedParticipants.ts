@@ -1,7 +1,7 @@
-import { sortParticipants } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { useSpeakingParticipants } from './useSpeakingParticipants';
+import { sortParticipants } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { useSpeakingParticipants } from "./useSpeakingParticipants";
 
 /**
  * The `useSortedParticipants` hook returns the participants sorted by importance.
@@ -9,7 +9,7 @@ import { useSpeakingParticipants } from './useSpeakingParticipants';
  */
 export function useSortedParticipants(participants: Array<Participant>) {
   const [sortedParticipants, setSortedParticipants] = React.useState(
-    sortParticipants(participants)
+    sortParticipants(participants),
   );
   const activeSpeakers = useSpeakingParticipants();
 

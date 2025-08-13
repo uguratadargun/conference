@@ -1,5 +1,5 @@
-import type { Room } from 'livekit-client';
-import { roomVideoPlaybackAllowedObservable } from '../observables/room';
+import type { Room } from "livekit-client";
+import { roomVideoPlaybackAllowedObservable } from "../observables/room";
 export declare function setupStartVideo(): {
     className: string;
     roomVideoPlaybackAllowedObservable: typeof roomVideoPlaybackAllowedObservable;

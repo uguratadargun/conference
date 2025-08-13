@@ -1,5 +1,5 @@
-import { Track } from 'livekit-client';
-import * as React from 'react';
+import { Track } from "livekit-client";
+import * as React from "react";
 /** @beta */
 export type VoiceAssistantControlBarControls = {
     microphone?: boolean;

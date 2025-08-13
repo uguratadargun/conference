@@ -1,17 +1,17 @@
-import type { WidgetState } from '@livekit/components-core';
-import type * as React from 'react';
+import type { WidgetState } from "@livekit/components-core";
+import type * as React from "react";
 /** @internal */
 export type ChatContextAction = {
-    msg: 'show_chat';
+    msg: "show_chat";
 } | {
-    msg: 'hide_chat';
+    msg: "hide_chat";
 } | {
-    msg: 'toggle_chat';
+    msg: "toggle_chat";
 } | {
-    msg: 'unread_msg';
+    msg: "unread_msg";
     count: number;
 } | {
-    msg: 'toggle_settings';
+    msg: "toggle_settings";
 };
 /** @internal */
 export type WidgetContextType = {

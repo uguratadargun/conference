@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useDisconnectButton } from '../../hooks';
+import * as React from "react";
+import { useDisconnectButton } from "../../hooks";
 
 /** @public */
 export interface DisconnectButtonProps
@@ -20,7 +20,7 @@ export interface DisconnectButtonProps
  * @public
  */
 export const DisconnectButton: (
-  props: DisconnectButtonProps & React.RefAttributes<HTMLButtonElement>
+  props: DisconnectButtonProps & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLButtonElement,
   DisconnectButtonProps

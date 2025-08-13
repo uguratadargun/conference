@@ -1,6 +1,6 @@
-import { type ChatOptions } from '@livekit/components-core';
-import * as React from 'react';
-import type { MessageFormatter } from '../components/ChatEntry';
+import { type ChatOptions } from "@livekit/components-core";
+import * as React from "react";
+import type { MessageFormatter } from "../components/ChatEntry";
 /** @public */
 export interface ChatProps extends React.HTMLAttributes<HTMLDivElement>, ChatOptions {
     messageFormatter?: MessageFormatter;

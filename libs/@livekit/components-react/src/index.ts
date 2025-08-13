@@ -1,21 +1,21 @@
-export * from './components/index.js';
+export * from "./components/index.js";
 
-export * from './hooks';
+export * from "./hooks";
 
-export * from './prefabs';
+export * from "./prefabs";
 
-export * from './context';
+export * from "./context";
 
-export * from './assets/icons';
+export * from "./assets/icons";
 
-export * from './assets/images';
+export * from "./assets/images";
 
 // Re-exports from core
 export {
   setLogLevel,
   setLogExtension,
   isTrackReference,
-} from '@livekit/components-core';
+} from "@livekit/components-core";
 export type {
   ChatMessage,
   ReceivedChatMessage,
@@ -30,4 +30,4 @@ export type {
   WidgetState,
   GridLayoutDefinition,
   TextStreamData,
-} from '@livekit/components-core';
+} from "@livekit/components-core";

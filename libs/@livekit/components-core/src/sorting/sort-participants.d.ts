@@ -1,4 +1,4 @@
-import type { Participant } from 'livekit-client';
+import type { Participant } from "livekit-client";
 /**
  * Default sort for participants, it'll order participants by:
  * 1. local participant

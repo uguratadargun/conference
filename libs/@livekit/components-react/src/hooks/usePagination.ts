@@ -1,6 +1,6 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
-import { useVisualStableUpdate } from './useVisualStableUpdate';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
+import { useVisualStableUpdate } from "./useVisualStableUpdate";
 
 /**
  * The `usePagination` hook implements simple pagination logic for use with arrays.
@@ -15,12 +15,12 @@ import { useVisualStableUpdate } from './useVisualStableUpdate';
  */
 export function usePagination(
   itemPerPage: number,
-  trackReferences: TrackReferenceOrPlaceholder[]
+  trackReferences: TrackReferenceOrPlaceholder[],
 ) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPageCount = Math.max(
     Math.ceil(trackReferences.length / itemPerPage),
-    1
+    1,
   );
   if (currentPage > totalPageCount) {
     setCurrentPage(totalPageCount);
@@ -28,9 +28,9 @@ export function usePagination(
   const lastItemIndex = currentPage * itemPerPage;
   const firstItemIndex = lastItemIndex - itemPerPage;
 
-  const changePage = (direction: 'next' | 'previous') => {
-    setCurrentPage(state => {
-      if (direction === 'next') {
+  const changePage = (direction: "next" | "previous") => {
+    setCurrentPage((state) => {
+      if (direction === "next") {
         if (state === totalPageCount) {
           return state;
         }
@@ -56,18 +56,18 @@ export function usePagination(
 
   const updatedTrackReferences = useVisualStableUpdate(
     trackReferences,
-    itemPerPage
+    itemPerPage,
   );
 
   const tracksOnPage = updatedTrackReferences.slice(
     firstItemIndex,
-    lastItemIndex
+    lastItemIndex,
   );
 
   return {
     totalPageCount,
-    nextPage: () => changePage('next'),
-    prevPage: () => changePage('previous'),
+    nextPage: () => changePage("next"),
+    prevPage: () => changePage("previous"),
     setPage: goToPage,
     firstItemIndex,
     lastItemIndex,

@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useMediaTrackBySourceOrName } from '../../hooks/useMediaTrackBySourceOrName';
-import type { TrackReference } from '@livekit/components-core';
-import { log } from '@livekit/components-core';
-import { RemoteAudioTrack, RemoteTrackPublication } from 'livekit-client';
-import { useEnsureTrackRef } from '../../context';
+import * as React from "react";
+import { useMediaTrackBySourceOrName } from "../../hooks/useMediaTrackBySourceOrName";
+import type { TrackReference } from "@livekit/components-core";
+import { log } from "@livekit/components-core";
+import { RemoteAudioTrack, RemoteTrackPublication } from "livekit-client";
+import { useEnsureTrackRef } from "../../context";
 
 /** @public */
 export interface AudioTrackProps
@@ -38,13 +38,13 @@ export interface AudioTrackProps
  * @public
  */
 export const AudioTrack: (
-  props: AudioTrackProps & React.RefAttributes<HTMLAudioElement>
+  props: AudioTrackProps & React.RefAttributes<HTMLAudioElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef<
   HTMLAudioElement,
   AudioTrackProps
 >(function AudioTrack(
   { trackRef, onSubscriptionStatusChanged, volume, ...props }: AudioTrackProps,
-  ref
+  ref,
 ) {
   const trackReference = useEnsureTrackRef(trackRef);
 
@@ -72,7 +72,7 @@ export const AudioTrack: (
     if (track instanceof RemoteAudioTrack) {
       track.setVolume(volume);
     } else {
-      log.warn('Volume can only be set on remote audio tracks.');
+      log.warn("Volume can only be set on remote audio tracks.");
     }
   }, [volume, track]);
 
@@ -83,7 +83,7 @@ export const AudioTrack: (
     if (pub instanceof RemoteTrackPublication) {
       pub.setEnabled(!props.muted);
     } else {
-      log.warn('Can only call setEnabled on remote track publications.');
+      log.warn("Can only call setEnabled on remote track publications.");
     }
   }, [props.muted, pub, track]);
 

@@ -1,6 +1,6 @@
-import { Track } from 'livekit-client';
-import type { TrackReferenceOrPlaceholder } from '../track-reference';
-import { isTrackReference } from '../track-reference';
+import { Track } from "livekit-client";
+import type { TrackReferenceOrPlaceholder } from "../track-reference";
+import { isTrackReference } from "../track-reference";
 import {
   sortParticipantsByAudioLevel,
   sortParticipantsByIsSpeaking,
@@ -8,7 +8,7 @@ import {
   sortParticipantsByLastSpokenAT,
   sortTrackReferencesByType,
   sortTrackRefsByIsCameraEnabled,
-} from './base-sort-functions';
+} from "./base-sort-functions";
 
 /**
  * Default sort for `TrackReferenceOrPlaceholder`, it'll order participants by:
@@ -21,14 +21,14 @@ import {
  * 7. remote tracks sorted by joinedAt
  */
 export function sortTrackReferences(
-  tracks: TrackReferenceOrPlaceholder[]
+  tracks: TrackReferenceOrPlaceholder[],
 ): TrackReferenceOrPlaceholder[] {
   const localTracks: TrackReferenceOrPlaceholder[] = [];
   const screenShareTracks: TrackReferenceOrPlaceholder[] = [];
   const cameraTracks: TrackReferenceOrPlaceholder[] = [];
   const undefinedTracks: TrackReferenceOrPlaceholder[] = [];
 
-  tracks.forEach(trackRef => {
+  tracks.forEach((trackRef) => {
     if (
       trackRef.participant.isLocal &&
       trackRef.source === Track.Source.Camera
@@ -62,12 +62,12 @@ export function sortTrackReferences(
  * Secondary sorting by participant's joining time.
  */
 function sortScreenShareTracks(
-  screenShareTracks: TrackReferenceOrPlaceholder[]
+  screenShareTracks: TrackReferenceOrPlaceholder[],
 ): TrackReferenceOrPlaceholder[] {
   const localScreenShares: TrackReferenceOrPlaceholder[] = [];
   const remoteScreenShares: TrackReferenceOrPlaceholder[] = [];
 
-  screenShareTracks.forEach(trackRef => {
+  screenShareTracks.forEach((trackRef) => {
     if (trackRef.participant.isLocal) {
       localScreenShares.push(trackRef);
     } else {
@@ -76,10 +76,10 @@ function sortScreenShareTracks(
   });
 
   localScreenShares.sort((a, b) =>
-    sortParticipantsByJoinedAt(a.participant, b.participant)
+    sortParticipantsByJoinedAt(a.participant, b.participant),
   );
   remoteScreenShares.sort((a, b) =>
-    sortParticipantsByJoinedAt(a.participant, b.participant)
+    sortParticipantsByJoinedAt(a.participant, b.participant),
   );
 
   const sortedScreenShareTrackRefs = [
@@ -90,12 +90,12 @@ function sortScreenShareTracks(
 }
 
 function sortCameraTracks(
-  cameraTrackReferences: TrackReferenceOrPlaceholder[]
+  cameraTrackReferences: TrackReferenceOrPlaceholder[],
 ): TrackReferenceOrPlaceholder[] {
   const localCameraTracks: TrackReferenceOrPlaceholder[] = [];
   const remoteCameraTracks: TrackReferenceOrPlaceholder[] = [];
 
-  cameraTrackReferences.forEach(trackRef => {
+  cameraTrackReferences.forEach((trackRef) => {
     if (trackRef.participant.isLocal) {
       localCameraTracks.push(trackRef);
     } else {

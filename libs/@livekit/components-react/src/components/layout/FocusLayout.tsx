@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { mergeProps } from '../../utils';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import { ParticipantTile } from '../participant/ParticipantTile';
-import type { ParticipantClickEvent } from '@livekit/components-core';
+import * as React from "react";
+import { mergeProps } from "../../utils";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import { ParticipantTile } from "../participant/ParticipantTile";
+import type { ParticipantClickEvent } from "@livekit/components-core";
 
 /** @public */
 export interface FocusLayoutContainerProps
@@ -16,7 +16,7 @@ export interface FocusLayoutContainerProps
  *  @public
  */
 export function FocusLayoutContainer(props: FocusLayoutContainerProps) {
-  const elementProps = mergeProps(props, { className: 'lk-focus-layout' });
+  const elementProps = mergeProps(props, { className: "lk-focus-layout" });
 
   return <div {...elementProps}>{props.children}</div>;
 }

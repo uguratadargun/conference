@@ -1,4 +1,4 @@
-export { sortTrackReferences } from './sort-track-bundles';
-export { sortParticipants } from './sort-participants';
-export { updatePages } from './tile-array-update';
+export { sortTrackReferences } from "./sort-track-bundles";
+export { sortParticipants } from "./sort-participants";
+export { updatePages } from "./tile-array-update";
 //# sourceMappingURL=index.d.ts.map

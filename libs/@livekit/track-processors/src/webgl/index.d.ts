@@ -4,5 +4,5 @@ export declare const setupWebGL: (canvas: OffscreenCanvas | HTMLCanvasElement) =
     setBackgroundImage: (image: ImageBitmap | null) => Promise<void>;
     setBlurRadius: (radius: number | null) => void;
     cleanup: () => void;
-};
+} | undefined;
 //# sourceMappingURL=index.d.ts.map

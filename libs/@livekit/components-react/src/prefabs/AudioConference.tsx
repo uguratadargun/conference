@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { ControlBar } from './ControlBar';
+import * as React from "react";
+import { ControlBar } from "./ControlBar";
 
-import { ParticipantAudioTile } from '../components/participant/ParticipantAudioTile';
-import { LayoutContextProvider } from '../components/layout/LayoutContextProvider';
-import type { WidgetState } from '@livekit/components-core';
-import { Chat } from './Chat';
-import { TrackLoop } from '../components';
-import { useTracks } from '../hooks';
-import { useWarnAboutMissingStyles } from '../hooks/useWarnAboutMissingStyles';
-import { Track } from 'livekit-client';
+import { ParticipantAudioTile } from "../components/participant/ParticipantAudioTile";
+import { LayoutContextProvider } from "../components/layout/LayoutContextProvider";
+import type { WidgetState } from "@livekit/components-core";
+import { Chat } from "./Chat";
+import { TrackLoop } from "../components";
+import { useTracks } from "../hooks";
+import { useWarnAboutMissingStyles } from "../hooks/useWarnAboutMissingStyles";
+import { Track } from "livekit-client";
 
 /** @public */
 export interface AudioConferenceProps

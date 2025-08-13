@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /** @public */
 export interface ClearPinButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }

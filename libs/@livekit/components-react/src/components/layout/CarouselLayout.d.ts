@@ -1,12 +1,12 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
 /** @public */
 export interface CarouselLayoutProps extends React.HTMLAttributes<HTMLMediaElement> {
     tracks: TrackReferenceOrPlaceholder[];
     children: React.ReactNode;
     /** Place the tiles vertically or horizontally next to each other.
      * If undefined orientation is guessed by the dimensions of the container. */
-    orientation?: 'vertical' | 'horizontal';
+    orientation?: "vertical" | "horizontal";
 }
 /**
  * The `CarouselLayout` component displays a list of tracks in a scroll container.

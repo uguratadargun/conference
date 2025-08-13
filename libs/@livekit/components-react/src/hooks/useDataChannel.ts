@@ -1,9 +1,9 @@
-import type { ReceivedDataMessage } from '@livekit/components-core';
-import { setupDataMessageHandler } from '@livekit/components-core';
-import * as React from 'react';
-import type { DataPublishOptions } from 'livekit-client';
-import { useRoomContext } from '../context';
-import { useObservableState } from './internal';
+import type { ReceivedDataMessage } from "@livekit/components-core";
+import { setupDataMessageHandler } from "@livekit/components-core";
+import * as React from "react";
+import type { DataPublishOptions } from "livekit-client";
+import { useRoomContext } from "../context";
+import { useObservableState } from "./internal";
 
 type UseDataChannelReturnType<T extends string | undefined = undefined> = {
   isSending: boolean;
@@ -35,7 +35,7 @@ type UseDataChannelReturnType<T extends string | undefined = undefined> = {
  */
 export function useDataChannel<T extends string>(
   topic: T,
-  onMessage?: (msg: ReceivedDataMessage<T>) => void
+  onMessage?: (msg: ReceivedDataMessage<T>) => void,
 ): UseDataChannelReturnType<T>;
 
 /**
@@ -44,24 +44,24 @@ export function useDataChannel<T extends string>(
  * @public
  */
 export function useDataChannel(
-  onMessage?: (msg: ReceivedDataMessage) => void
+  onMessage?: (msg: ReceivedDataMessage) => void,
 ): UseDataChannelReturnType;
 /**
  * @internal
  */
 export function useDataChannel<T extends string>(
   topicOrCallback?: T | ((msg: ReceivedDataMessage) => void),
-  callback?: (msg: ReceivedDataMessage<T>) => void
+  callback?: (msg: ReceivedDataMessage<T>) => void,
 ) {
   const onMessage =
-    typeof topicOrCallback === 'function' ? topicOrCallback : callback;
+    typeof topicOrCallback === "function" ? topicOrCallback : callback;
 
   const topic =
-    typeof topicOrCallback === 'string' ? topicOrCallback : undefined;
+    typeof topicOrCallback === "string" ? topicOrCallback : undefined;
   const room = useRoomContext();
   const { send, messageObservable, isSendingObservable } = React.useMemo(
     () => setupDataMessageHandler(room, topic, onMessage),
-    [room, topic, onMessage]
+    [room, topic, onMessage],
   );
 
   const message = useObservableState(messageObservable, undefined);

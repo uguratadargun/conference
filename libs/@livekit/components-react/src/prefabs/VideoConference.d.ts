@@ -1,6 +1,6 @@
-import type { MessageDecoder, MessageEncoder } from '@livekit/components-core';
-import * as React from 'react';
-import type { MessageFormatter } from '../components';
+import type { MessageDecoder, MessageEncoder } from "@livekit/components-core";
+import * as React from "react";
+import type { MessageFormatter } from "../components";
 /**
  * @public
  */

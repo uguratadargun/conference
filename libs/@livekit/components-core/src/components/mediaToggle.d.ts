@@ -1,6 +1,6 @@
-import type { AudioCaptureOptions, Room, ScreenShareCaptureOptions, TrackPublishOptions, VideoCaptureOptions } from 'livekit-client';
-import { Track } from 'livekit-client';
-import type { Observable } from 'rxjs';
+import type { AudioCaptureOptions, Room, ScreenShareCaptureOptions, TrackPublishOptions, VideoCaptureOptions } from "livekit-client";
+import { Track } from "livekit-client";
+import type { Observable } from "rxjs";
 export type CaptureOptionsBySource<T extends ToggleSource> = T extends Track.Source.Camera ? VideoCaptureOptions : T extends Track.Source.Microphone ? AudioCaptureOptions : T extends Track.Source.ScreenShare ? ScreenShareCaptureOptions : never;
 export type MediaToggleType<T extends ToggleSource> = {
     pendingObserver: Observable<boolean>;

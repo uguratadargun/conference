@@ -9,26 +9,26 @@ import {
   RemoteTrackPublication,
   Track,
   TrackPublication,
-} from 'livekit-client';
-import type { UpdatableItem } from '../sorting/tile-array-update';
+} from "livekit-client";
+import type { UpdatableItem } from "../sorting/tile-array-update";
 import type {
   TrackReference,
   TrackReferencePlaceholder,
-} from './track-reference.types';
-import { getTrackReferenceId } from './track-reference.utils';
-import { TrackInfo } from '@livekit/protocol';
+} from "./track-reference.types";
+import { getTrackReferenceId } from "./track-reference.utils";
+import { TrackInfo } from "@livekit/protocol";
 
 // Test function:
 export const mockTrackReferencePlaceholder = (
   id: string,
-  source: Track.Source
+  source: Track.Source,
 ): TrackReferencePlaceholder => {
   return { participant: new Participant(`${id}`, `${id}`), source };
 };
 
 export const mockTrackReferencePublished = (
   id: string,
-  source: Track.Source
+  source: Track.Source,
 ): TrackReference => {
   const kind = [Track.Source.Camera, Track.Source.ScreenShare].includes(source)
     ? Track.Kind.Video
@@ -54,7 +54,7 @@ type mockTrackReferenceSubscribedOptions = {
 export const mockTrackReferenceSubscribed = (
   id: string,
   source: Track.Source,
-  options: mockTrackReferenceSubscribedOptions = {}
+  options: mockTrackReferenceSubscribedOptions = {},
 ): TrackReference => {
   const kind = [Track.Source.Camera, Track.Source.ScreenShare].includes(source)
     ? Track.Kind.Video
@@ -75,7 +75,7 @@ export const mockTrackReferenceSubscribed = (
       ? (mockTrackPublication(
           `publicationId(${id})`,
           kind,
-          source
+          source,
         ) as TrackPublication)
       : publication,
     source,
@@ -85,8 +85,8 @@ export const mockTrackReferenceSubscribed = (
 const mockTrackPublication = (
   id: string,
   kind: Track.Kind,
-  source: Track.Source
-): Pick<TrackPublication, 'kind' | 'trackSid' | 'trackName' | 'source'> => {
+  source: Track.Source,
+): Pick<TrackPublication, "kind" | "trackSid" | "trackName" | "source"> => {
   return {
     kind,
     trackSid: id,
@@ -97,8 +97,8 @@ const mockTrackPublication = (
 
 function mockParticipant(
   id: string,
-  isLocal: boolean
-): Pick<Participant, 'sid' | 'identity' | 'isLocal'> {
+  isLocal: boolean,
+): Pick<Participant, "sid" | "identity" | "isLocal"> {
   return {
     sid: `${id}_sid`,
     identity: `${id}`,
@@ -107,10 +107,10 @@ function mockParticipant(
 }
 
 export function flatTrackReferenceArray<T extends UpdatableItem>(
-  list: T[]
+  list: T[],
 ): string[] {
-  return list.map(item => {
-    if (typeof item === 'string' || typeof item === 'number') {
+  return list.map((item) => {
+    if (typeof item === "string" || typeof item === "number") {
       return `${item}`;
     } else {
       return getTrackReferenceId(item);

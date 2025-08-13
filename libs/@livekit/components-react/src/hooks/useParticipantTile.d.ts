@@ -1,5 +1,5 @@
-import type { ParticipantClickEvent, TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
+import type { ParticipantClickEvent, TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
 /** @public */
 export interface UseParticipantTileProps<T extends HTMLElement> extends React.HTMLAttributes<T> {
     /** The track reference to display. */

@@ -1,5 +1,5 @@
-import type { ParticipantPermission } from '@livekit/protocol';
-import type { Participant } from 'livekit-client';
+import type { ParticipantPermission } from "@livekit/protocol";
+import type { Participant } from "livekit-client";
 /**
  * The `useParticipantPermissions` hook returns the permissions of a given participant.
  *

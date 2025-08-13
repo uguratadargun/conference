@@ -1,12 +1,12 @@
-import type { TrackIdentifier } from '@livekit/components-core';
+import type { TrackIdentifier } from "@livekit/components-core";
 import {
   getTrackByIdentifier,
   isTrackReference,
   log,
   setupMediaTrack,
-} from '@livekit/components-core';
-import * as React from 'react';
-import { mergeProps } from '../utils';
+} from "@livekit/components-core";
+import * as React from "react";
+import { mergeProps } from "../utils";
 
 /** @public */
 export interface UseMediaTrackOptions {
@@ -19,21 +19,21 @@ export interface UseMediaTrackOptions {
  */
 export function useMediaTrackBySourceOrName(
   observerOptions: TrackIdentifier,
-  options: UseMediaTrackOptions = {}
+  options: UseMediaTrackOptions = {},
 ) {
   const [publication, setPublication] = React.useState(
-    getTrackByIdentifier(observerOptions)
+    getTrackByIdentifier(observerOptions),
   );
 
   const [isMuted, setMuted] = React.useState(publication?.isMuted);
   const [isSubscribed, setSubscribed] = React.useState(
-    publication?.isSubscribed
+    publication?.isSubscribed,
   );
 
   const [track, setTrack] = React.useState(publication?.track);
   const [orientation, setOrientation] = React.useState<
-    'landscape' | 'portrait'
-  >('landscape');
+    "landscape" | "portrait"
+  >("landscape");
   const previousElement = React.useRef<HTMLMediaElement | undefined | null>();
 
   const { className, trackObserver } = React.useMemo(() => {
@@ -45,8 +45,8 @@ export function useMediaTrackBySourceOrName(
   ]);
 
   React.useEffect(() => {
-    const subscription = trackObserver.subscribe(publication => {
-      log.debug('update track', publication);
+    const subscription = trackObserver.subscribe((publication) => {
+      log.debug("update track", publication);
       setPublication(publication);
       setMuted(publication?.isMuted);
       setSubscribed(publication?.isSubscribed);
@@ -62,7 +62,7 @@ export function useMediaTrackBySourceOrName(
       }
       if (
         options.element?.current &&
-        !(observerOptions.participant.isLocal && track?.kind === 'audio')
+        !(observerOptions.participant.isLocal && track?.kind === "audio")
       ) {
         track.attach(options.element.current);
       }
@@ -79,13 +79,13 @@ export function useMediaTrackBySourceOrName(
     // Set the orientation of the video track.
     // TODO: This does not handle changes in orientation after a track got published (e.g when rotating a phone camera from portrait to landscape).
     if (
-      typeof publication?.dimensions?.width === 'number' &&
-      typeof publication?.dimensions?.height === 'number'
+      typeof publication?.dimensions?.width === "number" &&
+      typeof publication?.dimensions?.height === "number"
     ) {
       const orientation_ =
         publication.dimensions.width > publication.dimensions.height
-          ? 'landscape'
-          : 'portrait';
+          ? "landscape"
+          : "portrait";
       setOrientation(orientation_);
     }
   }, [publication]);
@@ -97,10 +97,10 @@ export function useMediaTrackBySourceOrName(
     track,
     elementProps: mergeProps(options.props, {
       className,
-      'data-lk-local-participant': observerOptions.participant.isLocal,
-      'data-lk-source': publication?.source,
-      ...(publication?.kind === 'video' && {
-        'data-lk-orientation': orientation,
+      "data-lk-local-participant": observerOptions.participant.isLocal,
+      "data-lk-source": publication?.source,
+      ...(publication?.kind === "video" && {
+        "data-lk-orientation": orientation,
       }),
     }),
   };

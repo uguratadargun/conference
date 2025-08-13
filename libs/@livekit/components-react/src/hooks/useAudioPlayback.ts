@@ -1,8 +1,8 @@
-import type { Room } from 'livekit-client';
-import * as React from 'react';
-import { useObservableState } from './internal';
-import { roomAudioPlaybackAllowedObservable } from '@livekit/components-core';
-import { useEnsureRoom } from '../context';
+import type { Room } from "livekit-client";
+import * as React from "react";
+import { useObservableState } from "./internal";
+import { roomAudioPlaybackAllowedObservable } from "@livekit/components-core";
+import { useEnsureRoom } from "../context";
 
 /**
  * In many browsers to start audio playback, the user must perform a user-initiated event such as clicking a button.
@@ -24,7 +24,7 @@ export function useAudioPlayback(room?: Room): {
 
   const observable = React.useMemo(
     () => roomAudioPlaybackAllowedObservable(roomEnsured),
-    [roomEnsured]
+    [roomEnsured],
   );
   const { canPlayAudio } = useObservableState(observable, {
     canPlayAudio: roomEnsured.canPlaybackAudio,

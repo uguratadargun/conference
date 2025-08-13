@@ -1,8 +1,8 @@
-import { roomInfoObserver } from '@livekit/components-core';
-import type { Room } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureRoom } from '../context';
-import { useObservableState } from './internal';
+import { roomInfoObserver } from "@livekit/components-core";
+import type { Room } from "livekit-client";
+import * as React from "react";
+import { useEnsureRoom } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useRoomInfo` hook returns the name and metadata of the given `Room`.

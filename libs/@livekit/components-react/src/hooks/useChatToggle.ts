@@ -1,7 +1,7 @@
-import { setupChatToggle } from '@livekit/components-core';
-import { useLayoutContext } from '../context';
-import { mergeProps } from '../mergeProps';
-import * as React from 'react';
+import { setupChatToggle } from "@livekit/components-core";
+import { useLayoutContext } from "../context";
+import { mergeProps } from "../mergeProps";
+import * as React from "react";
 
 /** @public */
 export interface UseChatToggleProps {
@@ -23,14 +23,14 @@ export function useChatToggle({ props }: UseChatToggleProps) {
     return mergeProps(props, {
       className,
       onClick: () => {
-        if (dispatch) dispatch({ msg: 'toggle_chat' });
+        if (dispatch) dispatch({ msg: "toggle_chat" });
       },
-      'aria-pressed': state?.showChat ? 'true' : 'false',
-      'data-lk-unread-msgs': state
+      "aria-pressed": state?.showChat ? "true" : "false",
+      "data-lk-unread-msgs": state
         ? state.unreadMessages < 10
           ? state.unreadMessages.toFixed(0)
-          : '9+'
-        : '0',
+          : "9+"
+        : "0",
     });
   }, [props, className, dispatch, state]);
 

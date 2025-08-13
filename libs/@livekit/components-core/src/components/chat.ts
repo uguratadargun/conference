@@ -4,8 +4,8 @@ import type {
   Room,
   ChatMessage,
   SendTextOptions,
-} from 'livekit-client';
-import { compareVersions, RoomEvent } from 'livekit-client';
+} from "livekit-client";
+import { compareVersions, RoomEvent } from "livekit-client";
 import {
   BehaviorSubject,
   Subject,
@@ -14,14 +14,14 @@ import {
   takeUntil,
   from,
   filter,
-} from 'rxjs';
+} from "rxjs";
 import {
   DataTopic,
   LegacyDataTopic,
   sendMessage,
   setupDataMessageHandler,
-} from '../observables/dataChannel';
-import { log } from '../logger';
+} from "../observables/dataChannel";
+import { log } from "../logger";
 
 /** @public */
 export type { ChatMessage };
@@ -67,7 +67,7 @@ const topicSubjectMap: WeakMap<
 > = new WeakMap();
 
 function isIgnorableChatMessage(
-  msg: ReceivedChatMessage | LegacyReceivedChatMessage
+  msg: ReceivedChatMessage | LegacyReceivedChatMessage,
 ) {
   return (msg as LegacyChatMessage).ignoreLegacy == true;
 }
@@ -84,7 +84,7 @@ export function setupChat(room: Room, options?: ChatOptions) {
   const serverSupportsDataStreams = () =>
     room.serverInfo?.edition === 1 ||
     (!!room.serverInfo?.version &&
-      compareVersions(room.serverInfo?.version, '1.8.2') > 0);
+      compareVersions(room.serverInfo?.version, "1.8.2") > 0);
 
   const onDestroyObservable = new Subject<void>();
 
@@ -119,10 +119,10 @@ export function setupChat(room: Room, options?: ChatOptions) {
             from: room.getParticipantByIdentity(participantInfo.identity),
             // editTimestamp: type === 'update' ? timestamp : undefined,
           } as ReceivedChatMessage;
-        })
+        }),
       );
       streamObservable.subscribe({
-        next: value => messageSubject.next(value),
+        next: (value) => messageSubject.next(value),
       });
     });
 
@@ -130,7 +130,7 @@ export function setupChat(room: Room, options?: ChatOptions) {
     const { messageObservable } = setupDataMessageHandler(room, [legacyTopic]);
     messageObservable
       .pipe(
-        map(msg => {
+        map((msg) => {
           const parsedMessage = finalMessageDecoder(msg.payload);
           if (isIgnorableChatMessage(parsedMessage)) {
             return undefined;
@@ -141,8 +141,8 @@ export function setupChat(room: Room, options?: ChatOptions) {
           };
           return newMessage;
         }),
-        filter(msg => !!msg),
-        takeUntil(onDestroyObservable)
+        filter((msg) => !!msg),
+        takeUntil(onDestroyObservable),
       )
       .subscribe(messageSubject);
   }
@@ -151,13 +151,13 @@ export function setupChat(room: Room, options?: ChatOptions) {
   const messagesObservable = messageSubject.pipe(
     scan<ReceivedChatMessage, ReceivedChatMessage[]>((acc, value) => {
       if (
-        'id' in value &&
+        "id" in value &&
         acc.find(
-          msg =>
-            msg.from?.identity === value.from?.identity && msg.id === value.id
+          (msg) =>
+            msg.from?.identity === value.from?.identity && msg.id === value.id,
         )
       ) {
-        const replaceIndex = acc.findIndex(msg => msg.id === value.id);
+        const replaceIndex = acc.findIndex((msg) => msg.id === value.id);
         if (replaceIndex > -1) {
           const originalMsg = acc[replaceIndex];
           acc[replaceIndex] = {
@@ -170,7 +170,7 @@ export function setupChat(room: Room, options?: ChatOptions) {
       }
       return [...acc, value];
     }, []),
-    takeUntil(onDestroyObservable)
+    takeUntil(onDestroyObservable),
   );
 
   const isSending$ = new BehaviorSubject<boolean>(false);
@@ -216,7 +216,7 @@ export function setupChat(room: Room, options?: ChatOptions) {
           topic: legacyTopic,
         });
       } catch (error) {
-        log.info('could not send message in legacy chat format', error);
+        log.info("could not send message in legacy chat format", error);
       }
 
       return receivedChatMsg;

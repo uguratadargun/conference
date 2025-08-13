@@ -1,12 +1,12 @@
-import * as React from 'react';
-import SvgChevron from '../../assets/icons/Chevron';
-import type { usePagination } from '../../hooks';
-import { createInteractingObservable } from '@livekit/components-core';
+import * as React from "react";
+import SvgChevron from "../../assets/icons/Chevron";
+import type { usePagination } from "../../hooks";
+import { createInteractingObservable } from "@livekit/components-core";
 
 export interface PaginationControlProps
   extends Pick<
     ReturnType<typeof usePagination>,
-    'totalPageCount' | 'nextPage' | 'prevPage' | 'currentPage'
+    "totalPageCount" | "nextPage" | "prevPage" | "currentPage"
   > {
   /** Reference to an HTML element that holds the pages, while interacting (`mouseover`)
    *  with it, the pagination controls will appear for a while. */
@@ -23,12 +23,12 @@ export function PaginationControl({
   const [interactive, setInteractive] = React.useState(false);
   React.useEffect(() => {
     let subscription:
-      | ReturnType<ReturnType<typeof createInteractingObservable>['subscribe']>
+      | ReturnType<ReturnType<typeof createInteractingObservable>["subscribe"]>
       | undefined;
     if (connectedElement) {
       subscription = createInteractingObservable(
         connectedElement.current,
-        2000
+        2000,
       ).subscribe(setInteractive);
     }
     return () => {

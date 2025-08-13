@@ -1,8 +1,8 @@
-import { connectionStateObserver } from '@livekit/components-core';
-import type { Room } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureRoom } from '../context';
-import { useObservableState } from './internal';
+import { connectionStateObserver } from "@livekit/components-core";
+import type { Room } from "livekit-client";
+import * as React from "react";
+import { useEnsureRoom } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useConnectionState` hook allows you to simply implement your own `ConnectionState` component.

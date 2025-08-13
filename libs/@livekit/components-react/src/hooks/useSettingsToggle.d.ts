@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 /** @alpha */
 export interface UseSettingsToggleProps {
     props: React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -14,7 +14,7 @@ export declare function useSettingsToggle({ props }: UseSettingsToggleProps): {
     mergedProps: React.ButtonHTMLAttributes<HTMLButtonElement> & {
         className: string;
         onClick: () => void;
-        'aria-pressed': string;
+        "aria-pressed": string;
     };
 };
 //# sourceMappingURL=useSettingsToggle.d.ts.map

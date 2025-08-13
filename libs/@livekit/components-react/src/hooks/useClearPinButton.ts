@@ -1,8 +1,8 @@
-import { setupClearPinButton } from '@livekit/components-core';
-import * as React from 'react';
-import { useLayoutContext } from '../context';
-import { mergeProps } from '../mergeProps';
-import type { ClearPinButtonProps } from '../components';
+import { setupClearPinButton } from "@livekit/components-core";
+import * as React from "react";
+import { useLayoutContext } from "../context";
+import { mergeProps } from "../mergeProps";
+import type { ClearPinButtonProps } from "../components";
 
 /**
  * The `useClearPinButton` hook provides props for the {@link ClearPinButton}
@@ -19,7 +19,7 @@ export function useClearPinButton(props: ClearPinButtonProps) {
       className,
       disabled: !state?.length,
       onClick: () => {
-        if (dispatch) dispatch({ msg: 'clear_pin' });
+        if (dispatch) dispatch({ msg: "clear_pin" });
       },
     });
     return mergedProps;

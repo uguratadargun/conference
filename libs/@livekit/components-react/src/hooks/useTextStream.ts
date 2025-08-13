@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { ConnectionState } from 'livekit-client';
-import { setupTextStream, type TextStreamData } from '@livekit/components-core';
-import { useRoomContext } from '../context';
-import { useConnectionState } from './useConnectionStatus';
-import { useObservableState } from './internal';
+import * as React from "react";
+import { ConnectionState } from "livekit-client";
+import { setupTextStream, type TextStreamData } from "@livekit/components-core";
+import { useRoomContext } from "../context";
+import { useConnectionState } from "./useConnectionStatus";
+import { useObservableState } from "./internal";
 
 /**
  * @beta
@@ -23,13 +23,13 @@ export function useTextStream(topic: string) {
 
   const textStreamData = React.useMemo(
     () => setupTextStream(room, topic),
-    [room, topic]
+    [room, topic],
   );
   const textStreamObservable = isDisconnected ? undefined : textStreamData;
 
   const textStreams = useObservableState<TextStreamData[]>(
     textStreamObservable,
-    []
+    [],
   );
 
   return { textStreams };

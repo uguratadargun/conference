@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { type AgentState } from '../../hooks';
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import * as React from "react";
+import { type AgentState } from "../../hooks";
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /**
  * @beta
  */

@@ -1,5 +1,5 @@
-import type { Participant, Room, ChatMessage, SendTextOptions } from 'livekit-client';
-import { BehaviorSubject } from 'rxjs';
+import type { Participant, Room, ChatMessage, SendTextOptions } from "livekit-client";
+import { BehaviorSubject } from "rxjs";
 /** @public */
 export type { ChatMessage };
 /** @public */

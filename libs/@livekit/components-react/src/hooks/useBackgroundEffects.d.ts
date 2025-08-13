@@ -1,5 +1,5 @@
 /** @public */
-export type BackgroundEffectType = 'none' | 'blur' | 'virtual';
+export type BackgroundEffectType = "none" | "blur" | "virtual";
 /** @public */
 export interface BackgroundEffectOptions {
     /** The blur radius when using blur effect (5-25) */

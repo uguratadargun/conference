@@ -1,5 +1,5 @@
-import type { Room } from 'livekit-client';
-import * as React from 'react';
+import type { Room } from "livekit-client";
+import * as React from "react";
 
 /** @public */
 export const RoomContext = React.createContext<Room | undefined>(undefined);
@@ -13,7 +13,7 @@ export function useRoomContext() {
   const ctx = React.useContext(RoomContext);
   if (!ctx) {
     throw Error(
-      'tried to access room context outside of livekit room component'
+      "tried to access room context outside of livekit room component",
     );
   }
   return ctx;
@@ -37,7 +37,7 @@ export function useEnsureRoom(room?: Room) {
   const r = room ?? context;
   if (!r) {
     throw new Error(
-      'No room provided, make sure you are inside a Room context or pass the room explicitly'
+      "No room provided, make sure you are inside a Room context or pass the room explicitly",
     );
   }
   return r;

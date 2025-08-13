@@ -2,10 +2,10 @@ import {
   computeMenuPosition,
   wasClickOutside,
   log,
-} from '@livekit/components-core';
-import * as React from 'react';
-import { MediaDeviceSelect } from '../components/controls/MediaDeviceSelect';
-import type { LocalAudioTrack, LocalVideoTrack } from 'livekit-client';
+} from "@livekit/components-core";
+import * as React from "react";
+import { MediaDeviceSelect } from "../components/controls/MediaDeviceSelect";
+import type { LocalAudioTrack, LocalVideoTrack } from "livekit-client";
 
 /** @public */
 export interface MediaDeviceMenuProps
@@ -59,9 +59,9 @@ export function MediaDeviceMenu({
 
   const handleActiveDeviceChange = (
     kind: MediaDeviceKind,
-    deviceId: string
+    deviceId: string,
   ) => {
-    log.debug('handle device change');
+    log.debug("handle device change");
     setIsOpen(false);
     onActiveDeviceChange?.(kind, deviceId);
   };
@@ -105,13 +105,13 @@ export function MediaDeviceMenu({
         setIsOpen(false);
       }
     },
-    [isOpen, tooltip, button]
+    [isOpen, tooltip, button],
   );
 
   React.useEffect(() => {
-    document.addEventListener<'click'>('click', handleClickOutside);
+    document.addEventListener<"click">("click", handleClickOutside);
     return () => {
-      document.removeEventListener<'click'>('click', handleClickOutside);
+      document.removeEventListener<"click">("click", handleClickOutside);
     };
   }, [handleClickOutside]);
 
@@ -131,12 +131,12 @@ export function MediaDeviceMenu({
         <div
           className="lk-device-menu"
           ref={tooltip}
-          style={{ visibility: isOpen ? 'visible' : 'hidden' }}
+          style={{ visibility: isOpen ? "visible" : "hidden" }}
         >
           {kind ? (
             <MediaDeviceSelect
               initialSelection={initialSelection}
-              onActiveDeviceChange={deviceId =>
+              onActiveDeviceChange={(deviceId) =>
                 handleActiveDeviceChange(kind, deviceId)
               }
               onDeviceListChange={setDevices}
@@ -149,8 +149,8 @@ export function MediaDeviceMenu({
               <div className="lk-device-menu-heading">Audio inputs</div>
               <MediaDeviceSelect
                 kind="audioinput"
-                onActiveDeviceChange={deviceId =>
-                  handleActiveDeviceChange('audioinput', deviceId)
+                onActiveDeviceChange={(deviceId) =>
+                  handleActiveDeviceChange("audioinput", deviceId)
                 }
                 onDeviceListChange={setDevices}
                 track={tracks?.audioinput}
@@ -159,8 +159,8 @@ export function MediaDeviceMenu({
               <div className="lk-device-menu-heading">Video inputs</div>
               <MediaDeviceSelect
                 kind="videoinput"
-                onActiveDeviceChange={deviceId =>
-                  handleActiveDeviceChange('videoinput', deviceId)
+                onActiveDeviceChange={(deviceId) =>
+                  handleActiveDeviceChange("videoinput", deviceId)
                 }
                 onDeviceListChange={setDevices}
                 track={tracks?.videoinput}

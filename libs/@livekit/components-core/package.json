@@ -31,12 +31,14 @@
     "test:watch": "vitest",
     "size": "size-limit",
     "api-check": "echo \"🚧 api-checks for core are disabled!\" #TODO cleanup core api then activate api checks. api-extractor run --typescript-compiler-folder ../../node_modules/typescript",
-    "api-extractor": "api-extractor run --local --typescript-compiler-folder ../../node_modules/typescript --verbose"
+    "api-extractor": "api-extractor run --local --typescript-compiler-folder ../../node_modules/typescript --verbose",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@floating-ui/dom": "1.6.13",
     "loglevel": "1.9.1",
+    "prettier": "^3.6.2",
     "rxjs": "7.8.2"
   },
   "peerDependencies": {

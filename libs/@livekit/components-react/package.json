@@ -1,6 +1,6 @@
 {
   "name": "@livekit/components-react",
-  "version": "2.9.12",
+  "version": "2.9.14",
   "license": "Apache-2.0",
   "author": "LiveKit",
   "repository": {
@@ -48,13 +48,15 @@
     "test:watch": "vitest",
     "size": "size-limit --json",
     "api-check": "api-extractor run --typescript-compiler-folder ../../node_modules/typescript",
-    "api-extractor": "api-extractor run --local --typescript-compiler-folder ../../node_modules/typescript --verbose"
+    "api-extractor": "api-extractor run --local --typescript-compiler-folder ../../node_modules/typescript --verbose",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@livekit/components-styles": "^1.1.6",
     "@livekit/track-processors": "git+ssh://git@gitlab.ordulu.com/ulak-conference/desktop/track-processors.git",
     "clsx": "2.1.1",
+    "prettier": "^3.6.2",
     "usehooks-ts": "3.1.1"
   },
   "peerDependencies": {

@@ -6,7 +6,7 @@ import { debounce } from 'ts-debounce';
 import log, { LoggerNames, getLogger } from '../logger';
 import { NegotiationError, UnexpectedConnectionState } from './errors';
 import type { LoggerOptions } from './types';
-import { ddExtensionURI, isSVCCodec } from './utils';
+import { ddExtensionURI, isSVCCodec, isSafari } from './utils';
 
 /** @internal */
 interface TrackBitrateInfo {
@@ -258,10 +258,6 @@ export default class PCTransport extends EventEmitter {
     const unlock = await this.offerLock.lock();
 
     try {
-      // increase the offer id at the start to ensure the offer is always > 0 so that we can use 0 as a default value for legacy behavior
-      const offerId = this.latestOfferId + 1;
-      this.latestOfferId = offerId;
-
       if (this.onOffer === undefined) {
         return;
       }
@@ -290,6 +286,9 @@ export default class PCTransport extends EventEmitter {
 
       // actually negotiate
       this.log.debug('starting to negotiate', this.logContext);
+      // increase the offer id at the start to ensure the offer is always > 0 so that we can use 0 as a default value for legacy behavior
+      const offerId = this.latestOfferId + 1;
+      this.latestOfferId = offerId;
       const offer = await this.pc.createOffer(options);
       this.log.debug('original offer', { sdp: offer.sdp, ...this.logContext });
 
@@ -317,7 +316,7 @@ export default class PCTransport extends EventEmitter {
               return true;
             }
 
-            if (isSVCCodec(trackbr.codec)) {
+            if (isSVCCodec(trackbr.codec) && !isSafari()) {
               this.ensureVideoDDExtensionForSVC(media, sdpParsed);
             }
 

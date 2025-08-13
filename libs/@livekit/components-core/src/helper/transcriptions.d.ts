@@ -1,4 +1,4 @@
-import type { TranscriptionSegment } from 'livekit-client';
+import type { TranscriptionSegment } from "livekit-client";
 export type ReceivedTranscriptionSegment = TranscriptionSegment & {
     receivedAtMediaTimestamp: number;
     receivedAt: number;

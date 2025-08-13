@@ -3,16 +3,16 @@ import type {
   MessageEncoder,
   TrackReferenceOrPlaceholder,
   WidgetState,
-} from '@livekit/components-core';
+} from "@livekit/components-core";
 import {
   isEqualTrackRef,
   isTrackReference,
   isWeb,
   log,
-} from '@livekit/components-core';
-import { RoomEvent, Track } from 'livekit-client';
-import * as React from 'react';
-import type { MessageFormatter } from '../components';
+} from "@livekit/components-core";
+import { RoomEvent, Track } from "livekit-client";
+import * as React from "react";
+import type { MessageFormatter } from "../components";
 import {
   CarouselLayout,
   ConnectionStateToast,
@@ -22,12 +22,12 @@ import {
   LayoutContextProvider,
   ParticipantTile,
   RoomAudioRenderer,
-} from '../components';
-import { useCreateLayoutContext } from '../context';
-import { usePinnedTracks, useTracks } from '../hooks';
-import { Chat } from './Chat';
-import { ControlBar } from './ControlBar';
-import { useWarnAboutMissingStyles } from '../hooks/useWarnAboutMissingStyles';
+} from "../components";
+import { useCreateLayoutContext } from "../context";
+import { usePinnedTracks, useTracks } from "../hooks";
+import { Chat } from "./Chat";
+import { ControlBar } from "./ControlBar";
+import { useWarnAboutMissingStyles } from "../hooks/useWarnAboutMissingStyles";
 
 /**
  * @public
@@ -79,11 +79,11 @@ export function VideoConference({
       { source: Track.Source.Camera, withPlaceholder: true },
       { source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
-    { updateOnlyOn: [RoomEvent.ActiveSpeakersChanged], onlySubscribed: false }
+    { updateOnlyOn: [RoomEvent.ActiveSpeakersChanged], onlySubscribed: false },
   );
 
   const widgetUpdate = (state: WidgetState) => {
-    log.debug('updating widget state', state);
+    log.debug("updating widget state", state);
     setWidgetState(state);
   };
 
@@ -91,58 +91,60 @@ export function VideoConference({
 
   const screenShareTracks = tracks
     .filter(isTrackReference)
-    .filter(track => track.publication.source === Track.Source.ScreenShare);
+    .filter((track) => track.publication.source === Track.Source.ScreenShare);
 
   const focusTrack = usePinnedTracks(layoutContext)?.[0];
   const carouselTracks = tracks.filter(
-    track => !isEqualTrackRef(track, focusTrack)
+    (track) => !isEqualTrackRef(track, focusTrack),
   );
 
   React.useEffect(() => {
     // If screen share tracks are published, and no pin is set explicitly, auto set the screen share.
     if (
-      screenShareTracks.some(track => track.publication.isSubscribed) &&
+      screenShareTracks.some((track) => track.publication.isSubscribed) &&
       lastAutoFocusedScreenShareTrack.current === null
     ) {
-      log.debug('Auto set screen share focus:', {
+      log.debug("Auto set screen share focus:", {
         newScreenShareTrack: screenShareTracks[0],
       });
       layoutContext.pin.dispatch?.({
-        msg: 'set_pin',
+        msg: "set_pin",
         trackReference: screenShareTracks[0],
       });
       lastAutoFocusedScreenShareTrack.current = screenShareTracks[0];
     } else if (
       lastAutoFocusedScreenShareTrack.current &&
       !screenShareTracks.some(
-        track =>
+        (track) =>
           track.publication.trackSid ===
-          lastAutoFocusedScreenShareTrack.current?.publication?.trackSid
+          lastAutoFocusedScreenShareTrack.current?.publication?.trackSid,
       )
     ) {
-      log.debug('Auto clearing screen share focus.');
-      layoutContext.pin.dispatch?.({ msg: 'clear_pin' });
+      log.debug("Auto clearing screen share focus.");
+      layoutContext.pin.dispatch?.({ msg: "clear_pin" });
       lastAutoFocusedScreenShareTrack.current = null;
     }
     if (focusTrack && !isTrackReference(focusTrack)) {
       const updatedFocusTrack = tracks.find(
-        tr =>
+        (tr) =>
           tr.participant.identity === focusTrack.participant.identity &&
-          tr.source === focusTrack.source
+          tr.source === focusTrack.source,
       );
       if (
         updatedFocusTrack !== focusTrack &&
         isTrackReference(updatedFocusTrack)
       ) {
         layoutContext.pin.dispatch?.({
-          msg: 'set_pin',
+          msg: "set_pin",
           trackReference: updatedFocusTrack,
         });
       }
     }
   }, [
     screenShareTracks
-      .map(ref => `${ref.publication.trackSid}_${ref.publication.isSubscribed}`)
+      .map(
+        (ref) => `${ref.publication.trackSid}_${ref.publication.isSubscribed}`,
+      )
       .join(),
     focusTrack?.publication?.trackSid,
     tracks,
@@ -180,7 +182,7 @@ export function VideoConference({
             />
           </div>
           <Chat
-            style={{ display: widgetState.showChat ? 'grid' : 'none' }}
+            style={{ display: widgetState.showChat ? "grid" : "none" }}
             messageFormatter={chatMessageFormatter}
             messageEncoder={chatMessageEncoder}
             messageDecoder={chatMessageDecoder}
@@ -188,7 +190,7 @@ export function VideoConference({
           {SettingsComponent && (
             <div
               className="lk-settings-menu-modal"
-              style={{ display: widgetState.showSettings ? 'block' : 'none' }}
+              style={{ display: widgetState.showSettings ? "block" : "none" }}
             >
               <SettingsComponent />
             </div>

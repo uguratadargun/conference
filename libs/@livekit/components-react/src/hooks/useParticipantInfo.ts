@@ -1,8 +1,8 @@
-import { participantInfoObserver } from '@livekit/components-core';
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { useMaybeParticipantContext } from '../context';
-import { useObservableState } from './internal';
+import { participantInfoObserver } from "@livekit/components-core";
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { useMaybeParticipantContext } from "../context";
+import { useObservableState } from "./internal";
 
 /**
  * The `useParticipantInfo` hook returns the identity, name, and metadata of a given participant.

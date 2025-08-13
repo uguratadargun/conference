@@ -1,6 +1,6 @@
-import { type ChatMessage, type DataPublishOptions, type LocalParticipant, type Participant, type Room, type SendTextOptions } from 'livekit-client';
-import { Observable } from 'rxjs';
-import { ReceivedChatMessage } from '../components/chat';
+import { type ChatMessage, type DataPublishOptions, type LocalParticipant, type Participant, type Room, type SendTextOptions } from "livekit-client";
+import { Observable } from "rxjs";
+import { ReceivedChatMessage } from "../components/chat";
 export declare const DataTopic: {
     readonly CHAT: "lk.chat";
     readonly TRANSCRIPTION: "lk.transcription";
@@ -22,13 +22,13 @@ export declare function setupDataMessageHandler<T extends string>(room: Room, to
     messageObservable: Observable<{
         payload: Uint8Array<ArrayBufferLike>;
         topic: T;
-        from: import("livekit-client").RemoteParticipant;
+        from: import("livekit-client").RemoteParticipant | undefined;
     }>;
     isSendingObservable: Observable<boolean>;
     send: (payload: Uint8Array, options?: DataPublishOptions) => Promise<void>;
 };
 export declare function setupChatMessageHandler(room: Room): {
-    chatObservable: Observable<[message: ChatMessage, participant?: LocalParticipant | import("livekit-client").RemoteParticipant]>;
+    chatObservable: Observable<[message: ChatMessage, participant?: LocalParticipant | import("livekit-client").RemoteParticipant | undefined]>;
     send: (text: string, options: SendTextOptions) => Promise<ReceivedChatMessage>;
     edit: (text: string, originalMsg: ChatMessage) => Promise<{
         readonly message: string;

@@ -24,7 +24,7 @@ export type GridLayoutDefinition = {
      * For which orientation the layout definition should be applied.
      * Will be used for both landscape and portrait if no value is specified.
      */
-    orientation?: 'landscape' | 'portrait';
+    orientation?: "landscape" | "portrait";
 };
 export type GridLayoutInfo = {
     /** Layout name (convention `<column_count>x<row_count>`). */
@@ -39,7 +39,7 @@ export type GridLayoutInfo = {
     minWidth: number;
     /** Minimum height required to use this layout. */
     minHeight: number;
-    orientation?: 'landscape' | 'portrait';
+    orientation?: "landscape" | "portrait";
 };
 export declare const GRID_LAYOUTS: GridLayoutDefinition[];
 export declare function selectGridLayout(layoutDefinitions: GridLayoutDefinition[], participantCount: number, width: number, height: number): GridLayoutInfo;

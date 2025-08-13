@@ -1,7 +1,7 @@
-import { connectedParticipantsObserver } from '@livekit/components-core';
-import type { RoomEvent, RemoteParticipant, Room } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureRoom } from '../context';
+import { connectedParticipantsObserver } from "@livekit/components-core";
+import type { RoomEvent, RemoteParticipant, Room } from "livekit-client";
+import * as React from "react";
+import { useEnsureRoom } from "../context";
 
 /** @public */
 export interface UseRemoteParticipantsOptions {
@@ -32,11 +32,11 @@ export interface UseRemoteParticipantsOptions {
  * @public
  */
 export function useRemoteParticipants(
-  options: UseRemoteParticipantsOptions = {}
+  options: UseRemoteParticipantsOptions = {},
 ) {
   const room = useEnsureRoom(options.room);
   const [participants, setParticipants] = React.useState<RemoteParticipant[]>(
-    []
+    [],
   );
 
   React.useEffect(() => {

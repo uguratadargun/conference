@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { type TrackReference } from '@livekit/components-core';
+import * as React from "react";
+import { type TrackReference } from "@livekit/components-core";
 /**
  * @public
  * @deprecated Use BarVisualizer instead

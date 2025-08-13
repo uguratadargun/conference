@@ -1,6 +1,6 @@
-import * as React from 'react';
-import type { Participant } from 'livekit-client';
-import type { ParticipantClickEvent, TrackReferenceOrPlaceholder } from '@livekit/components-core';
+import * as React from "react";
+import type { Participant } from "livekit-client";
+import type { ParticipantClickEvent, TrackReferenceOrPlaceholder } from "@livekit/components-core";
 /**
  * The `ParticipantContextIfNeeded` component only creates a `ParticipantContext`
  * if there is no `ParticipantContext` already.

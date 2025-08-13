@@ -2,10 +2,10 @@ import {
   type TrackReferenceOrPlaceholder,
   getTrackReferenceId,
   mutedObserver,
-} from '@livekit/components-core';
-import type { Participant, Track } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureParticipant } from '../context';
+} from "@livekit/components-core";
+import type { Participant, Track } from "livekit-client";
+import * as React from "react";
+import { useEnsureParticipant } from "../context";
 
 /** @public */
 export interface UseIsMutedOptions {
@@ -35,19 +35,19 @@ export interface UseIsMutedOptions {
 export function useIsMuted(trackRef: TrackReferenceOrPlaceholder): boolean;
 export function useIsMuted(
   sourceOrTrackRef: TrackReferenceOrPlaceholder | Track.Source,
-  options: UseIsMutedOptions = {}
+  options: UseIsMutedOptions = {},
 ) {
   const passedParticipant =
-    typeof sourceOrTrackRef === 'string'
+    typeof sourceOrTrackRef === "string"
       ? options.participant
       : sourceOrTrackRef.participant;
   const p = useEnsureParticipant(passedParticipant);
   const ref =
-    typeof sourceOrTrackRef === 'string'
+    typeof sourceOrTrackRef === "string"
       ? { participant: p, source: sourceOrTrackRef }
       : sourceOrTrackRef;
   const [isMuted, setIsMuted] = React.useState(
-    !!(ref.publication?.isMuted || p.getTrackPublication(ref.source)?.isMuted)
+    !!(ref.publication?.isMuted || p.getTrackPublication(ref.source)?.isMuted),
   );
 
   React.useEffect(() => {

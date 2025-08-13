@@ -1,7 +1,7 @@
-import type { Participant } from 'livekit-client';
-import * as React from 'react';
-import { ParticipantContext } from '../context';
-import { cloneSingleChild } from '../utils';
+import type { Participant } from "livekit-client";
+import * as React from "react";
+import { ParticipantContext } from "../context";
+import { cloneSingleChild } from "../utils";
 
 /** @public */
 export interface ParticipantLoopProps {
@@ -34,7 +34,7 @@ export function ParticipantLoop({
 }: ParticipantLoopProps) {
   return (
     <>
-      {participants.map(participant => (
+      {participants.map((participant) => (
         <ParticipantContext.Provider
           value={participant}
           key={participant.identity}

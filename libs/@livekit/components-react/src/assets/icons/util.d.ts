@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { ConnectionQuality, Track } from 'livekit-client';
+import * as React from "react";
+import { ConnectionQuality, Track } from "livekit-client";
 /**
  * @internal
  */
-export declare function getSourceIcon(source: Track.Source, enabled: boolean): React.JSX.Element;
+export declare function getSourceIcon(source: Track.Source, enabled: boolean): React.JSX.Element | undefined;
 /**
  * @internal
  */

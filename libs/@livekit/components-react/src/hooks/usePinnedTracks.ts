@@ -1,7 +1,7 @@
-import type { TrackReferenceOrPlaceholder } from '@livekit/components-core';
-import * as React from 'react';
-import type { LayoutContextType } from '../context';
-import { useEnsureLayoutContext } from '../context';
+import type { TrackReferenceOrPlaceholder } from "@livekit/components-core";
+import * as React from "react";
+import type { LayoutContextType } from "../context";
+import { useEnsureLayoutContext } from "../context";
 
 /**
  * The `usePinnedTracks` hook returns a array of the pinned tracks of the current room.
@@ -14,7 +14,7 @@ import { useEnsureLayoutContext } from '../context';
  * @public
  */
 export function usePinnedTracks(
-  layoutContext?: LayoutContextType
+  layoutContext?: LayoutContextType,
 ): TrackReferenceOrPlaceholder[] {
   layoutContext = useEnsureLayoutContext(layoutContext);
   return React.useMemo(() => {

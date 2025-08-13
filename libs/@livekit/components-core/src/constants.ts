@@ -1,1 +1,1 @@
-export const cssPrefix = 'lk';
+export const cssPrefix = "lk";

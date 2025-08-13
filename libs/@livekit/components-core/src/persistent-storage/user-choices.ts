@@ -1,5 +1,5 @@
-import { cssPrefix } from '../constants';
-import { createLocalStorageInterface } from './local-storage-helpers';
+import { cssPrefix } from "../constants";
+import { createLocalStorageInterface } from "./local-storage-helpers";
 
 const USER_CHOICES_KEY = `${cssPrefix}-user-choices` as const;
 
@@ -39,9 +39,9 @@ export type LocalUserChoices = {
 export const defaultUserChoices: LocalUserChoices = {
   videoEnabled: true,
   audioEnabled: true,
-  videoDeviceId: 'default',
-  audioDeviceId: 'default',
-  username: '',
+  videoDeviceId: "default",
+  audioDeviceId: "default",
+  username: "",
 } as const;
 
 /**
@@ -50,7 +50,7 @@ export const defaultUserChoices: LocalUserChoices = {
  * TODO: Replace this type with `LocalUserChoices` after removing the deprecated properties from `LocalUserChoices`.
  * @internal
  */
-type TempStorageType = Omit<LocalUserChoices, 'e2ee' | 'sharedPassphrase'>;
+type TempStorageType = Omit<LocalUserChoices, "e2ee" | "sharedPassphrase">;
 const { load, save } =
   createLocalStorageInterface<TempStorageType>(USER_CHOICES_KEY);
 
@@ -63,7 +63,7 @@ export function saveUserChoices(
   /**
    * Whether to prevent saving user choices to local storage.
    */
-  preventSave: boolean = false
+  preventSave: boolean = false,
 ): void {
   if (preventSave === true) {
     return;
@@ -84,7 +84,7 @@ export function loadUserChoices(
    * Whether to prevent loading from local storage and return default values instead.
    * @defaultValue false
    */
-  preventLoad: boolean = false
+  preventLoad: boolean = false,
 ): LocalUserChoices {
   const fallback: LocalUserChoices = {
     videoEnabled: defaults?.videoEnabled ?? defaultUserChoices.videoEnabled,

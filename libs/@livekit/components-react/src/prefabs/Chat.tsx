@@ -1,12 +1,12 @@
-import { type ChatMessage, type ChatOptions } from '@livekit/components-core';
-import * as React from 'react';
-import { useMaybeLayoutContext } from '../context';
-import { cloneSingleChild } from '../utils';
-import type { MessageFormatter } from '../components/ChatEntry';
-import { ChatEntry } from '../components/ChatEntry';
-import { useChat } from '../hooks/useChat';
-import { ChatToggle } from '../components';
-import ChatCloseIcon from '../assets/icons/ChatCloseIcon';
+import { type ChatMessage, type ChatOptions } from "@livekit/components-core";
+import * as React from "react";
+import { useMaybeLayoutContext } from "../context";
+import { cloneSingleChild } from "../utils";
+import type { MessageFormatter } from "../components/ChatEntry";
+import { ChatEntry } from "../components/ChatEntry";
+import { useChat } from "../hooks/useChat";
+import { ChatToggle } from "../components";
+import ChatCloseIcon from "../assets/icons/ChatCloseIcon";
 
 /** @public */
 export interface ChatProps
@@ -58,13 +58,13 @@ export function Chat({
   const { chatMessages, send, isSending } = useChat(chatOptions);
 
   const layoutContext = useMaybeLayoutContext();
-  const lastReadMsgAt = React.useRef<ChatMessage['timestamp']>(0);
+  const lastReadMsgAt = React.useRef<ChatMessage["timestamp"]>(0);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (inputRef.current && inputRef.current.value.trim() !== '') {
+    if (inputRef.current && inputRef.current.value.trim() !== "") {
       await send(inputRef.current.value);
-      inputRef.current.value = '';
+      inputRef.current.value = "";
       inputRef.current.focus();
     }
   }
@@ -90,7 +90,7 @@ export function Chat({
     }
 
     const unreadMessageCount = chatMessages.filter(
-      msg => !lastReadMsgAt.current || msg.timestamp > lastReadMsgAt.current
+      (msg) => !lastReadMsgAt.current || msg.timestamp > lastReadMsgAt.current,
     ).length;
 
     const { widget } = layoutContext;
@@ -98,7 +98,7 @@ export function Chat({
       unreadMessageCount > 0 &&
       widget.state?.unreadMessages !== unreadMessageCount
     ) {
-      widget.dispatch?.({ msg: 'unread_msg', count: unreadMessageCount });
+      widget.dispatch?.({ msg: "unread_msg", count: unreadMessageCount });
     }
   }, [chatMessages, layoutContext?.widget]);
 
@@ -120,7 +120,7 @@ export function Chat({
                 entry: msg,
                 key: msg.id ?? idx,
                 messageFormatter,
-              })
+              }),
             )
           : chatMessages.map((msg, idx, allMsg) => {
               const hideName = idx >= 1 && allMsg[idx - 1].from === msg.from;
@@ -146,9 +146,9 @@ export function Chat({
           ref={inputRef}
           type="text"
           placeholder="Enter a message..."
-          onInput={ev => ev.stopPropagation()}
-          onKeyDown={ev => ev.stopPropagation()}
-          onKeyUp={ev => ev.stopPropagation()}
+          onInput={(ev) => ev.stopPropagation()}
+          onKeyDown={(ev) => ev.stopPropagation()}
+          onKeyUp={(ev) => ev.stopPropagation()}
         />
         <button
           type="submit"

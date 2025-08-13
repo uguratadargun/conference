@@ -1,15 +1,15 @@
 import type {
   CaptureOptionsBySource,
   ToggleSource,
-} from '@livekit/components-core';
-import * as React from 'react';
-import { getSourceIcon } from '../../assets/icons/util';
-import { useTrackToggle } from '../../hooks';
-import { TrackPublishOptions } from 'livekit-client';
+} from "@livekit/components-core";
+import * as React from "react";
+import { getSourceIcon } from "../../assets/icons/util";
+import { useTrackToggle } from "../../hooks";
+import { TrackPublishOptions } from "livekit-client";
 
 /** @public */
 export interface TrackToggleProps<T extends ToggleSource>
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> {
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
   source: T;
   showIcon?: boolean;
   initialState?: boolean;
@@ -37,12 +37,12 @@ export interface TrackToggleProps<T extends ToggleSource>
  * @public
  */
 export const TrackToggle: <T extends ToggleSource>(
-  props: TrackToggleProps<T> & React.RefAttributes<HTMLButtonElement>
+  props: TrackToggleProps<T> & React.RefAttributes<HTMLButtonElement>,
 ) => React.ReactNode = /* @__PURE__ */ React.forwardRef(function TrackToggle<
   T extends ToggleSource,
 >(
   { showIcon, ...props }: TrackToggleProps<T>,
-  ref: React.ForwardedRef<HTMLButtonElement>
+  ref: React.ForwardedRef<HTMLButtonElement>,
 ) {
   const { buttonProps, enabled } = useTrackToggle(props);
   const [isClient, setIsClient] = React.useState(false);

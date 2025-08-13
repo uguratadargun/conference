@@ -1,4 +1,4 @@
-import type { Room, RoomEvent } from 'livekit-client';
+import type { Room, RoomEvent } from "livekit-client";
 /** @public */
 export interface UseParticipantsOptions {
     /**

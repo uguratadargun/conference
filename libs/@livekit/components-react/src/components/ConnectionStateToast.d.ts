@@ -1,5 +1,5 @@
-import type { Room } from 'livekit-client';
-import * as React from 'react';
+import type { Room } from "livekit-client";
+import * as React from "react";
 /** @public */
 export interface ConnectionStateToastProps extends React.HTMLAttributes<HTMLDivElement> {
     room?: Room;

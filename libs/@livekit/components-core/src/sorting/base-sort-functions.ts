@@ -1,18 +1,18 @@
-import type { Participant } from 'livekit-client';
-import { Track } from 'livekit-client';
-import type { TrackReferenceOrPlaceholder } from '../track-reference';
-import { getTrackReferenceSource, isTrackReference } from '../track-reference';
+import type { Participant } from "livekit-client";
+import { Track } from "livekit-client";
+import type { TrackReferenceOrPlaceholder } from "../track-reference";
+import { getTrackReferenceSource, isTrackReference } from "../track-reference";
 
 export function sortParticipantsByAudioLevel(
-  a: Pick<Participant, 'audioLevel'>,
-  b: Pick<Participant, 'audioLevel'>
+  a: Pick<Participant, "audioLevel">,
+  b: Pick<Participant, "audioLevel">,
 ): number {
   return b.audioLevel - a.audioLevel;
 }
 
 export function sortParticipantsByIsSpeaking(
-  a: Pick<Participant, 'isSpeaking'>,
-  b: Pick<Participant, 'isSpeaking'>
+  a: Pick<Participant, "isSpeaking">,
+  b: Pick<Participant, "isSpeaking">,
 ): number {
   if (a.isSpeaking === b.isSpeaking) {
     return 0;
@@ -22,8 +22,8 @@ export function sortParticipantsByIsSpeaking(
 }
 
 export function sortParticipantsByLastSpokenAT(
-  a: Pick<Participant, 'lastSpokeAt'>,
-  b: Pick<Participant, 'lastSpokeAt'>
+  a: Pick<Participant, "lastSpokeAt">,
+  b: Pick<Participant, "lastSpokeAt">,
 ): number {
   if (a.lastSpokeAt !== undefined || b.lastSpokeAt !== undefined) {
     return (b.lastSpokeAt?.getTime() ?? 0) - (a.lastSpokeAt?.getTime() ?? 0);
@@ -33,15 +33,15 @@ export function sortParticipantsByLastSpokenAT(
 }
 
 export function sortParticipantsByJoinedAt(
-  a: Pick<Participant, 'joinedAt'>,
-  b: Pick<Participant, 'joinedAt'>
+  a: Pick<Participant, "joinedAt">,
+  b: Pick<Participant, "joinedAt">,
 ) {
   return (a.joinedAt?.getTime() ?? 0) - (b.joinedAt?.getTime() ?? 0);
 }
 
 export function sortTrackReferencesByType(
   a: TrackReferenceOrPlaceholder,
-  b: TrackReferenceOrPlaceholder
+  b: TrackReferenceOrPlaceholder,
 ) {
   if (isTrackReference(a)) {
     if (isTrackReference(b)) {
@@ -59,7 +59,7 @@ export function sortTrackReferencesByType(
 /** TrackReference with screen share source goes first. */
 export function sortTrackReferencesByScreenShare(
   a: TrackReferenceOrPlaceholder,
-  b: TrackReferenceOrPlaceholder
+  b: TrackReferenceOrPlaceholder,
 ): number {
   const sourceA = getTrackReferenceSource(a);
   const sourceB = getTrackReferenceSource(b);
@@ -84,7 +84,7 @@ export function sortTrackReferencesByScreenShare(
 
 export function sortTrackRefsByIsCameraEnabled(
   a: { participant: { isCameraEnabled: boolean } },
-  b: { participant: { isCameraEnabled: boolean } }
+  b: { participant: { isCameraEnabled: boolean } },
 ) {
   const aVideo = a.participant.isCameraEnabled;
   const bVideo = b.participant.isCameraEnabled;

@@ -1,5 +1,5 @@
-import type { Participant, ParticipantKind, Track, TrackPublication } from 'livekit-client';
-import type { TrackReference, TrackReferenceOrPlaceholder } from './track-reference';
+import type { Participant, ParticipantKind, Track, TrackPublication } from "livekit-client";
+import type { TrackReference, TrackReferenceOrPlaceholder } from "./track-reference";
 /** @public */
 export type PinState = TrackReferenceOrPlaceholder[];
 export declare const PIN_DEFAULT_STATE: PinState;
@@ -17,8 +17,8 @@ export type TrackSourceWithOptions = {
 export type SourcesArray = Track.Source[] | TrackSourceWithOptions[];
 export declare function isSourceWitOptions(source: SourcesArray[number]): source is TrackSourceWithOptions;
 export declare function isSourcesWithOptions(sources: SourcesArray): sources is TrackSourceWithOptions[];
-export type TrackReferenceFilter = Parameters<TrackReferenceOrPlaceholder[]['filter']>['0'];
-export type ParticipantFilter = Parameters<Participant[]['filter']>['0'];
+export type TrackReferenceFilter = Parameters<TrackReferenceOrPlaceholder[]["filter"]>["0"];
+export type ParticipantFilter = Parameters<Participant[]["filter"]>["0"];
 /** @internal */
 export interface ParticipantClickEvent {
     participant: Participant;
@@ -28,19 +28,19 @@ export type TrackSource<T extends Track.Source> = RequireAtLeastOne<{
     source: T;
     name: string;
     participant: Participant;
-}, 'name' | 'source'>;
+}, "name" | "source">;
 export type ParticipantTrackIdentifier = RequireAtLeastOne<{
     sources: Track.Source[];
     name: string;
     kind: Track.Kind;
-}, 'sources' | 'name' | 'kind'>;
+}, "sources" | "name" | "kind">;
 /**
  * @beta
  */
 export type ParticipantIdentifier = RequireAtLeastOne<{
     kind: ParticipantKind;
     identity: string;
-}, 'identity' | 'kind'>;
+}, "identity" | "kind">;
 /**
  * The TrackIdentifier type is used to select Tracks either based on
  * - Track.Source and/or name of the track, e.g. `{source: Track.Source.Camera}` or `{name: "my-track"}`

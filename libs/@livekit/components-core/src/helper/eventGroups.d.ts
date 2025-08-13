@@ -1,4 +1,4 @@
-import { ParticipantEvent, RoomEvent } from 'livekit-client';
+import { ParticipantEvent, RoomEvent } from "livekit-client";
 export declare const allRemoteParticipantRoomEvents: RoomEvent[];
 export declare const allParticipantRoomEvents: RoomEvent[];
 export declare const participantTrackEvents: ParticipantEvent[];

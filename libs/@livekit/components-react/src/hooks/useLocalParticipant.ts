@@ -1,8 +1,8 @@
-import type { ParticipantMedia } from '@livekit/components-core';
-import { observeParticipantMedia } from '@livekit/components-core';
-import type { TrackPublication, LocalParticipant, Room } from 'livekit-client';
-import * as React from 'react';
-import { useEnsureRoom } from '../context';
+import type { ParticipantMedia } from "@livekit/components-core";
+import { observeParticipantMedia } from "@livekit/components-core";
+import type { TrackPublication, LocalParticipant, Room } from "livekit-client";
+import * as React from "react";
+import { useEnsureRoom } from "../context";
 
 /** @public */
 export interface UseLocalParticipantOptions {
@@ -25,24 +25,24 @@ export interface UseLocalParticipantOptions {
 export function useLocalParticipant(options: UseLocalParticipantOptions = {}) {
   const room = useEnsureRoom(options.room);
   const [localParticipant, setLocalParticipant] = React.useState(
-    room.localParticipant
+    room.localParticipant,
   );
 
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = React.useState(
-    localParticipant.isMicrophoneEnabled
+    localParticipant.isMicrophoneEnabled,
   );
   const [isCameraEnabled, setIsCameraEnabled] = React.useState(
-    localParticipant.isCameraEnabled
+    localParticipant.isCameraEnabled,
   );
   const [isScreenShareEnabled, setIsScreenShareEnabled] = React.useState(
-    localParticipant.isScreenShareEnabled
+    localParticipant.isScreenShareEnabled,
   );
 
   const [lastMicrophoneError, setLastMicrophoneError] = React.useState(
-    localParticipant.lastMicrophoneError
+    localParticipant.lastMicrophoneError,
   );
   const [lastCameraError, setLastCameraError] = React.useState(
-    localParticipant.lastCameraError
+    localParticipant.lastCameraError,
   );
 
   const [microphoneTrack, setMicrophoneTrack] = React.useState<
@@ -64,7 +64,7 @@ export function useLocalParticipant(options: UseLocalParticipantOptions = {}) {
   };
   React.useEffect(() => {
     const listener = observeParticipantMedia(room.localParticipant).subscribe(
-      handleUpdate
+      handleUpdate,
     );
     // TODO also listen to permission and metadata etc. events
     return () => listener.unsubscribe();

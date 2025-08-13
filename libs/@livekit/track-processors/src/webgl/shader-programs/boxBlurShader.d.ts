@@ -8,10 +8,10 @@ export declare function createBoxBlurProgram(gl: WebGL2RenderingContext): {
     fragmentShader: WebGLShader;
     uniforms: {
         position: number;
-        texture: WebGLUniformLocation;
-        texelSize: WebGLUniformLocation;
-        direction: WebGLUniformLocation;
-        radius: WebGLUniformLocation;
+        texture: WebGLUniformLocation | null;
+        texelSize: WebGLUniformLocation | null;
+        direction: WebGLUniformLocation | null;
+        radius: WebGLUniformLocation | null;
     };
 };
 //# sourceMappingURL=boxBlurShader.d.ts.map

@@ -1,7 +1,7 @@
-import * as React from 'react';
+import * as React from "react";
 /** @public */
 export interface RoomNameProps extends React.HTMLAttributes<HTMLSpanElement> {
-    childrenPosition?: 'before' | 'after';
+    childrenPosition?: "before" | "after";
 }
 /**
  * The `RoomName` component renders the name of the connected LiveKit room inside a span tag.

@@ -1,6 +1,6 @@
-import { type Room } from 'livekit-client';
-import type { TextStreamInfo } from 'livekit-client/dist/src/room/types';
-import { type Observable } from 'rxjs';
+import { type Room } from "livekit-client";
+import type { TextStreamInfo } from "livekit-client/dist/src/room/types";
+import { type Observable } from "rxjs";
 export interface TextStreamData {
     text: string;
     participantInfo: {
