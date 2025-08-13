@@ -22,6 +22,7 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
   public activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+  public invitedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
   public all: Map<string, ParticipantListEntry>;
 
   private engine?: RTCEngine;
@@ -35,6 +36,7 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
     this.activeParticipants = new Map();
     this.noAnswerParticipants = new Map();
     this.notReachableParticipants = new Map();
+    this.invitedParticipants = new Map();
     this.all = new Map();
   }
 
@@ -62,6 +64,7 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
     this.activeParticipants.clear();
     this.noAnswerParticipants.clear();
     this.notReachableParticipants.clear();
+    this.invitedParticipants.clear();
     this.all.clear();
   }
 
@@ -94,6 +97,8 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
         this.noAnswerParticipants.set(update.identity, update);
       } else if (update.state === ParticipantInfo_State.NOT_REACHABLE) {
         this.notReachableParticipants.set(update.identity, update);
+      } else if (update.state === ParticipantInfo_State.INVITED) {
+        this.invitedParticipants.set(update.identity, update);
       }
     });
 
@@ -122,6 +127,8 @@ export class ParticipantsList extends (EventEmitter as new () => TypedEmitter<Pa
         return Array.from(this.noAnswerParticipants.values());
       case ParticipantInfo_State.NOT_REACHABLE:
         return Array.from(this.notReachableParticipants.values());
+      case ParticipantInfo_State.INVITED:
+        return Array.from(this.invitedParticipants.values());
       default:
         return [];
     }
