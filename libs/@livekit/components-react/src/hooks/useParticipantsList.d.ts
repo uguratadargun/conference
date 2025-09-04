@@ -1,5 +1,5 @@
-import type { RoomEvent, RemoteParticipant, Room } from "livekit-client";
-import type { ParticipantInfo, ParticipantInfo_State } from "@livekit/protocol";
+import type { RoomEvent, RemoteParticipant, Room } from 'livekit-client';
+import type { ParticipantInfo, ParticipantInfo_State } from '@livekit/protocol';
 /** @public */
 export interface UseParticipantsListOptions {
     /**
@@ -35,6 +35,7 @@ export declare function useParticipantsList(options?: UseParticipantsListOptions
     activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    invitedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<string, {
         participant: RemoteParticipant | ParticipantInfo;
         state: ParticipantInfo_State;

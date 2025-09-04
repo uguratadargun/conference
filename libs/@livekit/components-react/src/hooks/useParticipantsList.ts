@@ -1,8 +1,8 @@
-import { listParticipantsObserver } from "@livekit/components-core";
-import type { RoomEvent, RemoteParticipant, Room } from "livekit-client";
-import type { ParticipantInfo, ParticipantInfo_State } from "@livekit/protocol";
-import * as React from "react";
-import { useEnsureRoom } from "../context";
+import { listParticipantsObserver } from '@livekit/components-core';
+import type { RoomEvent, RemoteParticipant, Room } from 'livekit-client';
+import type { ParticipantInfo, ParticipantInfo_State } from '@livekit/protocol';
+import * as React from 'react';
+import { useEnsureRoom } from '../context';
 
 /** @public */
 export interface UseParticipantsListOptions {
@@ -42,6 +42,7 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
     activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    invitedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<
       string,
       {
@@ -57,15 +58,16 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
     activeParticipants: new Map(room.participantsList.activeParticipants),
     noAnswerParticipants: new Map(room.participantsList.noAnswerParticipants),
     notReachableParticipants: new Map(
-      room.participantsList.notReachableParticipants,
+      room.participantsList.notReachableParticipants
     ),
+    invitedParticipants: new Map(room.participantsList.invitedParticipants),
     all: new Map(room.participantsList.all),
   });
 
   React.useEffect(() => {
     const listener = listParticipantsObserver(room, {
       additionalRoomEvents: options.updateOnlyOn,
-    }).subscribe((newParticipants) => {
+    }).subscribe(newParticipants => {
       // Create new Map instances to ensure React detects the changes
       setParticipants({
         ringingParticipants: new Map(newParticipants.ringingParticipants),
@@ -75,8 +77,9 @@ export function useParticipantsList(options: UseParticipantsListOptions = {}) {
         activeParticipants: new Map(newParticipants.activeParticipants),
         noAnswerParticipants: new Map(newParticipants.noAnswerParticipants),
         notReachableParticipants: new Map(
-          newParticipants.notReachableParticipants,
+          newParticipants.notReachableParticipants
         ),
+        invitedParticipants: new Map(newParticipants.invitedParticipants),
         all: new Map(newParticipants.all),
       });
     });

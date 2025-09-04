@@ -1,10 +1,10 @@
-import type { ParticipantPermission, ParticipantInfo, ParticipantInfo_State } from "@livekit/protocol";
-import { Participant, RemoteParticipant, Room, TrackPublication } from "livekit-client";
-import { ParticipantEvent, RoomEvent } from "livekit-client";
-import type { ParticipantEventCallbacks } from "livekit-client/dist/src/room/participant/Participant";
-import { Observable } from "rxjs";
-import type { TrackReferenceOrPlaceholder } from "../track-reference";
-import type { ParticipantIdentifier, TrackIdentifier } from "../types";
+import type { ParticipantPermission, ParticipantInfo, ParticipantInfo_State } from '@livekit/protocol';
+import { Participant, RemoteParticipant, Room, TrackPublication } from 'livekit-client';
+import { ParticipantEvent, RoomEvent } from 'livekit-client';
+import type { ParticipantEventCallbacks } from 'livekit-client/dist/src/room/participant/Participant';
+import { Observable } from 'rxjs';
+import type { TrackReferenceOrPlaceholder } from '../track-reference';
+import type { ParticipantIdentifier, TrackIdentifier } from '../types';
 export declare function observeParticipantEvents<T extends Participant>(participant: T, ...events: ParticipantEvent[]): Observable<T>;
 export interface ParticipantMedia<T extends Participant = Participant> {
     isCameraEnabled: boolean;
@@ -43,6 +43,7 @@ export declare function listParticipantsObserver(room: Room, options?: Connected
     activeParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     noAnswerParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     notReachableParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
+    invitedParticipants: Map<string, RemoteParticipant | ParticipantInfo>;
     all: Map<string, {
         participant: RemoteParticipant | ParticipantInfo;
         state: ParticipantInfo_State;
