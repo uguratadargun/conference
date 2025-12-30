@@ -123,26 +123,6 @@ const ControlBar: React.FC<ControlBarProps> = ({
             tooltipOptions={{ position: 'top' }}
           />
         </div>
-
-        <div className="control-group">
-          <Button
-            icon={<IconCheck size={20} />}
-            onClick={setActive}
-            className="control-button settings-button"
-            tooltip="Accept Call"
-            tooltipOptions={{ position: 'top' }}
-          />
-        </div>
-
-        <div className="control-group">
-          <Button
-            icon={<IconX size={20} />}
-            onClick={hangup}
-            className="control-button hang-up-button"
-            tooltip="Deny Call"
-            tooltipOptions={{ position: 'top' }}
-          />
-        </div>
       </div>
     </div>
   );

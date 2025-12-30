@@ -1,8 +1,8 @@
 import { AccessToken } from 'livekit-server-sdk';
 
 const LIVEKIT_CONFIG = {
-  apiKey: 'APIB6KUGSRtzEGw',
-  apiSecret: 'bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K',
+  apiKey: 'devkey',
+  apiSecret: 'secret',
   projectName: 'ugurdargun-w5ph6ze0',
   roomName: 'test63',
 } as const;
@@ -40,7 +40,7 @@ export const generateToken = async (): Promise<{
     department: 'Ulak',
   };
   const token = await at.toJwt();
-  const url = `10.0.2.152:7880`;
+  const url = `10.0.2.154:7880`;
 
   return { url, token, roomId: LIVEKIT_CONFIG.roomName, identity };
 };

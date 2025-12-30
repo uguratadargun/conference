@@ -5,7 +5,6 @@ import {
   useParticipants,
   useConnectionState,
   useRoomContext,
-  useParticipantsList,
 } from '@livekit/components-react';
 import { sortParticipants } from '@livekit/components-core';
 import {
@@ -48,7 +47,6 @@ const ConferenceComponent: React.FC<{
   hangup: () => void;
 }> = ({ hangup }) => {
   const participants = useParticipants();
-  const participantsList = useParticipantsList();
   const connectionState = useConnectionState();
   const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
   const [fullScreenParticipant, setFullScreenParticipant] = useState<
@@ -144,7 +142,9 @@ const ConferenceComponent: React.FC<{
   }, []);
 
   const setActive = () => {
-    room?.setActive();
+    // Note: setActive method is not available in Room API
+    // This is kept for compatibility with ControlBar component
+    console.log('setActive called - method not available in Room API');
   };
 
   const handleCallParticipant = useCallback((participant: any) => {
@@ -258,36 +258,12 @@ const ConferenceComponent: React.FC<{
       <ParticipantListSidebar
         visible={showParticipantList}
         onHide={() => setShowParticipantList(false)}
-        ringingParticipants={
-          Array.from(
-            participantsList.ringingParticipants.values()
-          ) as RemoteParticipant[]
-        }
-        deniedParticipants={
-          Array.from(
-            participantsList.deniedParticipants.values()
-          ) as RemoteParticipant[]
-        }
-        busyParticipants={
-          Array.from(
-            participantsList.busyParticipants.values()
-          ) as RemoteParticipant[]
-        }
-        leftParticipants={
-          Array.from(
-            participantsList.leftParticipants.values()
-          ) as RemoteParticipant[]
-        }
-        noAnswerParticipants={
-          Array.from(
-            participantsList.noAnswerParticipants.values()
-          ) as RemoteParticipant[]
-        }
-        notReachableParticipants={
-          Array.from(
-            participantsList.notReachableParticipants.values()
-          ) as RemoteParticipant[]
-        }
+        ringingParticipants={[]}
+        deniedParticipants={[]}
+        busyParticipants={[]}
+        leftParticipants={[]}
+        noAnswerParticipants={[]}
+        notReachableParticipants={[]}
         activeParticipants={participants || []}
         onCallParticipant={handleCallParticipant}
       />

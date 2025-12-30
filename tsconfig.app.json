@@ -28,29 +28,7 @@
     "noUncheckedSideEffectImports": true,
 
     /* Path mapping for libs */
-    "baseUrl": ".",
-    "paths": {
-      "livekit-client": ["./libs/livekit-client/src/index.ts"],
-      "livekit-client/*": ["./libs/livekit-client/src/*"],
-      "@livekit/components-core/*": ["./libs/@livekit/components-core/src/*"],
-      "@livekit/components-react/*": ["./libs/@livekit/components-react/src/*"],
-      "@livekit/components-core": [
-        "./libs/@livekit/components-core/src/index.ts"
-      ],
-      "@livekit/components-react": [
-        "./libs/@livekit/components-react/src/index.ts"
-      ],
-      "@livekit/track-processors/*": ["./libs/@livekit/track-processors/src/*"],
-      "@livekit/track-processors": [
-        "./libs/@livekit/track-processors/src/index.ts"
-      ]
-    }
+    "baseUrl": "."
   },
-  "include": [
-    "src",
-    "libs/livekit-client/src",
-    "libs/@livekit/components-core/src",
-    "libs/@livekit/components-react/src",
-    "libs/@livekit/track-processors/src"
-  ]
+  "include": ["src"]
 }

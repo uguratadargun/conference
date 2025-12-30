@@ -1,9 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'primereact/button';
-import {
-  useMediaDeviceSelect,
-  useBackgroundEffects,
-} from '@livekit/components-react';
+import { useMediaDeviceSelect } from '@livekit/components-react';
 import {
   IconSettings,
   IconX,
@@ -14,6 +11,8 @@ import {
   IconBlur,
   IconPlayerStop,
 } from '@tabler/icons-react';
+
+import { useBackgroundEffects } from '../utils/useBackgroundEffects';
 
 // Settings Sidebar Component
 const SettingsDialog: React.FC<{
@@ -38,7 +37,7 @@ const SettingsDialog: React.FC<{
     setActiveMediaDevice: setAudioOutput,
   } = useMediaDeviceSelect({ kind: 'audiooutput' });
 
-  // Background effects hook
+  // Background effects - temporarily disabled as useBackgroundEffects is not available in npm package
   const {
     activeEffect,
     isProcessing,
@@ -49,10 +48,7 @@ const SettingsDialog: React.FC<{
     applyEffect,
     setBlurRadius,
     clearError,
-  } = useBackgroundEffects({
-    initialBlurRadius: 10,
-    blurDebounceMs: 300, // Faster response for better UX
-  });
+  } = useBackgroundEffects();
 
   if (!visible) return null;
 

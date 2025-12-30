@@ -1,1 +1,0 @@
-{"version":3,"file":"StartAudio.d.ts","sourceRoot":"","sources":["StartAudio.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAI/B,cAAc;AACd,MAAM,WAAW,uBACf,SAAQ,KAAK,CAAC,oBAAoB,CAAC,iBAAiB,CAAC;IACrD,KAAK,EAAE,MAAM,CAAC;CACf;AAED;;;;;;;;;;;;;;GAcG;AACH,eAAO,MAAM,UAAU,EAAE,CACvB,KAAK,EAAE,uBAAuB,GAAG,KAAK,CAAC,aAAa,CAAC,iBAAiB,CAAC,KACpE,KAAK,CAAC,SAeT,CAAC"}

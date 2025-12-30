@@ -1,12 +1,42 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import path from 'path';
+
+// Plugin to fix MediaPipe source map path issue
+// Vite looks for vision_bundle_mjs.js.map but the file is vision_bundle.mjs.map
+const fixMediaPipeSourceMap = () => {
+  return {
+    name: 'fix-mediapipe-sourcemap',
+    enforce: 'pre' as const,
+    resolveId(id: string) {
+      // Fix source map resolution
+      if (id.includes('vision_bundle_mjs.js.map')) {
+        return id.replace('vision_bundle_mjs.js.map', 'vision_bundle.mjs.map');
+      }
+      return null;
+    },
+    configureServer(server: any) {
+      // Handle source map requests - redirect to correct path
+      server.middlewares.use((req: any, _res: any, next: any) => {
+        if (req.url?.includes('vision_bundle_mjs.js.map')) {
+          // Redirect to correct source map file
+          const correctUrl = req.url.replace(
+            'vision_bundle_mjs.js.map',
+            'vision_bundle.mjs.map'
+          );
+          req.url = correctUrl;
+        }
+        next();
+      });
+    },
+  };
+};
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    fixMediaPipeSourceMap(),
     // Copy MediaPipe WASM files to public directory
     viteStaticCopy({
       targets: [
@@ -17,27 +47,7 @@ export default defineConfig({
       ],
     }),
   ],
-  resolve: {
-    alias: {
-      // Development modunda livekit-client'ın kaynak kodunu direkt kullan
-      'livekit-client': path.resolve(
-        __dirname,
-        './libs/livekit-client/src/index.ts'
-      ),
-      '@livekit/components-core': path.resolve(
-        __dirname,
-        './libs/@livekit/components-core/src/index.ts'
-      ),
-      '@livekit/components-react': path.resolve(
-        __dirname,
-        './libs/@livekit/components-react/src/index.ts'
-      ),
-      '@livekit/track-processors': path.resolve(
-        __dirname,
-        './libs/@livekit/track-processors/src/index.ts'
-      ),
-    },
-  },
+  resolve: {},
   build: {
     // Performance optimizations
     target: 'es2020',
@@ -67,7 +77,6 @@ export default defineConfig({
     fs: {
       strict: false,
     },
-    sourcemapIgnoreList: false, // Source map'leri ignore etme
   },
   // Asset optimizations
   assetsInclude: ['**/*.woff2', '**/*.woff'],
@@ -77,7 +86,11 @@ export default defineConfig({
   },
   // Preload optimization
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'loglevel'],
+    esbuildOptions: {
+      // Fix for CommonJS packages like loglevel
+      mainFields: ['module', 'main'],
+    },
     exclude: [
       '@vite/client',
       '@vite/env',
@@ -85,8 +98,6 @@ export default defineConfig({
       '@livekit/components-core',
       '@livekit/components-react',
       '@livekit/track-processors',
-      // Prevent MediaPipe from being pre-bundled
-      '@mediapipe/tasks-vision',
-    ], // livekit-client'ı optimize etme
+    ],
   },
 });
