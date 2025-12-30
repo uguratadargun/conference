@@ -1,6 +1,6 @@
 {
-  "apiKey": "APIB6KUGSRtzEGw",
-  "apiSecret": "bxKAKulJVpsHE0h2ehVGpRKp9zKBBRMOiFvfwZQz63K",
+  "apiKey": "devkey",
+  "apiSecret": "secret",
   "roomName": "ordulu-konferans",
-  "url": "konferanssfu.ordulu.com"
+  "url": "10.0.2.154:7880"
 }
