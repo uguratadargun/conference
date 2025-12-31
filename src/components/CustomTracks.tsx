@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Track, Participant } from 'livekit-client';
+import type { TrackReference } from '@livekit/components-core';
 import {
-  VideoTrack,
   AudioTrack,
   useParticipantTracks,
   useLocalParticipant,
@@ -77,12 +77,10 @@ const CustomTracks: React.FC<{
   return (
     <div>
       {trackRef && (
-        <VideoTrack
+        <CustomVideoTrack
           trackRef={trackRef}
+          participant={participant}
           className="participant-video"
-          autoPlay
-          playsInline
-          muted={participant.isLocal}
           style={videoStyle}
         />
       )}
@@ -94,6 +92,60 @@ const CustomTracks: React.FC<{
         />
       )}
     </div>
+  );
+};
+
+const CustomVideoTrack: React.FC<{
+  trackRef: TrackReference;
+  participant: Participant;
+  className?: string;
+  style?: React.CSSProperties;
+}> = ({ trackRef, participant, className, style }) => {
+  const videoEl = useRef<HTMLVideoElement | null>(null);
+  const publication = trackRef.publication;
+  const track = publication?.track;
+  const trackSid = publication?.trackSid;
+
+  // Ensure remote tracks are subscribed
+  useEffect(() => {
+    if (!participant.isLocal && publication && !publication.isSubscribed) {
+      publication.setSubscribed(true);
+    }
+  }, [participant.isLocal, trackSid, publication]);
+
+  // Attach and detach the LiveKit track manually to avoid state updates after unmount
+  useEffect(() => {
+    const element = videoEl.current;
+
+    if (!element || !track) {
+      if (element) {
+        element.srcObject = null;
+      }
+      return;
+    }
+
+    track.attach(element);
+    return () => {
+      track.detach(element);
+      element.srcObject = null;
+    };
+  }, [track]);
+
+  const mergedStyle = {
+    ...style,
+    display:
+      style?.display !== undefined ? style.display : track ? 'block' : 'none',
+  };
+
+  return (
+    <video
+      ref={videoEl}
+      muted={participant.isLocal}
+      autoPlay
+      playsInline
+      className={className}
+      style={mergedStyle}
+    />
   );
 };
 
