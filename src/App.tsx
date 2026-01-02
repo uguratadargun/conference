@@ -215,9 +215,66 @@ function App() {
   const [cameraOn, setCameraOn] = useState<boolean>(false);
   const [micOn, setMicOn] = useState<boolean>(true);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [checkedPermission, setCheckedPermission] = useState(false);
   const [roomName, setRoomName] = useState<string | null>(() =>
     getRoomNameFromUrl()
   );
+
+  useEffect(() => {
+    // Check if permissions are already granted
+    async function checkPermissions() {
+      try {
+        // Try to query permissions first (works in Chrome/Edge)
+        if (navigator.permissions && navigator.permissions.query) {
+          try {
+            const cam = await navigator.permissions.query({
+              name: 'camera' as PermissionName,
+            });
+            const mic = await navigator.permissions.query({
+              name: 'microphone' as PermissionName,
+            });
+            if (cam.state === 'granted' && mic.state === 'granted') {
+              setPermissionGranted(true);
+              setCheckedPermission(true);
+              return;
+            }
+          } catch (e) {
+            // Permissions API not fully supported, try getUserMedia
+          }
+        }
+
+        // Fallback: Try to access media devices to check permissions
+        // This won't show a prompt if permissions are already granted
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          // If we get here, permissions are granted
+          stream.getTracks().forEach(track => track.stop());
+          setPermissionGranted(true);
+        } catch (e: any) {
+          // Permission not granted or device not found
+          // Only set as not granted if it's a permission error, not device error
+          if (
+            e.name === 'NotAllowedError' ||
+            e.name === 'PermissionDeniedError'
+          ) {
+            setPermissionGranted(false);
+          } else {
+            // For other errors (like NotFoundError), we'll show the prompt
+            // so user can choose to continue without device
+            setPermissionGranted(false);
+          }
+        }
+      } catch (e) {
+        // If all checks fail, assume we need to ask
+        setPermissionGranted(false);
+      }
+      setCheckedPermission(true);
+    }
+    checkPermissions();
+  }, []);
 
   useEffect(() => {
     // Update roomName if URL changes
@@ -236,6 +293,11 @@ function App() {
     window.history.pushState({}, '', `/${room}`);
     setRoomName(room);
   };
+
+  // Don't render until we've checked permissions
+  if (!checkedPermission) {
+    return null;
+  }
 
   return (
     <LiveKitProvider>
