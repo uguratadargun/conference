@@ -215,29 +215,9 @@ function App() {
   const [cameraOn, setCameraOn] = useState<boolean>(false);
   const [micOn, setMicOn] = useState<boolean>(true);
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const [checkedPermission, setCheckedPermission] = useState(false);
   const [roomName, setRoomName] = useState<string | null>(() =>
     getRoomNameFromUrl()
   );
-
-  useEffect(() => {
-    // Check camera and mic permissions
-    async function checkPermissions() {
-      try {
-        const cam = await navigator.permissions.query({
-          name: 'camera' as PermissionName,
-        });
-        const mic = await navigator.permissions.query({
-          name: 'microphone' as PermissionName,
-        });
-        if (cam.state === 'granted' && mic.state === 'granted') {
-          setPermissionGranted(true);
-        }
-      } catch {}
-      setCheckedPermission(true);
-    }
-    checkPermissions();
-  }, []);
 
   useEffect(() => {
     // Update roomName if URL changes
@@ -257,8 +237,6 @@ function App() {
     setRoomName(room);
   };
 
-  if (!checkedPermission) return null;
-
   return (
     <LiveKitProvider>
       {!permissionGranted ? (
@@ -269,7 +247,16 @@ function App() {
           onStartMeeting={handleStartMeeting}
         />
       ) : username ? (
-        <RoomComponent username={username} cameraOn={cameraOn} micOn={micOn} />
+        <RoomComponent
+          username={username}
+          cameraOn={cameraOn}
+          micOn={micOn}
+          onDisconnect={() => {
+            setUsername(null);
+            setRoomName(null);
+            window.history.pushState({}, '', '/');
+          }}
+        />
       ) : (
         <WelcomePage
           onJoin={(name: string, camera: boolean, mic: boolean) => {

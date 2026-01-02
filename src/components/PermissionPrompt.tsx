@@ -7,19 +7,117 @@ interface PermissionPromptProps {
 const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
+  const [showContinueWithoutDevice, setShowContinueWithoutDevice] = useState(false);
+
+  // Check permission status on mount
+  React.useEffect(() => {
+    async function checkPermissionStatus() {
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const cameraPermission = await navigator.permissions.query({
+            name: 'camera' as PermissionName,
+          });
+          const microphonePermission = await navigator.permissions.query({
+            name: 'microphone' as PermissionName,
+          });
+
+          if (cameraPermission.state === 'denied' || microphonePermission.state === 'denied') {
+            setPermissionDenied(true);
+            setError(
+              'İzinler reddedilmiş. Lütfen tarayıcı ayarlarından mikrofon ve kamera izinlerini etkinleştirin.'
+            );
+          }
+        } catch (e) {
+          // Permissions API not fully supported, continue normally
+        }
+      }
+    }
+    checkPermissionStatus();
+  }, []);
 
   const handleRequest = async () => {
     setError('');
     setLoading(true);
+    
+    // Check if getUserMedia is available
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setLoading(false);
+      setError('Tarayıcınız medya cihazlarına erişimi desteklemiyor.');
+      return;
+    }
+    
+    // Try to get both video and audio first
     try {
-      await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: true, 
+        audio: true 
+      });
+      
+      // Stop all tracks immediately - we only needed to request permission
+      stream.getTracks().forEach(track => {
+        track.stop();
+      });
+      
       setLoading(false);
       onGranted();
-    } catch {
+      return;
+    } catch (err: any) {
+      // If it's NotFoundError and not permission denied, allow continuing without device
+      if ((err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') && 
+          err.name !== 'NotAllowedError' && err.name !== 'PermissionDeniedError') {
+        // Try audio only first
+        try {
+          const audioStream = await navigator.mediaDevices.getUserMedia({ 
+            video: false, 
+            audio: true 
+          });
+          
+          audioStream.getTracks().forEach(track => track.stop());
+          
+          setLoading(false);
+          onGranted();
+          return;
+        } catch (audioErr: any) {
+          // If audio also fails, try video only
+          try {
+            const videoStream = await navigator.mediaDevices.getUserMedia({ 
+              video: true, 
+              audio: false 
+            });
+            
+            videoStream.getTracks().forEach(track => track.stop());
+            
+            setLoading(false);
+            onGranted();
+            return;
+          } catch (videoErr: any) {
+            // All attempts failed with NotFoundError - allow continuing without device
+            setLoading(false);
+            setShowContinueWithoutDevice(true);
+            setError('Kamera veya mikrofon bulunamadı. Cihaz olmadan devam edebilirsiniz.');
+            return;
+          }
+        }
+      }
+      
+      // For other errors, show the error message
       setLoading(false);
-      setError(
-        'İzin verilmedi. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.'
-      );
+      
+      let errorMessage = '';
+      
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setPermissionDenied(true);
+        errorMessage = 'İzin verilmedi. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.';
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        errorMessage = 'Kamera veya mikrofon başka bir uygulama tarafından kullanılıyor olabilir. Lütfen diğer uygulamaları kapatıp tekrar deneyin.';
+      } else if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') {
+        errorMessage = 'Cihaz gereksinimleri karşılanamıyor. Lütfen farklı bir kamera veya mikrofon deneyin.';
+      } else {
+        errorMessage = `İzin alınamadı: ${err.message || err.name}. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.`;
+      }
+      
+      setError(errorMessage);
     }
   };
 
@@ -105,14 +203,45 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
         {error && (
           <div
             style={{
-              color: '#ef4444',
+              color: showContinueWithoutDevice ? '#fbbf24' : '#ef4444',
               marginTop: 8,
+              marginBottom: showContinueWithoutDevice ? 12 : 0,
               fontWeight: 500,
               textAlign: 'center',
             }}
           >
             {error}
           </div>
+        )}
+        {showContinueWithoutDevice && (
+          <button
+            type="button"
+            onClick={() => {
+              setError('');
+              setShowContinueWithoutDevice(false);
+              onGranted();
+            }}
+            style={{
+              width: '100%',
+              padding: 14,
+              borderRadius: 14,
+              background: '#1e293b',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: 16,
+              border: '1.5px solid #334155',
+              cursor: 'pointer',
+              marginTop: 8,
+              boxShadow: 'none',
+              letterSpacing: 0.1,
+              transition: 'background 0.2s, border 0.2s',
+              outline: 'none',
+            }}
+            onMouseOver={e => (e.currentTarget.style.background = '#334155')}
+            onMouseOut={e => (e.currentTarget.style.background = '#1e293b')}
+          >
+            Cihaz olmadan devam et
+          </button>
         )}
       </div>
     </div>

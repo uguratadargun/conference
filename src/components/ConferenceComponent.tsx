@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   RoomAudioRenderer,
   useLocalParticipant,
@@ -46,7 +46,8 @@ export interface CallingParticipantInfo {
 const ConferenceComponent: React.FC<{
   hangup: () => void;
   roomName: string;
-}> = ({ hangup, roomName }) => {
+  onDisconnect?: () => void;
+}> = ({ hangup, roomName, onDisconnect }) => {
   const participants = useParticipants();
   const connectionState = useConnectionState();
   const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
@@ -139,6 +140,29 @@ const ConferenceComponent: React.FC<{
       room.disconnect();
     }
   }, [room]);
+
+  // Watch for disconnection and redirect to home page
+  // Only trigger onDisconnect when transitioning from Connected/Connecting to Disconnected
+  const prevConnectionStateRef = useRef<ConnectionState | null>(null);
+  const hasTriggeredDisconnectRef = useRef(false);
+
+  useEffect(() => {
+    const prevState = prevConnectionStateRef.current;
+    prevConnectionStateRef.current = connectionState;
+
+    // Only trigger onDisconnect if we were previously connected/connecting and now disconnected
+    // And only trigger once
+    if (
+      !hasTriggeredDisconnectRef.current &&
+      prevState !== null &&
+      prevState !== ConnectionState.Disconnected &&
+      connectionState === ConnectionState.Disconnected &&
+      onDisconnect
+    ) {
+      hasTriggeredDisconnectRef.current = true;
+      onDisconnect();
+    }
+  }, [connectionState, onDisconnect]);
 
   const openSettings = useCallback(() => {
     setShowParticipantList(false);

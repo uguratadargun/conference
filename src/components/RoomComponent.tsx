@@ -24,7 +24,8 @@ const RoomComponent: React.FC<{
   username: string;
   cameraOn: boolean;
   micOn: boolean;
-}> = ({ username, cameraOn, micOn }) => {
+  onDisconnect?: () => void;
+}> = ({ username, cameraOn, micOn, onDisconnect }) => {
   const { generateToken } = useLiveKit();
   const [connectionData, setConnectionData] = useState<{
     url: string;
@@ -116,6 +117,7 @@ const RoomComponent: React.FC<{
           }
         }}
         roomName={roomName}
+        onDisconnect={onDisconnect}
       />
     </LiveKitRoom>
   );
