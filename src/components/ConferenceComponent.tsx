@@ -62,6 +62,8 @@ const ConferenceComponent: React.FC<{
   const inviteUrl = `${window.location.origin}/${roomName}`;
   // State to track showing thumbnails sidebar
   const [showThumbnailsSidebar, setShowThumbnailsSidebar] = useState(false);
+  // State for screen share error
+  const [screenShareError, setScreenShareError] = useState<string | null>(null);
 
   const callParticipantInfo: CallingParticipantInfo = {
     name: 'Ahmet Emre Zengin',
@@ -121,13 +123,40 @@ const ConferenceComponent: React.FC<{
 
   const toggleScreenShare = useCallback(async () => {
     if (localParticipant) {
+      setScreenShareError(null);
       try {
-        // Toggle screen sharing - LiveKit's hook will handle state updates automatically
+        // Toggle screen sharing
+        // LiveKit will use the room's publishDefaults for codec
         await localParticipant.setScreenShareEnabled(!isScreenShareEnabled, {
           audio: true,
         });
-      } catch (error) {
-        console.error('Error toggling screen share:', error);
+      } catch (error: any) {
+        let errorMessage = 'Ekran paylaşımı başlatılamadı. ';
+
+        if (
+          error.name === 'NotAllowedError' ||
+          error.name === 'PermissionDeniedError'
+        ) {
+          errorMessage +=
+            'Ekran paylaşımı izni verilmedi. Lütfen tarayıcı ayarlarından izin verin.';
+        } else if (
+          error.name === 'NotReadableError' ||
+          error.name === 'TrackStartError'
+        ) {
+          errorMessage +=
+            'Ekran paylaşımı başlatılamadı. Ekran başka bir uygulama tarafından kullanılıyor olabilir.';
+        } else if (
+          error.name === 'AbortError' ||
+          error.name === 'NotSupportedError'
+        ) {
+          errorMessage += 'Tarayıcınız ekran paylaşımını desteklemiyor.';
+        } else {
+          errorMessage += error.message || 'Bilinmeyen bir hata oluştu.';
+        }
+
+        setScreenShareError(errorMessage);
+        // Clear error after 5 seconds
+        setTimeout(() => setScreenShareError(null), 5000);
       }
     }
   }, [localParticipant, isScreenShareEnabled]);
@@ -177,12 +206,10 @@ const ConferenceComponent: React.FC<{
   const setActive = () => {
     // Note: setActive method is not available in Room API
     // This is kept for compatibility with ControlBar component
-    console.log('setActive called - method not available in Room API');
   };
 
   const handleCallParticipant = useCallback((participant: any) => {
     // Implement call participant logic here
-    console.log('Calling participant:', participant.identity);
     // You can add your specific logic to initiate a call to this participant
   }, []);
 
@@ -223,6 +250,31 @@ const ConferenceComponent: React.FC<{
         showParticipantList={showParticipantList}
         onShowParticipantList={onShowParticipantList}
       />
+
+      {/* Screen Share Error Toast */}
+      {screenShareError && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 80,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(239, 68, 68, 0.95)',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: 8,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            zIndex: 10000,
+            maxWidth: '90%',
+            width: 'auto',
+            fontSize: 14,
+            fontWeight: 500,
+            textAlign: 'center',
+          }}
+        >
+          {screenShareError}
+        </div>
+      )}
 
       {/* Thumbnails Sidebar (left) */}
       {fullscreenParticipant && (
