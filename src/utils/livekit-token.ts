@@ -6,7 +6,7 @@ type LivekitConfig = {
 };
 
 export async function getLivekitConfig(): Promise<LivekitConfig> {
-  const res = await fetch('/livekit-config.json');
+  const res = await fetch('./livekit-config.json');
   if (!res.ok) throw new Error('Config not found');
   return res.json();
 }

@@ -34,6 +34,7 @@ const fixMediaPipeSourceMap = () => {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './', // Use relative paths for assets - works with Live Server
   plugins: [
     react(),
     fixMediaPipeSourceMap(),
