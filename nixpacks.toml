@@ -12,4 +12,8 @@ cmds = [
 ]
 
 [phases.build]
-dependsOn = ['install'] 
+dependsOn = ['install']
+cmds = [
+  'npm install',
+  'npm run build'
+] 
