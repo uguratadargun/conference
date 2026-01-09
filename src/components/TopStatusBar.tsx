@@ -13,6 +13,7 @@ interface TopStatusBarProps {
   participants: Participant[];
   showParticipantList: boolean;
   onShowParticipantList: () => void;
+  elapsedTime?: number;
 }
 
 const TopStatusBar: React.FC<TopStatusBarProps> = ({
@@ -20,6 +21,7 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
   participants,
   showParticipantList,
   onShowParticipantList,
+  elapsedTime = 0,
 }) => {
   // Detect if device is touch-enabled (mobile)
   const isTouchDevice = useMemo(() => {
@@ -30,6 +32,18 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
       navigator.msMaxTouchPoints > 0
     );
   }, []);
+
+  // Format elapsed time as HH:MM:SS
+  const formatTime = useMemo(() => {
+    const hours = Math.floor(elapsedTime / 3600);
+    const minutes = Math.floor((elapsedTime % 3600) / 60);
+    const seconds = elapsedTime % 60;
+    
+    if (hours > 0) {
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }, [elapsedTime]);
 
   return (
     <div className="top-status-bar">
@@ -60,6 +74,13 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
               : 'Bağlantı kesildi'}
         </span>
       </div>
+
+      {/* Elapsed Time Counter */}
+      {connectionState === ConnectionState.Connected && elapsedTime > 0 && (
+        <div className="status-item elapsed-time">
+          <span>{formatTime}</span>
+        </div>
+      )}
 
       {/* Participant List Button */}
       {!showParticipantList && (

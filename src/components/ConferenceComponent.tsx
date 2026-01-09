@@ -188,6 +188,74 @@ const ConferenceComponent: React.FC<{
 
   const room = useRoomContext();
 
+  // Room creation time için state
+  const [roomStartTime, setRoomStartTime] = useState<number | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+
+  // Room'un creationTime'ını al veya bağlantı zamanını kullan
+  useEffect(() => {
+    if (connectionState === ConnectionState.Disconnected) {
+      // Bağlantı kesildiğinde sayacı sıfırla
+      setRoomStartTime(null);
+      setElapsedTime(0);
+      return;
+    }
+
+    if (
+      room &&
+      connectionState === ConnectionState.Connected &&
+      !roomStartTime
+    ) {
+      // room.roomInfo içindeki creationTime veya creationTimeMs'i kontrol et
+      const roomInfo = (room as any).roomInfo;
+      const creationTimeMs = roomInfo?.creationTimeMs;
+      const creationTime = roomInfo?.creationTime;
+
+      if (creationTimeMs) {
+        // creationTimeMs milisaniye cinsinden timestamp (BigInt olabilir, Number'a çevir)
+        const startTime =
+          typeof creationTimeMs === 'bigint'
+            ? Number(creationTimeMs)
+            : typeof creationTimeMs === 'number'
+              ? creationTimeMs
+              : Number(creationTimeMs);
+        setRoomStartTime(Number(startTime)); // Ekstra güvenlik için Number() ile sarmala
+      } else if (creationTime) {
+        // creationTime varsa, timestamp ise direkt kullan, değilse Date objesi ise getTime() kullan
+        const startTime =
+          typeof creationTime === 'bigint'
+            ? Number(creationTime)
+            : typeof creationTime === 'number'
+              ? creationTime
+              : creationTime instanceof Date
+                ? creationTime.getTime()
+                : Number(new Date(creationTime).getTime());
+        setRoomStartTime(Number(startTime)); // Ekstra güvenlik için Number() ile sarmala
+      } else {
+        // creationTime yoksa bağlantı zamanını kullan
+        setRoomStartTime(Date.now());
+      }
+    }
+  }, [room, connectionState, roomStartTime]);
+
+  // Sayaç güncellemesi
+  useEffect(() => {
+    if (!roomStartTime) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      // roomStartTime'ı Number'a çevir (BigInt olabilir)
+      const startTime =
+        typeof roomStartTime === 'bigint'
+          ? Number(roomStartTime)
+          : Number(roomStartTime);
+      const elapsed = Math.floor((now - startTime) / 1000); // saniye cinsinden
+      setElapsedTime(elapsed);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [roomStartTime]);
+
   // E2EE'yi aktif et (eğer key varsa ve room bağlandıysa)
   useEffect(() => {
     if (room && connectionState === ConnectionState.Connected) {
@@ -333,6 +401,7 @@ const ConferenceComponent: React.FC<{
         participants={participants}
         showParticipantList={showParticipantList}
         onShowParticipantList={onShowParticipantList}
+        elapsedTime={elapsedTime}
       />
 
       {/* Screen Share Error Toast */}
