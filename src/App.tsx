@@ -5,220 +5,75 @@ import 'primereact/resources/primereact.min.css';
 import React, { useState, useEffect } from 'react';
 import WelcomePage from './components/WelcomePage';
 import PermissionPrompt from './components/PermissionPrompt';
+import {
+  IconLinkOff,
+  IconVideo,
+  IconUsers,
+  IconShield,
+  IconInfoCircle,
+} from '@tabler/icons-react';
 
 function getRoomNameFromUrl() {
   const path = window.location.pathname.replace(/^\//, '');
   return path || null;
 }
 
-const LandingPage: React.FC<{
-  onCreateLink: (room: string) => void;
-  onStartMeeting: (room: string) => void;
-}> = ({ onCreateLink, onStartMeeting }) => {
-  const [createdLink, setCreatedLink] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+function decodeJwt(token: string) {
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    throw new Error('Invalid JWT format');
+  }
 
-  const generateRoomName = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 32; i++) {
-      result += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return result;
-  };
+  const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
 
-  const handleCreateLink = async () => {
-    setCopied(false);
-    const room = generateRoomName();
-    const link = `${window.location.origin}/${room}`;
-    setCreatedLink(link);
-    onCreateLink(room);
-    // Clipboard API fallback for better compatibility
-    if (navigator.clipboard && window.isSecureContext) {
-      try {
-        await navigator.clipboard.writeText(link);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {}
-    } else {
-      // fallback for insecure context or older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = link;
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {}
-      document.body.removeChild(textArea);
-    }
-  };
-
-  const handleStartMeeting = () => {
-    const room = generateRoomName();
-    onStartMeeting(room);
-  };
-
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        width: '100vw',
-        background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: 32,
-      }}
-    >
-      <div
-        style={{
-          background: 'rgba(24,26,27,0.98)',
-          borderRadius: 24,
-          boxShadow: '0 8px 40px 0 rgba(0,0,0,0.25)',
-          minWidth: 320,
-          maxWidth: 380,
-          width: '100%',
-          padding: '40px 32px 32px 32px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'relative',
-        }}
-      >
-        <h1
-          style={{
-            color: '#fff',
-            fontWeight: 800,
-            fontSize: 28,
-            marginBottom: 24,
-          }}
-        >
-          <img
-            src="https://ordulu.com/lib/images/logo.png"
-            alt="Ordulu Logo"
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-              marginBottom: 16,
-              display: 'block',
-            }}
-          />
-        </h1>
-        <div
-          style={{
-            color: '#bdbdbd',
-            fontSize: 15,
-            marginBottom: 24,
-            textAlign: 'center',
-            lineHeight: 1.5,
-          }}
-        >
-          <b>Toplantı planla:</b> Bir toplantı odası linki oluşturur ve linki
-          kopyalar. Bu linki başkalarıyla paylaşarak toplantıya davet
-          edebilirsiniz. Toplantı zamanı geldiğinde katılımcılar bu linke
-          tıklayarak toplantıya katılabilirler.
-        </div>
-        <button
-          style={{
-            width: '100%',
-            padding: '12px 0',
-            borderRadius: 6,
-            background: '#1e293b',
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: 17,
-            border: '1.5px solid #334155',
-            cursor: 'pointer',
-            marginBottom: 16,
-            boxShadow: 'none',
-            letterSpacing: 0.1,
-            transition: 'background 0.2s, border 0.2s',
-          }}
-          onClick={handleCreateLink}
-          onMouseOver={e => (e.currentTarget.style.background = '#334155')}
-          onMouseOut={e => (e.currentTarget.style.background = '#1e293b')}
-        >
-          Toplantıyı Planla
-        </button>
-        {createdLink && (
-          <div
-            style={{
-              color: '#22c55e',
-              fontWeight: 600,
-              marginTop: 8,
-              wordBreak: 'break-all',
-              textAlign: 'center',
-            }}
-          >
-            Bağlantı:{' '}
-            <a href={createdLink} style={{ color: '#3b82f6' }}>
-              {createdLink}
-            </a>
-            <div
-              style={{
-                color: '#16a34a',
-                fontWeight: 500,
-                marginTop: 4,
-                fontSize: 15,
-              }}
-            >
-              {copied ? 'Bağlantı kopyalandı!' : ''}
-            </div>
-          </div>
-        )}
-        <div
-          style={{
-            color: '#bdbdbd',
-            fontSize: 15,
-            marginBottom: 24,
-            textAlign: 'center',
-            lineHeight: 1.5,
-          }}
-        >
-          <b>Şimdi başlat:</b> Hemen yeni bir toplantı başlatır ve sizi toplantı
-          odasına yönlendirir. Toplantı başladıktan sonra davet linki
-          oluşturabilirsiniz.
-        </div>
-        <button
-          style={{
-            width: '100%',
-            padding: '12px 0',
-            borderRadius: 6,
-            background: '#3566a3',
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: 17,
-            border: '1.5px solid #2a4d7a',
-            cursor: 'pointer',
-            marginTop: 16,
-            boxShadow: 'none',
-            letterSpacing: 0.1,
-            transition: 'background 0.2s, border 0.2s',
-          }}
-          onClick={handleStartMeeting}
-          onMouseOver={e => (e.currentTarget.style.background = '#2a4d7a')}
-          onMouseOut={e => (e.currentTarget.style.background = '#3566a3')}
-        >
-          Şimdi başlat
-        </button>
-      </div>
-    </div>
-  );
-};
+  const json = atob(payload);
+  return JSON.parse(json);
+}
 
 function App() {
   const [username, setUsername] = useState<string | null>(null);
   const [cameraOn, setCameraOn] = useState<boolean>(false);
   const [micOn, setMicOn] = useState<boolean>(true);
+  const [e2eePassword, setE2eePassword] = useState<string | null>(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [checkedPermission, setCheckedPermission] = useState(false);
   const [roomName, setRoomName] = useState<string | null>(() =>
     getRoomNameFromUrl()
   );
+
+  const [token, setToken] = useState<string | null>(null);
+
+  // URL query'de (?token=...) JWT varsa ve decoded.member === true ise, kullanıcı adını sormadan otomatik bağlan
+  useEffect(() => {
+    try {
+      const search = window.location.search || '';
+      if (!search) return;
+
+      const params = new URLSearchParams(search);
+      const token = params.get('token');
+      if (!token) return;
+      setToken(token);
+      const decoded: any = decodeJwt(token);
+
+      if (decoded && decoded.member === true) {
+        const identity =
+          decoded.name ||
+          decoded.identity ||
+          decoded.sub ||
+          (decoded.id && String(decoded.id));
+
+        if (identity) {
+          setUsername(identity);
+        }
+
+        if (decoded.video && typeof decoded.video.room === 'string') {
+          setRoomName(decoded.video.room);
+        }
+      }
+    } catch {
+      // token yoksa ya da JWT değilse sessizce geç
+    }
+  }, []);
 
   useEffect(() => {
     // Check if permissions are already granted
@@ -285,15 +140,6 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  const handleCreateLink = (room: string) => {
-    // Only show the link, do not navigate
-  };
-
-  const handleStartMeeting = (room: string) => {
-    window.history.pushState({}, '', `/${room}`);
-    setRoomName(room);
-  };
-
   // Don't render until we've checked permissions
   if (!checkedPermission) {
     return null;
@@ -304,27 +150,304 @@ function App() {
       {!permissionGranted ? (
         <PermissionPrompt onGranted={() => setPermissionGranted(true)} />
       ) : !roomName ? (
-        <LandingPage
-          onCreateLink={handleCreateLink}
-          onStartMeeting={handleStartMeeting}
-        />
+        <div
+          style={{
+            minHeight: '100vh',
+            width: '100vw',
+            background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px 16px',
+          }}
+        >
+          <div
+            style={{
+              background: 'rgba(24, 26, 27, 0.98)',
+              borderRadius: 24,
+              padding: '48px 40px',
+              maxWidth: 600,
+              width: '100%',
+              boxShadow: '0 8px 40px 0 rgba(0,0,0,0.5)',
+              border: '1px solid rgba(148,163,184,0.35)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 32,
+            }}
+          >
+            {/* Header Section */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 20,
+                textAlign: 'center',
+              }}
+            >
+              <div
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background:
+                    'linear-gradient(135deg, rgba(55, 65, 81, 0.4) 0%, rgba(31, 41, 55, 0.3) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid rgba(107, 114, 128, 0.4)',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                <IconVideo size={40} style={{ color: '#9ca3af' }} />
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                <h1
+                  style={{
+                    fontSize: 28,
+                    fontWeight: 700,
+                    color: '#f3f4f6',
+                    letterSpacing: '-0.02em',
+                    margin: 0,
+                  }}
+                >
+                  Video Konferans Platformu
+                </h1>
+                <p
+                  style={{
+                    fontSize: 16,
+                    color: '#9ca3af',
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                >
+                  Toplantıya katılmak için size gönderilen özel bağlantıyı
+                  kullanmanız gerekmektedir.
+                </p>
+              </div>
+            </div>
+
+            {/* Info Cards */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 16,
+                  padding: '20px',
+                  background: 'rgba(55, 65, 81, 0.15)',
+                  borderRadius: 16,
+                  border: '1px solid rgba(107, 114, 128, 0.3)',
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: 'rgba(75, 85, 99, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconLinkOff size={20} style={{ color: '#9ca3af' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#f3f4f6',
+                      margin: '0 0 6px 0',
+                    }}
+                  >
+                    Toplantı Bağlantısı Gerekli
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: '#9ca3af',
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
+                    Bu sayfaya doğrudan erişim sağlanamaz. Lütfen size
+                    gönderilen toplantı linkini kullanarak katılım sağlayın.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 16,
+                  padding: '20px',
+                  background: 'rgba(148, 163, 184, 0.05)',
+                  borderRadius: 16,
+                  border: '1px solid rgba(148, 163, 184, 0.15)',
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: 'rgba(148, 163, 184, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconUsers size={20} style={{ color: '#94a3b8' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#f3f4f6',
+                      margin: '0 0 6px 0',
+                    }}
+                  >
+                    Güvenli Katılım
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: '#9ca3af',
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
+                    Tüm toplantılar şifreli ve güvenli bir şekilde
+                    gerçekleştirilmektedir. Sadece davet edilen katılımcılar
+                    toplantıya erişebilir.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 16,
+                  padding: '20px',
+                  background: 'rgba(148, 163, 184, 0.05)',
+                  borderRadius: 16,
+                  border: '1px solid rgba(148, 163, 184, 0.15)',
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: 'rgba(148, 163, 184, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconShield size={20} style={{ color: '#94a3b8' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#f3f4f6',
+                      margin: '0 0 6px 0',
+                    }}
+                  >
+                    Gizlilik ve Güvenlik
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: '#9ca3af',
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
+                    Toplantılarınız end-to-end şifreleme ile korunmaktadır.
+                    Verileriniz güvende.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Info */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                padding: '16px',
+                background: 'rgba(148, 163, 184, 0.05)',
+                borderRadius: 12,
+                border: '1px solid rgba(148, 163, 184, 0.1)',
+              }}
+            >
+              <IconInfoCircle size={18} style={{ color: '#94a3b8' }} />
+              <p
+                style={{
+                  fontSize: 13,
+                  color: '#9ca3af',
+                  margin: 0,
+                  textAlign: 'center',
+                }}
+              >
+                Toplantı linkiniz yok mu? Lütfen toplantı organizatörü ile
+                iletişime geçin.
+              </p>
+            </div>
+          </div>
+        </div>
       ) : username ? (
         <RoomComponent
           username={username}
           cameraOn={cameraOn}
           micOn={micOn}
+          token={token}
+          roomName={roomName}
+          e2eePassword={e2eePassword}
           onDisconnect={() => {
             setUsername(null);
             setRoomName(null);
+            setE2eePassword(null);
             window.history.pushState({}, '', '/');
           }}
         />
       ) : (
         <WelcomePage
-          onJoin={(name: string, camera: boolean, mic: boolean) => {
+          onJoin={(
+            name: string,
+            camera: boolean,
+            mic: boolean,
+            password?: string
+          ) => {
             setUsername(name);
             setCameraOn(camera);
             setMicOn(mic);
+            setE2eePassword(password || null);
           }}
         />
       )}

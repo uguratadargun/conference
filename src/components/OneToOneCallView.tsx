@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Participant } from 'livekit-client';
 import CustomParticipantTile from './CustomParticipantTile';
 import { Button } from 'primereact/button';
@@ -142,6 +142,16 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
     }
   };
 
+  // Detect if device is touch-enabled (mobile)
+  const isTouchDevice = useMemo(() => {
+    return (
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      // @ts-ignore
+      navigator.msMaxTouchPoints > 0
+    );
+  }, []);
+
   // If in calling mode, show calling UI
   if (isCalling) {
     return renderCallingUI();
@@ -157,13 +167,19 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
         onClick={toggleLayout}
         className="layout-toggle-button"
         tooltip={
-          layout === 'standard'
-            ? 'Odak düzenine geç'
-            : layout === 'focus'
-              ? 'Görsel olmayan düzene geç'
-              : 'Standart düzene geç'
+          isTouchDevice
+            ? undefined
+            : layout === 'standard'
+              ? 'Odak düzenine geç'
+              : layout === 'focus'
+                ? 'Görsel olmayan düzene geç'
+                : 'Standart düzene geç'
         }
-        tooltipOptions={{ position: 'left' }}
+        tooltipOptions={
+          isTouchDevice
+            ? undefined
+            : { position: 'left', event: 'hover', hideDelay: 200 }
+        }
       />
     </div>
   );

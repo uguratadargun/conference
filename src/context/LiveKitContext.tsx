@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
-import { generateToken } from '../utils/livekit-token';
+import { getTokenFromServer } from '../utils/livekit-token';
 
 interface LiveKitContextType {
   generateToken: (
@@ -10,7 +10,6 @@ interface LiveKitContextType {
     url: string;
     token: string;
     roomId: string;
-    identity: string;
   }>;
 }
 
@@ -20,7 +19,7 @@ export const LiveKitProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const contextValue: LiveKitContextType = {
-    generateToken,
+    generateToken: getTokenFromServer, // Sunucudan token al
   };
 
   return (

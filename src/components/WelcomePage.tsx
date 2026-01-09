@@ -2,11 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IconUser } from '@tabler/icons-react';
 
 interface WelcomePageProps {
-  onJoin: (username: string, cameraOn: boolean, micOn: boolean) => void;
+  onJoin: (
+    username: string,
+    cameraOn: boolean,
+    micOn: boolean,
+    password?: string
+  ) => void;
 }
 
 const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [micOn, setMicOn] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -30,8 +36,9 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
   // Mic level meter setup
   useEffect(() => {
     if (stream && micOn) {
-      const audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      const audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
       audioContextRef.current = audioContext;
       const source = audioContext.createMediaStreamSource(stream);
       sourceRef.current = source;
@@ -163,8 +170,11 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
       setError('Lütfen bir kullanıcı adı girin.');
       return;
     }
+
     setError('');
-    onJoin(username.trim(), cameraOpen, micOn);
+    // Password'u kullanıcı manuel girdiği için direkt geçir
+    const passwordToPass = password.trim() || undefined;
+    onJoin(username.trim(), cameraOpen, micOn, passwordToPass);
   };
 
   return (
@@ -304,6 +314,49 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
             }}
           >
             Kullanıcı Adı
+          </label>
+        </div>
+        {/* Password input - her zaman göster (kullanıcı manuel girecek) */}
+        <div style={{ width: '100%', marginBottom: 18, position: 'relative' }}>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password"
+            style={{
+              width: '100%',
+              padding: '18px 14px 10px 14px',
+              borderRadius: 12,
+              border: '1.5px solid #333',
+              background: '#161818',
+              color: '#fff',
+              fontSize: 17,
+              outline: 'none',
+              fontWeight: 500,
+              boxSizing: 'border-box',
+              transition: 'border 0.2s',
+              boxShadow: '0 1px 4px 0 rgba(0,0,0,0.08)',
+            }}
+            placeholder=" "
+          />
+          <label
+            htmlFor="password"
+            style={{
+              position: 'absolute',
+              left: 18,
+              top: password ? 4 : 18,
+              fontSize: password ? 12 : 16,
+              color: password ? '#3b82f6' : '#bdbdbd',
+              background: 'rgba(24,26,27,0.98)',
+              padding: '0 4px',
+              borderRadius: 4,
+              pointerEvents: 'none',
+              transition: 'all 0.2s',
+              fontWeight: 500,
+            }}
+          >
+            Şifre
           </label>
         </div>
         {/* Camera/Mic controls below input, above join button */}

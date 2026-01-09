@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from 'primereact/button';
 import { Participant } from 'livekit-client';
 import {
@@ -8,8 +8,6 @@ import {
   IconVideoOff,
   IconPhone,
   IconSettings,
-  IconCheck,
-  IconX,
   IconScreenShare,
   IconScreenShareOff,
 } from '@tabler/icons-react';
@@ -37,6 +35,27 @@ const ControlBar: React.FC<ControlBarProps> = ({
   setActive,
   hangup,
 }) => {
+  // Detect if device is touch-enabled (mobile)
+  const isTouchDevice = useMemo(() => {
+    return (
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      // @ts-ignore
+      navigator.msMaxTouchPoints > 0
+    );
+  }, []);
+
+  // Tooltip options: disable on touch devices to prevent them from staying open
+  const tooltipOptions = useMemo(
+    () => ({
+      position: 'top' as const,
+      event: isTouchDevice ? ('focus' as const) : ('hover' as const),
+      hideDelay: isTouchDevice ? 0 : 200,
+      showDelay: isTouchDevice ? 0 : 0,
+    }),
+    [isTouchDevice]
+  );
+
   return (
     <div className="controls-container">
       <div className="controls-panel">
@@ -54,9 +73,13 @@ const ControlBar: React.FC<ControlBarProps> = ({
               !localParticipant?.isMicrophoneEnabled ? 'disabled' : ''
             }`}
             tooltip={
-              localParticipant?.isMicrophoneEnabled ? 'Sesi Kapat' : 'Sesi Aç'
+              isTouchDevice
+                ? undefined
+                : localParticipant?.isMicrophoneEnabled
+                  ? 'Sesi Kapat'
+                  : 'Sesi Aç'
             }
-            tooltipOptions={{ position: 'top' }}
+            tooltipOptions={tooltipOptions}
           />
         </div>
 
@@ -74,11 +97,13 @@ const ControlBar: React.FC<ControlBarProps> = ({
               !localParticipant?.isCameraEnabled ? 'disabled' : ''
             }`}
             tooltip={
-              localParticipant?.isCameraEnabled
-                ? 'Kamerayı Kapat'
-                : 'Kamerayı Aç'
+              isTouchDevice
+                ? undefined
+                : localParticipant?.isCameraEnabled
+                  ? 'Kamerayı Kapat'
+                  : 'Kamerayı Aç'
             }
-            tooltipOptions={{ position: 'top' }}
+            tooltipOptions={tooltipOptions}
           />
         </div>
 
@@ -96,9 +121,13 @@ const ControlBar: React.FC<ControlBarProps> = ({
               isScreenShareEnabled ? 'active' : ''
             }`}
             tooltip={
-              isScreenShareEnabled ? 'Ekran Paylaşımını Durdur' : 'Ekran Paylaş'
+              isTouchDevice
+                ? undefined
+                : isScreenShareEnabled
+                  ? 'Ekran Paylaşımını Durdur'
+                  : 'Ekran Paylaş'
             }
-            tooltipOptions={{ position: 'top' }}
+            tooltipOptions={tooltipOptions}
           />
         </div>
 
@@ -107,8 +136,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconPhone size={20} />}
             onClick={disconnect}
             className="control-button hang-up-button"
-            tooltip="Görüşmeden Ayrıl"
-            tooltipOptions={{ position: 'top' }}
+            tooltip={isTouchDevice ? undefined : 'Görüşmeden Ayrıl'}
+            tooltipOptions={tooltipOptions}
           />
         </div>
 
@@ -117,8 +146,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconSettings size={20} />}
             onClick={openSettings}
             className="control-button settings-button"
-            tooltip="Ayarlar"
-            tooltipOptions={{ position: 'top' }}
+            tooltip={isTouchDevice ? undefined : 'Ayarlar'}
+            tooltipOptions={tooltipOptions}
           />
         </div>
 

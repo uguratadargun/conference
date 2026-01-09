@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ConnectionState, Participant } from 'livekit-client';
 import { Button } from 'primereact/button';
 import {
@@ -21,6 +21,16 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
   showParticipantList,
   onShowParticipantList,
 }) => {
+  // Detect if device is touch-enabled (mobile)
+  const isTouchDevice = useMemo(() => {
+    return (
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      // @ts-ignore
+      navigator.msMaxTouchPoints > 0
+    );
+  }, []);
+
   return (
     <div className="top-status-bar">
       <div
@@ -58,7 +68,11 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
             icon={<IconUsers size={18} />}
             onClick={onShowParticipantList}
             className="p-button-text"
-            tooltipOptions={{ position: 'bottom' }}
+            tooltipOptions={
+              isTouchDevice
+                ? undefined
+                : { position: 'bottom', event: 'hover', hideDelay: 200 }
+            }
             label={`${participants.length} katılımcı`}
           />
         </div>
