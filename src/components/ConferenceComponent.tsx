@@ -109,10 +109,12 @@ const ConferenceComponent: React.FC<{
 
   const enterFullScreen = useCallback((participantId: string) => {
     setFullScreenParticipant(participantId);
+    setShowThumbnailsSidebar(true);
   }, []);
 
   const exitFullScreen = useCallback(() => {
     setFullScreenParticipant(null);
+    setShowThumbnailsSidebar(false);
   }, []);
 
   // ESC key listener for exiting fullscreen
@@ -393,7 +395,13 @@ const ConferenceComponent: React.FC<{
     <div
       className={`conference-container${
         showParticipantList || showSettings ? ' sidebar-right-open' : ''
-      }${fullscreenParticipant ? ' sidebar-left-open' : ''}`}
+      }${
+        fullscreenParticipant &&
+        showThumbnailsSidebar &&
+        otherParticipants.length > 0
+          ? ' sidebar-left-open'
+          : ''
+      }`}
     >
       {/* Top Status Bar */}
       <TopStatusBar
@@ -430,7 +438,7 @@ const ConferenceComponent: React.FC<{
       )}
 
       {/* Thumbnails Sidebar (left) */}
-      {fullscreenParticipant && (
+      {fullscreenParticipant && showThumbnailsSidebar && (
         <ThumbnailsContainer
           otherParticipants={otherParticipants}
           enterFullScreen={enterFullScreen}
@@ -441,6 +449,26 @@ const ConferenceComponent: React.FC<{
       {fullscreenParticipant ? (
         <div className="fullscreen-container">
           <CustomParticipantTile participant={fullscreenParticipant} idx={0} />
+          {otherParticipants.length > 0 && (
+            <Button
+              icon={
+                showThumbnailsSidebar ? (
+                  <IconEyeOff size={20} />
+                ) : (
+                  <IconEye size={20} />
+                )
+              }
+              onClick={() =>
+                setShowThumbnailsSidebar(prevValue => !prevValue)
+              }
+              className="thumbnails-toggle-button"
+              title={
+                showThumbnailsSidebar
+                  ? 'Soldaki paneli gizle'
+                  : 'Soldaki paneli göster'
+              }
+            />
+          )}
           <Button
             icon={<IconX size={20} />}
             onClick={exitFullScreen}

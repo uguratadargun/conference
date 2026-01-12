@@ -889,6 +889,35 @@ $calling-avatar-color: #4b5563;
   background: rgba(0, 0, 0, 0.9);
 }
 
+.thumbnails-toggle-button {
+  position: absolute;
+  top: 10px;
+  left: 55px;
+  width: 48px;
+  height: 48px;
+  background: $dark-overlay-thumbnail;
+  color: $white;
+  border: none;
+  border-radius: $radius-round;
+  font-size: 20px;
+  z-index: 20;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnails-toggle-button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.thumbnails-toggle-button:focus,
+.thumbnails-toggle-button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 .fullscreen-container .participant:hover .maximize-button-container {
   opacity: 0 !important;
 }
