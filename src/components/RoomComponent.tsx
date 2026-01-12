@@ -54,6 +54,25 @@ const RoomComponent: React.FC<{
   );
   const [isMember, setIsMember] = useState(false);
   const [e2eeRawKey, setE2eeRawKey] = useState<string | null>(null);
+  const e2eeKeyProvider = useMemo(() => new ExternalE2EEKeyProvider(), []);
+
+  useEffect(() => {
+    const rawKey = e2eeRawKey || e2eePassword;
+    if (!rawKey) return;
+    const hexCandidate = rawKey.trim();
+    if (!/^[0-9a-fA-F]+$/.test(hexCandidate) || hexCandidate.length % 2 !== 0) {
+      console.error('E2EE key must be an even-length hex string.');
+      return;
+    }
+    if (hexCandidate.length !== 64) {
+      console.error(
+        'E2EE key must be 32 bytes (64 hex chars). Current length:',
+        hexCandidate.length
+      );
+      return;
+    }
+    e2eeKeyProvider.setKey(hexToKey(hexCandidate), 0);
+  }, [e2eeKeyProvider, e2eePassword, e2eeRawKey]);
 
   useEffect(() => {
     const connectToRoom = async () => {
@@ -110,6 +129,10 @@ const RoomComponent: React.FC<{
     }
   }, [username, roomNameLocal, token, e2eePassword]);
 
+  useEffect(() => {
+    if (!e2eePassword) return;
+  }, [e2eePassword]);
+
   // Member olduğunda E2EE key üret, hash'le ve sunucuya gönder
   useEffect(() => {
     if (isMember && connectionData && token) {
@@ -138,45 +161,6 @@ const RoomComponent: React.FC<{
       }
     }
   }, [isMember, connectionData, token]);
-
-  // E2EE KeyProvider oluştur (member ise ve key varsa VEYA member değilse ve password varsa)
-  // NOT: Bu hook erken return'lerden ÖNCE olmalı (React Hooks kuralları)
-  const e2eeOptions = useMemo(() => {
-    try {
-      let keyToUse: Uint8Array | null = null;
-
-      if (isMember && e2eeRawKey) {
-        // Member ise üretilen key'i kullan
-        keyToUse = hexToKey(e2eeRawKey);
-        console.log('E2EE: Using member key, length:', keyToUse.length);
-      } else if (!isMember && e2eePassword) {
-        // Member değilse ve password varsa, password'u key olarak kullan
-        keyToUse = hexToKey(e2eePassword);
-        console.log('E2EE: Using guest password, length:', keyToUse.length);
-      }
-
-      if (keyToUse) {
-        const keyProvider = new ExternalE2EEKeyProvider();
-        // ArrayBuffer olarak ver (Uint8Array'in buffer'ını kopyala)
-        const keyBuffer = keyToUse.slice().buffer;
-        keyProvider.setKey(keyBuffer);
-
-        console.log('E2EE KeyProvider created successfully');
-        return {
-          keyProvider: keyProvider,
-          worker: new Worker(
-            new URL('livekit-client/e2ee-worker', import.meta.url),
-            { type: 'module' }
-          ),
-        };
-      } else {
-        console.warn('E2EE: No key available. E2EE will not be enabled.');
-      }
-    } catch (error) {
-      console.error('Error creating E2EE KeyProvider:', error);
-    }
-    return undefined;
-  }, [isMember, e2eeRawKey, e2eePassword]);
 
   if (isLoading) {
     return (
@@ -475,7 +459,13 @@ const RoomComponent: React.FC<{
           noiseSuppression: true,
           autoGainControl: true,
         },
-        ...(e2eeOptions ? { e2ee: e2eeOptions } : {}),
+        e2ee: {
+          keyProvider: e2eeKeyProvider,
+          worker: new Worker(
+            new URL('livekit-client/e2ee-worker', import.meta.url),
+            { type: 'module' }
+          ),
+        },
       }}
       video={cameraOn}
       audio={micOn}

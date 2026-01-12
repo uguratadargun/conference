@@ -6,7 +6,7 @@ type LivekitConfig = {
 };
 
 import { AccessToken } from 'livekit-server-sdk';
-import livekitConfig from '../../public/livekit-config.json';
+import livekitConfig from '../livekit-config.json';
 import { hashKey, hexToKey } from './e2ee';
 
 /**
