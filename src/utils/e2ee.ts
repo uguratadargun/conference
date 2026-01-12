@@ -59,7 +59,7 @@ export async function sendE2EEKeyHashToServer(
     // Eğer ws:// veya wss:// ile başlıyorsa kaldır, yoksa direkt kullan
     const livekitUrl = livekitConfig.url.replace(/^wss?:\/\//, '');
     // HTTP protokolü ekle (varsayılan olarak http kullan)
-    const serverUrl = `http://${livekitUrl}`;
+    const serverUrl = `https://${livekitUrl}`;
 
     const endpoint = `${serverUrl}/twirp/livekit.RoomService/SetRoomPassword`;
 

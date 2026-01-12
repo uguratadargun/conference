@@ -35,7 +35,7 @@ export const getTokenFromServer = async (
   try {
     // LiveKit URL'inden HTTP API URL'i türet
     const livekitUrl = livekitConfig.url.replace(/^wss?:\/\//, '');
-    const serverUrl = `http://${livekitUrl}`;
+    const serverUrl = `https://${livekitUrl}`;
 
     const endpoint = `${serverUrl}/twirp/livekit.RoomService/CreateRoomToken`;
     const hashPassword = await hashKey(hexToKey(password || ''));

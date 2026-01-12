@@ -444,7 +444,7 @@ const RoomComponent: React.FC<{
 
   return (
     <LiveKitRoom
-      serverUrl={`ws://${connectionData.url}`} // TODO - ugur: wss:// olarak değiştirilecek
+      serverUrl={`wss://${connectionData.url}`} // TODO - ugur: wss:// olarak değiştirilecek
       token={connectionData.token}
       connectOptions={{
         autoSubscribe: true,
