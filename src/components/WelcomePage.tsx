@@ -178,33 +178,8 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        width: '100vw',
-        background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 0,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          background: 'rgba(24,26,27,0.98)',
-          borderRadius: 24,
-          boxShadow: '0 8px 40px 0 rgba(0,0,0,0.25)',
-          minWidth: 320,
-          maxWidth: 380,
-          width: '100%',
-          padding: '40px 32px 32px 32px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'relative',
-        }}
-      >
+    <div className="welcome-page">
+      <form onSubmit={handleSubmit} className="welcome-form">
         <h1
           style={{
             color: '#fff',
@@ -236,24 +211,14 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
           }}
         >
           <div
+            className="welcome-form__preview"
             style={{
-              width: '100%',
-              maxWidth: 260,
-              height: 160,
-              borderRadius: 16,
               background:
                 cameraOpen && stream
                   ? 'rgba(0,0,0,0.7)'
                   : 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
               boxShadow: '0 4px 24px 0 rgba(59,130,246,0.15)',
-              marginBottom: 12,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              overflow: 'hidden',
               border: cameraOpen && stream ? '2px solid #3b82f6' : 'none',
-              transition: 'all 0.2s',
             }}
           >
             {cameraOpen && stream ? (

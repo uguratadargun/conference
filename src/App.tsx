@@ -150,31 +150,8 @@ function App() {
       {!permissionGranted ? (
         <PermissionPrompt onGranted={() => setPermissionGranted(true)} />
       ) : !roomName ? (
-        <div
-          style={{
-            minHeight: '100vh',
-            width: '100vw',
-            background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '24px 16px',
-          }}
-        >
-          <div
-            style={{
-              background: 'rgba(24, 26, 27, 0.98)',
-              borderRadius: 24,
-              padding: '48px 40px',
-              maxWidth: 600,
-              width: '100%',
-              boxShadow: '0 8px 40px 0 rgba(0,0,0,0.5)',
-              border: '1px solid rgba(148,163,184,0.35)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 32,
-            }}
-          >
+        <div className="pre-call-screen">
+          <div className="pre-call-card">
             {/* Header Section */}
             <div
               style={{
@@ -186,15 +163,10 @@ function App() {
               }}
             >
               <div
+                className="pre-call-icon"
                 style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: '50%',
                   background:
                     'linear-gradient(135deg, rgba(55, 65, 81, 0.4) 0%, rgba(31, 41, 55, 0.3) 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   border: '2px solid rgba(107, 114, 128, 0.4)',
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
                 }}

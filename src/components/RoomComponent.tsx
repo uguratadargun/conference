@@ -164,43 +164,13 @@ const RoomComponent: React.FC<{
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          width: '100vw',
-          background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 20,
-        }}
-      >
-        <div
-          style={{
-            background: 'rgba(24, 26, 27, 0.98)',
-            borderRadius: 24,
-            padding: '48px 40px',
-            maxWidth: 400,
-            width: '100%',
-            boxShadow: '0 8px 40px 0 rgba(0,0,0,0.5)',
-            border: '1px solid rgba(148,163,184,0.35)',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 24,
-          }}
-        >
+      <div className="pre-call-screen">
+        <div className="pre-call-card pre-call-card--narrow">
           {/* Loading Spinner */}
           <div
+            className="pre-call-icon"
             style={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
               background: 'rgba(59, 130, 246, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               border: '2px solid rgba(59, 130, 246, 0.3)',
               position: 'relative',
             }}
@@ -295,43 +265,13 @@ const RoomComponent: React.FC<{
 
   if (error || !connectionData) {
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          width: '100vw',
-          background: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 20,
-        }}
-      >
-        <div
-          style={{
-            background: 'rgba(24, 26, 27, 0.98)',
-            borderRadius: 24,
-            padding: '48px 40px',
-            maxWidth: 500,
-            width: '100%',
-            boxShadow: '0 8px 40px 0 rgba(0,0,0,0.5)',
-            border: '1px solid rgba(148,163,184,0.35)',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 24,
-          }}
-        >
+      <div className="pre-call-screen">
+        <div className="pre-call-card pre-call-card--medium">
           {/* Error Icon */}
           <div
+            className="pre-call-icon"
             style={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
               background: 'rgba(239, 68, 68, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               border: '2px solid rgba(239, 68, 68, 0.3)',
             }}
           >

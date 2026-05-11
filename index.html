@@ -3,8 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Ordulu Konferans</title>
+    <script>
+      // iOS Safari bottom URL bar offset.
+      // window.innerHeight includes the URL bar area; visualViewport.height
+      // excludes it. The difference is how far the URL bar pushes content up
+      // from the absolute bottom of the layout viewport.
+      (function () {
+        var root = document.documentElement;
+        function update() {
+          var vv = window.visualViewport;
+          var offset = vv ? Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0)) : 0;
+          root.style.setProperty('--vv-bottom', offset + 'px');
+        }
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', update);
+          window.visualViewport.addEventListener('scroll', update);
+        }
+        window.addEventListener('resize', update);
+        window.addEventListener('orientationchange', update);
+        update();
+      })();
+    </script>
   </head>
   <body id="livekit-container">
     <div id="call-root"></div>
