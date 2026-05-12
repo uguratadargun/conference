@@ -48,6 +48,14 @@ const ControlBar: React.FC<ControlBarProps> = ({
     );
   }, []);
 
+  const canScreenShare = useMemo(() => {
+    const hasDisplayMedia =
+      typeof navigator !== 'undefined' &&
+      !!navigator.mediaDevices &&
+      typeof navigator.mediaDevices.getDisplayMedia === 'function';
+    return hasDisplayMedia && !isTouchDevice;
+  }, [isTouchDevice]);
+
   // Tooltip options: disable on touch devices to prevent them from staying open
   const tooltipOptions = useMemo(
     () => ({
@@ -110,29 +118,29 @@ const ControlBar: React.FC<ControlBarProps> = ({
           />
         </div>
 
-        <div className="control-group">
-          <Button
-            icon={
-              isScreenShareEnabled ? (
-                <IconScreenShareOff size={20} />
-              ) : (
-                <IconScreenShare size={20} />
-              )
-            }
-            onClick={toggleScreenShare}
-            className={`control-button screen-share-button ${
-              isScreenShareEnabled ? 'active' : ''
-            }`}
-            tooltip={
-              isTouchDevice
-                ? undefined
-                : isScreenShareEnabled
+        {canScreenShare && (
+          <div className="control-group">
+            <Button
+              icon={
+                isScreenShareEnabled ? (
+                  <IconScreenShareOff size={20} />
+                ) : (
+                  <IconScreenShare size={20} />
+                )
+              }
+              onClick={toggleScreenShare}
+              className={`control-button screen-share-button ${
+                isScreenShareEnabled ? 'active' : ''
+              }`}
+              tooltip={
+                isScreenShareEnabled
                   ? t('controlBar.stopScreenShare')
                   : t('controlBar.startScreenShare')
-            }
-            tooltipOptions={tooltipOptions}
-          />
-        </div>
+              }
+              tooltipOptions={tooltipOptions}
+            />
+          </div>
+        )}
 
         <div className="control-group">
           <Button
