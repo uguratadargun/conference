@@ -1,0 +1,171 @@
+{
+  "app": {
+    "title": "Ordulu Conference"
+  },
+  "preCall": {
+    "headline": "Video Conference Platform",
+    "subheadline": "To join the meeting, please use the personal link sent to you.",
+    "card": {
+      "linkRequired": {
+        "title": "Meeting Link Required",
+        "body": "This page cannot be accessed directly. Please use the meeting link sent to you to join."
+      },
+      "secureJoin": {
+        "title": "Secure Join",
+        "body": "All meetings are encrypted and conducted securely. Only invited participants can join the meeting."
+      },
+      "privacy": {
+        "title": "Privacy and Security",
+        "body": "Your meetings are protected with end-to-end encryption. Your data is safe."
+      }
+    },
+    "footer": "Don't have a meeting link? Please contact the meeting organizer."
+  },
+  "permission": {
+    "title": "Do you want others in the meeting to see and hear you?",
+    "subtitle": "You can turn your microphone and camera off any time during the meeting.",
+    "requestButton": "Use microphone and camera",
+    "waitingButton": "Please wait...",
+    "continueWithoutDevice": "Continue without device",
+    "error": {
+      "previouslyDenied": "Permissions are denied. Please enable microphone and camera permissions in your browser settings.",
+      "unsupported": "Your browser does not support access to media devices.",
+      "noDevice": "Camera or microphone not found. You can continue without a device.",
+      "notAllowed": "Permission not granted. Please grant microphone and camera permission in your browser settings.",
+      "inUse": "Camera or microphone may be used by another application. Please close other applications and try again.",
+      "overconstrained": "Device requirements cannot be satisfied. Please try a different camera or microphone.",
+      "generic": "Permission could not be obtained: {{detail}}. Please grant microphone and camera permission in your browser settings."
+    }
+  },
+  "settings": {
+    "title": "Device Settings",
+    "subtitle": "Configure your audio and video devices",
+    "mic": "Microphone",
+    "micEmpty": "No microphone found",
+    "micPlaceholder": "Select a microphone",
+    "micFallbackLabel": "Microphone {{id}}",
+    "camera": "Camera",
+    "cameraEmpty": "No camera found",
+    "cameraPlaceholder": "Select a camera",
+    "cameraFallbackLabel": "Camera {{id}}",
+    "speaker": "Speaker",
+    "speakerEmpty": "No speaker found",
+    "speakerPlaceholder": "Select a speaker",
+    "speakerFallbackLabel": "Speaker {{id}}",
+    "backgroundEffects": "Background Effects",
+    "backgroundEffectsUnsupported": "Background effects are not supported in this browser",
+    "processing": "Applying effect...",
+    "effect": {
+      "none": "None",
+      "blur": "Blur",
+      "virtual": "Virtual"
+    },
+    "blurIntensity": "Blur Intensity: {{value}}"
+  },
+  "controlBar": {
+    "muteAudio": "Mute Audio",
+    "unmuteAudio": "Unmute Audio",
+    "stopCamera": "Stop Camera",
+    "startCamera": "Start Camera",
+    "stopScreenShare": "Stop Screen Share",
+    "startScreenShare": "Share Screen",
+    "leaveCall": "Leave Call",
+    "settings": "Settings"
+  },
+  "topStatusBar": {
+    "connected": "Connected",
+    "connecting": "Connecting...",
+    "disconnected": "Disconnected",
+    "participantCount": "{{count}} participant",
+    "participantCount_other": "{{count}} participants"
+  },
+  "welcome": {
+    "title": "Join Conference",
+    "subtitle": "Enter your name and check your camera before joining the call.",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "stopCamera": "Stop Camera",
+    "startCamera": "Start Camera",
+    "micOn": "Microphone On",
+    "micOff": "Microphone Off",
+    "micLevel": "Microphone level",
+    "listenToMyVoice": "Hear My Voice",
+    "stop": "Stop",
+    "join": "Join Room",
+    "error": {
+      "cameraOrMicDenied": "Camera or microphone access was denied.",
+      "micDenied": "Microphone access was denied.",
+      "usernameRequired": "Please enter a username."
+    }
+  },
+  "room": {
+    "loading": {
+      "title": "Connecting to Room",
+      "subtitle": "Please wait..."
+    },
+    "error": {
+      "title": "Connection Error",
+      "fallback": "Could not retrieve connection data",
+      "connectFailed": "Failed to connect to the room. Please try again.",
+      "retry": "Retry",
+      "home": "Back to Home",
+      "help": "If the problem persists, please refresh the page or try again later."
+    }
+  },
+  "oneToOne": {
+    "calling": "Calling...",
+    "layout": {
+      "switchToFocus": "Switch to focus layout",
+      "switchToNoVideo": "Switch to no-video layout",
+      "switchToStandard": "Switch to standard layout"
+    }
+  },
+  "conference": {
+    "screenShareError": {
+      "prefix": "Could not start screen sharing. ",
+      "notAllowed": "Screen-sharing permission was denied. Please grant permission in your browser settings.",
+      "inUse": "Could not start screen sharing. The screen may be in use by another application.",
+      "notSupported": "Your browser does not support screen sharing.",
+      "unknown": "An unknown error occurred."
+    },
+    "thumbnailsToggle": {
+      "hide": "Hide left panel",
+      "show": "Show left panel"
+    },
+    "exitFullscreen": "Exit fullscreen",
+    "share": {
+      "link": "Connection Link:",
+      "password": "Password:",
+      "hide": "Hide",
+      "show": "Show",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "copyInvite": "Copy Invite Message",
+      "inviteHeading": "MEETING INVITATION",
+      "inviteGreeting": "Dear Participant,",
+      "inviteBody": "You can join the meeting using the link below:",
+      "inviteLinkLabel": "Connection Link",
+      "invitePasswordLabel": "Password",
+      "close": "Close",
+      "inviteInfoTitle": "Invite Details"
+    }
+  },
+  "participants": {
+    "header": "Conference",
+    "connectedCount": "{{count}} Connected",
+    "invite": "Invite people",
+    "inviteCopied": "Invite link copied!",
+    "listTitle": "Participants",
+    "empty": "No participants",
+    "status": {
+      "denied": "Denied",
+      "busy": "Busy",
+      "left": "Left",
+      "noAnswer": "No answer",
+      "notReachable": "Unreachable",
+      "active": "On call"
+    },
+    "callAgain": "Call again",
+    "callAgainTooltip": "Call again"
+  }
+}

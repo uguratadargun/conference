@@ -6,6 +6,7 @@ import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
 import { getLivekitConfig, getTokenFromServer } from '../utils/livekit-token';
 import { generateAndSendE2EEKey, hexToKey } from '../utils/e2ee';
 import { ExternalE2EEKeyProvider } from 'livekit-client';
+import { useTranslation } from 'react-i18next';
 
 function getRoomNameFromUrl() {
   const path = window.location.pathname.replace(/^\//, '');
@@ -55,6 +56,7 @@ const RoomComponent: React.FC<{
   const [isMember, setIsMember] = useState(false);
   const [e2eeRawKey, setE2eeRawKey] = useState<string | null>(null);
   const e2eeKeyProvider = useMemo(() => new ExternalE2EEKeyProvider(), []);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const rawKey = e2eeRawKey || e2eePassword;
@@ -119,7 +121,7 @@ const RoomComponent: React.FC<{
         setConnectionData(data);
       } catch (err) {
         console.error('Failed to get connection data:', err);
-        setError('Failed to connect to the room. Please try again.');
+        setError(t('room.error.connectFailed'));
       } finally {
         setIsLoading(false);
       }
@@ -207,7 +209,7 @@ const RoomComponent: React.FC<{
                 margin: 0,
               }}
             >
-              Odaya Bağlanıyor
+              {t('room.loading.title')}
             </h2>
             <p
               style={{
@@ -217,7 +219,7 @@ const RoomComponent: React.FC<{
                 lineHeight: 1.5,
               }}
             >
-              Lütfen bekleyin...
+              {t('room.loading.subtitle')}
             </p>
           </div>
 
@@ -289,7 +291,7 @@ const RoomComponent: React.FC<{
                 margin: 0,
               }}
             >
-              Bağlantı Hatası
+              {t('room.error.title')}
             </h2>
             <p
               style={{
@@ -299,7 +301,7 @@ const RoomComponent: React.FC<{
                 lineHeight: 1.5,
               }}
             >
-              {error || 'Bağlantı verisi alınamadı'}
+              {error || t('room.error.fallback')}
             </p>
           </div>
 
@@ -313,7 +315,7 @@ const RoomComponent: React.FC<{
             }}
           >
             <Button
-              label="Tekrar Dene"
+              label={t('room.error.retry')}
               onClick={() => window.location.reload()}
               style={{
                 width: '100%',
@@ -337,7 +339,7 @@ const RoomComponent: React.FC<{
               }}
             />
             <Button
-              label="Ana Sayfaya Dön"
+              label={t('room.error.home')}
               onClick={() => {
                 window.location.href = '/';
               }}
@@ -374,8 +376,7 @@ const RoomComponent: React.FC<{
               lineHeight: 1.5,
             }}
           >
-            Sorun devam ederse lütfen sayfayı yenileyin veya daha sonra tekrar
-            deneyin.
+            {t('room.error.help')}
           </p>
         </div>
       </div>

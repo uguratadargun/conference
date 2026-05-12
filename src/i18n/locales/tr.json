@@ -1,0 +1,171 @@
+{
+  "app": {
+    "title": "Ordulu Konferans"
+  },
+  "preCall": {
+    "headline": "Video Konferans Platformu",
+    "subheadline": "Toplantıya katılmak için size gönderilen özel bağlantıyı kullanmanız gerekmektedir.",
+    "card": {
+      "linkRequired": {
+        "title": "Toplantı Bağlantısı Gerekli",
+        "body": "Bu sayfaya doğrudan erişim sağlanamaz. Lütfen size gönderilen toplantı linkini kullanarak katılım sağlayın."
+      },
+      "secureJoin": {
+        "title": "Güvenli Katılım",
+        "body": "Tüm toplantılar şifreli ve güvenli bir şekilde gerçekleştirilmektedir. Sadece davet edilen katılımcılar toplantıya erişebilir."
+      },
+      "privacy": {
+        "title": "Gizlilik ve Güvenlik",
+        "body": "Toplantılarınız end-to-end şifreleme ile korunmaktadır. Verileriniz güvende."
+      }
+    },
+    "footer": "Toplantı linkiniz yok mu? Lütfen toplantı organizatörü ile iletişime geçin."
+  },
+  "permission": {
+    "title": "Kullanıcıların toplantıda sizi görmesini ve duymasını istiyor musunuz?",
+    "subtitle": "Toplantıda mikrofonunuzu ve kameranızı istediğiniz zaman kapatabilirsiniz.",
+    "requestButton": "Mikrofon ve kamerayı kullan",
+    "waitingButton": "Bekleyin...",
+    "continueWithoutDevice": "Cihaz olmadan devam et",
+    "error": {
+      "previouslyDenied": "İzinler reddedilmiş. Lütfen tarayıcı ayarlarından mikrofon ve kamera izinlerini etkinleştirin.",
+      "unsupported": "Tarayıcınız medya cihazlarına erişimi desteklemiyor.",
+      "noDevice": "Kamera veya mikrofon bulunamadı. Cihaz olmadan devam edebilirsiniz.",
+      "notAllowed": "İzin verilmedi. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.",
+      "inUse": "Kamera veya mikrofon başka bir uygulama tarafından kullanılıyor olabilir. Lütfen diğer uygulamaları kapatıp tekrar deneyin.",
+      "overconstrained": "Cihaz gereksinimleri karşılanamıyor. Lütfen farklı bir kamera veya mikrofon deneyin.",
+      "generic": "İzin alınamadı: {{detail}}. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin."
+    }
+  },
+  "settings": {
+    "title": "Cihaz Ayarları",
+    "subtitle": "Ses ve video cihazlarınızı yapılandırın",
+    "mic": "Mikrofon",
+    "micEmpty": "Mikrofon bulunamadı",
+    "micPlaceholder": "Mikrofon seçin",
+    "micFallbackLabel": "Mikrofon {{id}}",
+    "camera": "Kamera",
+    "cameraEmpty": "Kamera bulunamadı",
+    "cameraPlaceholder": "Kamera seçin",
+    "cameraFallbackLabel": "Kamera {{id}}",
+    "speaker": "Hoparlör",
+    "speakerEmpty": "Hoparlör bulunamadı",
+    "speakerPlaceholder": "Hoparlör seçin",
+    "speakerFallbackLabel": "Hoparlör {{id}}",
+    "backgroundEffects": "Arka Plan Efektleri",
+    "backgroundEffectsUnsupported": "Arka plan efektleri bu tarayıcıda desteklenmiyor",
+    "processing": "Efekt işleniyor...",
+    "effect": {
+      "none": "Yok",
+      "blur": "Bulanıklaştır",
+      "virtual": "Sanal"
+    },
+    "blurIntensity": "Bulanıklık Yoğunluğu: {{value}}"
+  },
+  "controlBar": {
+    "muteAudio": "Sesi Kapat",
+    "unmuteAudio": "Sesi Aç",
+    "stopCamera": "Kamerayı Kapat",
+    "startCamera": "Kamerayı Aç",
+    "stopScreenShare": "Ekran Paylaşımını Durdur",
+    "startScreenShare": "Ekran Paylaş",
+    "leaveCall": "Görüşmeden Ayrıl",
+    "settings": "Ayarlar"
+  },
+  "topStatusBar": {
+    "connected": "Bağlandı",
+    "connecting": "Bağlanıyor...",
+    "disconnected": "Bağlantı kesildi",
+    "participantCount": "{{count}} katılımcı",
+    "participantCount_other": "{{count}} katılımcı"
+  },
+  "welcome": {
+    "title": "Konferansa Katıl",
+    "subtitle": "Görüşmeye katılmadan önce adınızı girin ve kameranızı kontrol edin.",
+    "usernameLabel": "Kullanıcı Adı",
+    "passwordLabel": "Şifre",
+    "stopCamera": "Kamerayı Kapat",
+    "startCamera": "Kamerayı Aç",
+    "micOn": "Mikrofon Açık",
+    "micOff": "Mikrofon Kapalı",
+    "micLevel": "Mikrofon seviyesi",
+    "listenToMyVoice": "Sesimi Dinle",
+    "stop": "Durdur",
+    "join": "Odaya Katıl",
+    "error": {
+      "cameraOrMicDenied": "Kamera veya mikrofon erişimi reddedildi.",
+      "micDenied": "Mikrofon erişimi reddedildi.",
+      "usernameRequired": "Lütfen bir kullanıcı adı girin."
+    }
+  },
+  "room": {
+    "loading": {
+      "title": "Odaya Bağlanıyor",
+      "subtitle": "Lütfen bekleyin..."
+    },
+    "error": {
+      "title": "Bağlantı Hatası",
+      "fallback": "Bağlantı verisi alınamadı",
+      "connectFailed": "Odaya bağlanılamadı. Lütfen tekrar deneyin.",
+      "retry": "Tekrar Dene",
+      "home": "Ana Sayfaya Dön",
+      "help": "Sorun devam ederse lütfen sayfayı yenileyin veya daha sonra tekrar deneyin."
+    }
+  },
+  "oneToOne": {
+    "calling": "Aranıyor...",
+    "layout": {
+      "switchToFocus": "Odak düzenine geç",
+      "switchToNoVideo": "Görsel olmayan düzene geç",
+      "switchToStandard": "Standart düzene geç"
+    }
+  },
+  "conference": {
+    "screenShareError": {
+      "prefix": "Ekran paylaşımı başlatılamadı. ",
+      "notAllowed": "Ekran paylaşımı izni verilmedi. Lütfen tarayıcı ayarlarından izin verin.",
+      "inUse": "Ekran paylaşımı başlatılamadı. Ekran başka bir uygulama tarafından kullanılıyor olabilir.",
+      "notSupported": "Tarayıcınız ekran paylaşımını desteklemiyor.",
+      "unknown": "Bilinmeyen bir hata oluştu."
+    },
+    "thumbnailsToggle": {
+      "hide": "Soldaki paneli gizle",
+      "show": "Soldaki paneli göster"
+    },
+    "exitFullscreen": "Tam ekrandan çık",
+    "share": {
+      "link": "Bağlantı Linki:",
+      "password": "Şifre:",
+      "hide": "Gizle",
+      "show": "Göster",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı!",
+      "copyInvite": "Davet Mesajını Kopyala",
+      "inviteHeading": "TOPLANTI DAVETİ",
+      "inviteGreeting": "Sayın Katılımcı,",
+      "inviteBody": "Aşağıdaki bağlantıyı kullanarak toplantıya katılabilirsiniz:",
+      "inviteLinkLabel": "Bağlantı Linki",
+      "invitePasswordLabel": "Şifre",
+      "close": "Kapat",
+      "inviteInfoTitle": "Davet Bilgileri"
+    }
+  },
+  "participants": {
+    "header": "Konferans",
+    "connectedCount": "{{count}} Bağlı",
+    "invite": "İnsanları davet et",
+    "inviteCopied": "Davet bağlantısı kopyalandı!",
+    "listTitle": "Katılımcılar",
+    "empty": "Katılımcı yok",
+    "status": {
+      "denied": "Reddedildi",
+      "busy": "Meşgul",
+      "left": "Ayrıldı",
+      "noAnswer": "Cevap yok",
+      "notReachable": "Ulaşılamıyor",
+      "active": "Görüşmede"
+    },
+    "callAgain": "Tekrar çal",
+    "callAgainTooltip": "Tekrar ara"
+  }
+}

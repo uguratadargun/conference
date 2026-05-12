@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Participant } from 'livekit-client';
 import CustomParticipantTile from './CustomParticipantTile';
 import { Button } from 'primereact/button';
@@ -27,6 +28,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
   isCalling = false,
   callingParticipantInfo = null,
 }) => {
+  const { t } = useTranslation();
   const [layout, setLayout] = useState<LayoutType>('no-video');
   // State to track if participants are swapped
   const [isSwapped, setIsSwapped] = useState(false);
@@ -77,7 +79,7 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
 
             {/* Calling status text only */}
             <div className="calling-status">
-              <p className="calling-text">Aranıyor...</p>
+              <p className="calling-text">{t('oneToOne.calling')}</p>
             </div>
           </div>
         </div>
@@ -170,10 +172,10 @@ const OneToOneCallView: React.FC<OneToOneCallViewProps> = ({
           isTouchDevice
             ? undefined
             : layout === 'standard'
-              ? 'Odak düzenine geç'
+              ? t('oneToOne.layout.switchToFocus')
               : layout === 'focus'
-                ? 'Görsel olmayan düzene geç'
-                : 'Standart düzene geç'
+                ? t('oneToOne.layout.switchToNoVideo')
+                : t('oneToOne.layout.switchToStandard')
         }
         tooltipOptions={
           isTouchDevice

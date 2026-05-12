@@ -27,6 +27,7 @@ import ControlBar from './ControlBar';
 import OneToOneCallView from './OneToOneCallView';
 import TopStatusBar from './TopStatusBar';
 import ThumbnailsContainer from './ThumbnailsContainer';
+import { useTranslation } from 'react-i18next';
 // Grid layout helpers
 const getGridClassName = (count: number) => {
   if (count === 1) return 'grid-1';
@@ -64,6 +65,7 @@ const ConferenceComponent: React.FC<{
   e2eeRawKey,
   e2eePassword,
 }) => {
+  const { t } = useTranslation();
   const participants = useParticipants();
   const connectionState = useConnectionState();
   const { localParticipant, isScreenShareEnabled } = useLocalParticipant();
@@ -158,27 +160,27 @@ const ConferenceComponent: React.FC<{
           audio: true,
         });
       } catch (error: any) {
-        let errorMessage = 'Ekran paylaşımı başlatılamadı. ';
+        let errorMessage = t('conference.screenShareError.prefix');
 
         if (
           error.name === 'NotAllowedError' ||
           error.name === 'PermissionDeniedError'
         ) {
           errorMessage +=
-            'Ekran paylaşımı izni verilmedi. Lütfen tarayıcı ayarlarından izin verin.';
+            t('conference.screenShareError.notAllowed');
         } else if (
           error.name === 'NotReadableError' ||
           error.name === 'TrackStartError'
         ) {
           errorMessage +=
-            'Ekran paylaşımı başlatılamadı. Ekran başka bir uygulama tarafından kullanılıyor olabilir.';
+            t('conference.screenShareError.inUse');
         } else if (
           error.name === 'AbortError' ||
           error.name === 'NotSupportedError'
         ) {
-          errorMessage += 'Tarayıcınız ekran paylaşımını desteklemiyor.';
+          errorMessage += t('conference.screenShareError.notSupported');
         } else {
-          errorMessage += error.message || 'Bilinmeyen bir hata oluştu.';
+          errorMessage += error.message || t('conference.screenShareError.unknown');
         }
 
         setScreenShareError(errorMessage);
@@ -464,8 +466,8 @@ const ConferenceComponent: React.FC<{
               className="thumbnails-toggle-button"
               title={
                 showThumbnailsSidebar
-                  ? 'Soldaki paneli gizle'
-                  : 'Soldaki paneli göster'
+                  ? t('conference.thumbnailsToggle.hide')
+                  : t('conference.thumbnailsToggle.show')
               }
             />
           )}
@@ -473,7 +475,7 @@ const ConferenceComponent: React.FC<{
             icon={<IconX size={20} />}
             onClick={exitFullScreen}
             className="exit-fullscreen-button"
-            title="Tam ekrandan çık"
+            title={t('conference.exitFullscreen')}
           />
         </div>
       ) : (isOneToOneView && remoteParticipant && localParticipantObj) ||
@@ -604,7 +606,7 @@ const ConferenceComponent: React.FC<{
                 padding: 0,
                 minWidth: 36,
               }}
-              title="Kapat"
+              title={t('conference.share.close')}
             />
 
             <h2
@@ -616,7 +618,7 @@ const ConferenceComponent: React.FC<{
                 paddingRight: 40,
               }}
             >
-              Davet Bilgileri
+              {t('conference.share.inviteInfoTitle')}
             </h2>
 
             <div style={{ marginBottom: 20 }}>
@@ -629,7 +631,7 @@ const ConferenceComponent: React.FC<{
                   marginBottom: 8,
                 }}
               >
-                Bağlantı Linki:
+                {t('conference.share.link')}
               </label>
               <div
                 style={{
@@ -674,7 +676,7 @@ const ConferenceComponent: React.FC<{
                     minWidth: 44,
                     height: 44,
                   }}
-                  title={showUrl ? 'Gizle' : 'Göster'}
+                  title={showUrl ? t('conference.share.hide') : t('conference.share.show')}
                 />
                 <Button
                   icon={
@@ -692,7 +694,7 @@ const ConferenceComponent: React.FC<{
                     minWidth: 44,
                     height: 44,
                   }}
-                  title={urlCopied ? 'Kopyalandı!' : 'Kopyala'}
+                  title={urlCopied ? t('conference.share.copied') : t('conference.share.copy')}
                 />
               </div>
             </div>
@@ -708,7 +710,7 @@ const ConferenceComponent: React.FC<{
                     marginBottom: 8,
                   }}
                 >
-                  Şifre:
+                  {t('conference.share.password')}
                 </label>
                 <div
                   style={{
@@ -757,7 +759,7 @@ const ConferenceComponent: React.FC<{
                       minWidth: 44,
                       height: 44,
                     }}
-                    title={showPassword ? 'Gizle' : 'Göster'}
+                    title={showPassword ? t('conference.share.hide') : t('conference.share.show')}
                   />
                   <Button
                     icon={
@@ -779,7 +781,7 @@ const ConferenceComponent: React.FC<{
                       minWidth: 44,
                       height: 44,
                     }}
-                    title={passwordCopied ? 'Kopyalandı!' : 'Kopyala'}
+                    title={passwordCopied ? t('conference.share.copied') : t('conference.share.copy')}
                   />
                 </div>
               </div>
@@ -805,17 +807,19 @@ const ConferenceComponent: React.FC<{
                     )
                   }
                   label={
-                    inviteCopied ? 'Kopyalandı!' : 'Davet Mesajını Kopyala'
+                    inviteCopied ? t('conference.share.copied') : t('conference.share.copyInvite')
                   }
                   onClick={async () => {
-                    const inviteText = `TOPLANTI DAVETİ
-
-Sayın Katılımcı,
-
-Aşağıdaki bağlantıyı kullanarak toplantıya katılabilirsiniz:
-
-Bağlantı Linki: ${inviteInfo.url}
-Şifre: ${inviteInfo.password}`;
+                    const inviteText = [
+                      t('conference.share.inviteHeading'),
+                      '',
+                      t('conference.share.inviteGreeting'),
+                      '',
+                      t('conference.share.inviteBody'),
+                      '',
+                      `${t('conference.share.inviteLinkLabel')}: ${inviteInfo.url}`,
+                      `${t('conference.share.invitePasswordLabel')}: ${inviteInfo.password}`,
+                    ].join('\n');
                     await navigator.clipboard.writeText(inviteText);
                     setInviteCopied(true);
                     setTimeout(() => setInviteCopied(false), 2000);

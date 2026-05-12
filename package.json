@@ -22,12 +22,15 @@
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "@tabler/icons-react": "^3.34.0",
     "chart.js": "^4.4.9",
+    "i18next": "^26.1.0",
+    "i18next-browser-languagedetector": "^8.2.1",
     "livekit-client": "^2.16.1",
     "livekit-server-sdk": "^2.13.0",
     "primereact": "^10.9.5",
     "quill": "^2.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "^17.0.7",
     "sass-embedded": "^1.89.2"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IconUser } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 interface WelcomePageProps {
   onJoin: (
@@ -11,6 +12,7 @@ interface WelcomePageProps {
 }
 
 const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -112,7 +114,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
       setCameraOpen(true);
       if (!micOn) setMicOn(true); // Kamera açınca mikrofon da açılır
     } catch {
-      setError('Kamera veya mikrofon erişimi reddedildi.');
+      setError(t('welcome.error.cameraOrMicDenied'));
     }
   };
 
@@ -127,7 +129,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
         });
         setStream(audioStream);
       } catch {
-        setError('Mikrofon erişimi reddedildi.');
+        setError(t('welcome.error.micDenied'));
         setStream(null);
       }
     } else {
@@ -151,7 +153,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
           });
           setStream(audioStream);
         } catch {
-          setError('Mikrofon erişimi reddedildi.');
+          setError(t('welcome.error.micDenied'));
         }
       }
     } else {
@@ -167,7 +169,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim()) {
-      setError('Lütfen bir kullanıcı adı girin.');
+      setError(t('welcome.error.usernameRequired'));
       return;
     }
 
@@ -189,7 +191,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
             letterSpacing: 0.5,
           }}
         >
-          Konferansa Katıl
+          {t('welcome.title')}
         </h1>
         <div
           style={{
@@ -199,7 +201,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
             textAlign: 'center',
           }}
         >
-          Görüşmeye katılmadan önce adınızı girin ve kameranızı kontrol edin.
+          {t('welcome.subtitle')}
         </div>
         <div
           style={{
@@ -278,7 +280,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
               fontWeight: 500,
             }}
           >
-            Kullanıcı Adı
+            {t('welcome.usernameLabel')}
           </label>
         </div>
         {/* Password input - her zaman göster (kullanıcı manuel girecek) */}
@@ -321,7 +323,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
               fontWeight: 500,
             }}
           >
-            Şifre
+            {t('welcome.passwordLabel')}
           </label>
         </div>
         {/* Camera/Mic controls below input, above join button */}
@@ -350,7 +352,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
                 transition: 'background 0.2s',
               }}
             >
-              Kamerayı Kapat
+              {t('welcome.stopCamera')}
             </button>
           ) : (
             <button
@@ -368,7 +370,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
                 transition: 'background 0.2s',
               }}
             >
-              Kamerayı Aç
+              {t('welcome.startCamera')}
             </button>
           )}
           <button
@@ -386,7 +388,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
               transition: 'background 0.2s',
             }}
           >
-            {micOn ? 'Mikrofon Açık' : 'Mikrofon Kapalı'}
+            {micOn ? t('welcome.micOn') : t('welcome.micOff')}
           </button>
         </div>
         {/* Mic test UI */}
@@ -422,7 +424,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
               />
             </div>
             <div style={{ fontSize: 13, color: '#bdbdbd' }}>
-              Mikrofon seviyesi
+              {t('welcome.micLevel')}
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               {!echoTest ? (
@@ -441,7 +443,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
                     transition: 'background 0.2s',
                   }}
                 >
-                  Sesimi Dinle
+                  {t('welcome.listenToMyVoice')}
                 </button>
               ) : (
                 <button
@@ -459,7 +461,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
                     transition: 'background 0.2s',
                   }}
                 >
-                  Durdur
+                  {t('welcome.stop')}
                 </button>
               )}
               <audio ref={audioRef} style={{ display: 'none' }} autoPlay />
@@ -489,7 +491,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onJoin }) => {
             transition: 'background 0.2s',
           }}
         >
-          Odaya Katıl
+          {t('welcome.join')}
         </button>
       </form>
     </div>

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConnectionState, Participant } from 'livekit-client';
 import { Button } from 'primereact/button';
 import {
@@ -23,6 +24,8 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
   onShowParticipantList,
   elapsedTime = 0,
 }) => {
+  const { t } = useTranslation();
+
   // Detect if device is touch-enabled (mobile)
   const isTouchDevice = useMemo(() => {
     return (
@@ -67,11 +70,11 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
         )}
         <span>
           {connectionState === ConnectionState.Connected
-            ? 'Bağlandı'
+            ? t('topStatusBar.connected')
             : connectionState === ConnectionState.Connecting ||
                 connectionState === ConnectionState.Reconnecting
-              ? 'Bağlanıyor...'
-              : 'Bağlantı kesildi'}
+              ? t('topStatusBar.connecting')
+              : t('topStatusBar.disconnected')}
         </span>
       </div>
 
@@ -94,7 +97,7 @@ const TopStatusBar: React.FC<TopStatusBarProps> = ({
                 ? undefined
                 : { position: 'bottom', event: 'hover', hideDelay: 200 }
             }
-            label={`${participants.length} katılımcı`}
+            label={t('topStatusBar.participantCount', { count: participants.length })}
           />
         </div>
       )}

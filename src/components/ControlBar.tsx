@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'primereact/button';
 import { Participant } from 'livekit-client';
 import {
@@ -35,6 +36,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
   setActive,
   hangup,
 }) => {
+  const { t } = useTranslation();
+
   // Detect if device is touch-enabled (mobile)
   const isTouchDevice = useMemo(() => {
     return (
@@ -76,8 +79,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
               isTouchDevice
                 ? undefined
                 : localParticipant?.isMicrophoneEnabled
-                  ? 'Sesi Kapat'
-                  : 'Sesi Aç'
+                  ? t('controlBar.muteAudio')
+                  : t('controlBar.unmuteAudio')
             }
             tooltipOptions={tooltipOptions}
           />
@@ -100,8 +103,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
               isTouchDevice
                 ? undefined
                 : localParticipant?.isCameraEnabled
-                  ? 'Kamerayı Kapat'
-                  : 'Kamerayı Aç'
+                  ? t('controlBar.stopCamera')
+                  : t('controlBar.startCamera')
             }
             tooltipOptions={tooltipOptions}
           />
@@ -124,8 +127,8 @@ const ControlBar: React.FC<ControlBarProps> = ({
               isTouchDevice
                 ? undefined
                 : isScreenShareEnabled
-                  ? 'Ekran Paylaşımını Durdur'
-                  : 'Ekran Paylaş'
+                  ? t('controlBar.stopScreenShare')
+                  : t('controlBar.startScreenShare')
             }
             tooltipOptions={tooltipOptions}
           />
@@ -136,7 +139,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconPhone size={20} />}
             onClick={disconnect}
             className="control-button hang-up-button"
-            tooltip={isTouchDevice ? undefined : 'Görüşmeden Ayrıl'}
+            tooltip={isTouchDevice ? undefined : t('controlBar.leaveCall')}
             tooltipOptions={tooltipOptions}
           />
         </div>
@@ -146,7 +149,7 @@ const ControlBar: React.FC<ControlBarProps> = ({
             icon={<IconSettings size={20} />}
             onClick={openSettings}
             className="control-button settings-button"
-            tooltip={isTouchDevice ? undefined : 'Ayarlar'}
+            tooltip={isTouchDevice ? undefined : t('controlBar.settings')}
             tooltipOptions={tooltipOptions}
           />
         </div>

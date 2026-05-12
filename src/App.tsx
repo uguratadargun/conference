@@ -3,6 +3,7 @@ import RoomComponent from './components/RoomComponent';
 import 'primereact/resources/themes/lara-dark-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import WelcomePage from './components/WelcomePage';
 import PermissionPrompt from './components/PermissionPrompt';
 import {
@@ -31,6 +32,7 @@ function decodeJwt(token: string) {
 }
 
 function App() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState<string | null>(null);
   const [cameraOn, setCameraOn] = useState<boolean>(false);
   const [micOn, setMicOn] = useState<boolean>(true);
@@ -189,7 +191,7 @@ function App() {
                     margin: 0,
                   }}
                 >
-                  Video Konferans Platformu
+                  {t('preCall.headline')}
                 </h1>
                 <p
                   style={{
@@ -199,8 +201,7 @@ function App() {
                     margin: 0,
                   }}
                 >
-                  Toplantıya katılmak için size gönderilen özel bağlantıyı
-                  kullanmanız gerekmektedir.
+                  {t('preCall.subheadline')}
                 </p>
               </div>
             </div>
@@ -247,7 +248,7 @@ function App() {
                       margin: '0 0 6px 0',
                     }}
                   >
-                    Toplantı Bağlantısı Gerekli
+                    {t('preCall.card.linkRequired.title')}
                   </h3>
                   <p
                     style={{
@@ -257,8 +258,7 @@ function App() {
                       margin: 0,
                     }}
                   >
-                    Bu sayfaya doğrudan erişim sağlanamaz. Lütfen size
-                    gönderilen toplantı linkini kullanarak katılım sağlayın.
+                    {t('preCall.card.linkRequired.body')}
                   </p>
                 </div>
               </div>
@@ -297,7 +297,7 @@ function App() {
                       margin: '0 0 6px 0',
                     }}
                   >
-                    Güvenli Katılım
+                    {t('preCall.card.secureJoin.title')}
                   </h3>
                   <p
                     style={{
@@ -307,9 +307,7 @@ function App() {
                       margin: 0,
                     }}
                   >
-                    Tüm toplantılar şifreli ve güvenli bir şekilde
-                    gerçekleştirilmektedir. Sadece davet edilen katılımcılar
-                    toplantıya erişebilir.
+                    {t('preCall.card.secureJoin.body')}
                   </p>
                 </div>
               </div>
@@ -348,7 +346,7 @@ function App() {
                       margin: '0 0 6px 0',
                     }}
                   >
-                    Gizlilik ve Güvenlik
+                    {t('preCall.card.privacy.title')}
                   </h3>
                   <p
                     style={{
@@ -358,8 +356,7 @@ function App() {
                       margin: 0,
                     }}
                   >
-                    Toplantılarınız end-to-end şifreleme ile korunmaktadır.
-                    Verileriniz güvende.
+                    {t('preCall.card.privacy.body')}
                   </p>
                 </div>
               </div>
@@ -387,8 +384,7 @@ function App() {
                   textAlign: 'center',
                 }}
               >
-                Toplantı linkiniz yok mu? Lütfen toplantı organizatörü ile
-                iletişime geçin.
+                {t('preCall.footer')}
               </p>
             </div>
           </div>

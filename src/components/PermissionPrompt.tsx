@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PermissionPromptProps {
   onGranted: () => void;
 }
 
 const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
+  const { t } = useTranslation();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
@@ -24,9 +26,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
 
           if (cameraPermission.state === 'denied' || microphonePermission.state === 'denied') {
             setPermissionDenied(true);
-            setError(
-              'İzinler reddedilmiş. Lütfen tarayıcı ayarlarından mikrofon ve kamera izinlerini etkinleştirin.'
-            );
+            setError(t('permission.error.previouslyDenied'));
           }
         } catch (e) {
           // Permissions API not fully supported, continue normally
@@ -43,7 +43,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
     // Check if getUserMedia is available
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setLoading(false);
-      setError('Tarayıcınız medya cihazlarına erişimi desteklemiyor.');
+      setError(t('permission.error.unsupported'));
       return;
     }
     
@@ -95,7 +95,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
             // All attempts failed with NotFoundError - allow continuing without device
             setLoading(false);
             setShowContinueWithoutDevice(true);
-            setError('Kamera veya mikrofon bulunamadı. Cihaz olmadan devam edebilirsiniz.');
+            setError(t('permission.error.noDevice'));
             return;
           }
         }
@@ -108,13 +108,13 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
       
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         setPermissionDenied(true);
-        errorMessage = 'İzin verilmedi. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.';
+        errorMessage = t('permission.error.notAllowed');
       } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-        errorMessage = 'Kamera veya mikrofon başka bir uygulama tarafından kullanılıyor olabilir. Lütfen diğer uygulamaları kapatıp tekrar deneyin.';
+        errorMessage = t('permission.error.inUse');
       } else if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') {
-        errorMessage = 'Cihaz gereksinimleri karşılanamıyor. Lütfen farklı bir kamera veya mikrofon deneyin.';
+        errorMessage = t('permission.error.overconstrained');
       } else {
-        errorMessage = `İzin alınamadı: ${err.message || err.name}. Lütfen tarayıcı ayarlarından mikrofon ve kamera izni verin.`;
+        errorMessage = t('permission.error.generic', { detail: err.message || err.name });
       }
       
       setError(errorMessage);
@@ -163,7 +163,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
             marginBottom: 12,
           }}
         >
-          Kullanıcıların toplantıda sizi görmesini ve duymasını istiyor musunuz?
+          {t('permission.title')}
         </div>
         <div
           style={{
@@ -174,8 +174,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
             lineHeight: 1.5,
           }}
         >
-          Toplantıda mikrofonunuzu ve kameranızı istediğiniz zaman
-          kapatabilirsiniz.
+          {t('permission.subtitle')}
         </div>
         <button
           type="button"
@@ -198,7 +197,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
             outline: 'none',
           }}
         >
-          {loading ? 'Bekleyin...' : 'Mikrofon ve kamerayı kullan'}
+          {loading ? t('permission.waitingButton') : t('permission.requestButton')}
         </button>
         {error && (
           <div
@@ -240,7 +239,7 @@ const PermissionPrompt: React.FC<PermissionPromptProps> = ({ onGranted }) => {
             onMouseOver={e => (e.currentTarget.style.background = '#334155')}
             onMouseOut={e => (e.currentTarget.style.background = '#1e293b')}
           >
-            Cihaz olmadan devam et
+            {t('permission.continueWithoutDevice')}
           </button>
         )}
       </div>

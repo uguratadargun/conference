@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   LocalParticipant,
   Participant,
@@ -77,6 +78,7 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
   onInviteCopy,
   inviteCopied,
 }) => {
+  const { t } = useTranslation();
   if (!visible) return null;
 
   const getDisplayName = (participant: Participant): string => {
@@ -231,17 +233,17 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           </div>
         );
       case 'denied':
-        return 'Reddedildi';
+        return t('participants.status.denied');
       case 'busy':
-        return 'Meşgul';
+        return t('participants.status.busy');
       case 'left':
-        return 'Ayrıldı';
+        return t('participants.status.left');
       case 'noAnswer':
-        return 'Cevap yok';
+        return t('participants.status.noAnswer');
       case 'notReachable':
-        return 'Ulaşılamıyor';
+        return t('participants.status.notReachable');
       default:
-        return 'Görüşmede';
+        return t('participants.status.active');
     }
   };
 
@@ -262,9 +264,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
         className="call-again-button"
         size="small"
         onClick={() => onCallParticipant?.(participant)}
-        title="Tekrar ara"
+        title={t('participants.callAgainTooltip')}
       >
-        Tekrar çal
+        {t('participants.callAgain')}
       </Button>
     );
   };
@@ -374,9 +376,9 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
             <div className="icon-circle">
               <IconUsers size={24} />
             </div>
-            <h2 className="sidebar-title">Konferans</h2>
+            <h2 className="sidebar-title">{t('participants.header')}</h2>
             <div className="participant-count">
-              {activeParticipants.length} Bağlı
+              {t('participants.connectedCount', { count: activeParticipants.length })}
             </div>
             <Button className="close-sidebar-button" onClick={onHide}>
               <IconX size={20} />
@@ -395,21 +397,21 @@ const ParticipantListSidebar: React.FC<ParticipantListSidebarProps> = ({
           >
             <Button className="add-people-button" onClick={onInviteCopy}>
               <IconUserPlus size={20} />
-              <span>İnsanları davet et</span>
+              <span>{t('participants.invite')}</span>
             </Button>
             {inviteCopied && (
               <div style={{ color: '#22c55e', fontWeight: 600, marginTop: 4 }}>
-                Davet bağlantısı kopyalandı!
+                {t('participants.inviteCopied')}
               </div>
             )}
           </div>
 
           {/* All Participants List */}
           <div className="participant-section">
-            <h3 className="section-title">Katılımcılar</h3>
+            <h3 className="section-title">{t('participants.listTitle')}</h3>
             <div className="participant-list">
               {groupedParticipants.length === 0 ? (
-                <div className="no-participants">Katılımcı yok</div>
+                <div className="no-participants">{t('participants.empty')}</div>
               ) : (
                 groupedParticipants.map(renderParticipant)
               )}
