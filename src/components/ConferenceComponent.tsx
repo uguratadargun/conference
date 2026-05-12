@@ -20,26 +20,15 @@ import {
   IconEye,
   IconEyeOff,
 } from '@tabler/icons-react';
-import CustomParticipantTile from './CustomParticipantTile';
 import SettingsDialog from './SettingsDialog';
 import ParticipantListSidebar from './ParticipantListSidebar';
 import ControlBar from './ControlBar';
 import OneToOneCallView from './OneToOneCallView';
 import TopStatusBar from './TopStatusBar';
 import ThumbnailsContainer from './ThumbnailsContainer';
+import VideoGrid from './VideoGrid';
+import FullscreenView from './FullscreenView';
 import { useTranslation } from 'react-i18next';
-// Grid layout helpers
-const getGridClassName = (count: number) => {
-  if (count === 1) return 'grid-1';
-  if (count === 2) return 'grid-2';
-  if (count === 3) return 'grid-3';
-  if (count === 4) return 'grid-4';
-  if (count <= 6) return 'grid-6';
-  if (count <= 9) return 'grid-9';
-  if (count <= 12) return 'grid-12';
-  if (count <= 15) return 'grid-default';
-  return 'grid-scroll';
-};
 
 // Interface for calling participant info
 export interface CallingParticipantInfo {
@@ -369,7 +358,6 @@ const ConferenceComponent: React.FC<{
     // You can add your specific logic to initiate a call to this participant
   }, []);
 
-  const gridClassName = getGridClassName(participants.length);
   const fullscreenParticipant = participants.find(
     p => p.identity === fullScreenParticipant
   );
@@ -449,35 +437,15 @@ const ConferenceComponent: React.FC<{
 
       {/* Main Video Area */}
       {fullscreenParticipant ? (
-        <div className="fullscreen-container">
-          <CustomParticipantTile participant={fullscreenParticipant} idx={0} />
-          {otherParticipants.length > 0 && (
-            <Button
-              icon={
-                showThumbnailsSidebar ? (
-                  <IconEyeOff size={20} />
-                ) : (
-                  <IconEye size={20} />
-                )
-              }
-              onClick={() =>
-                setShowThumbnailsSidebar(prevValue => !prevValue)
-              }
-              className="thumbnails-toggle-button"
-              title={
-                showThumbnailsSidebar
-                  ? t('conference.thumbnailsToggle.hide')
-                  : t('conference.thumbnailsToggle.show')
-              }
-            />
-          )}
-          <Button
-            icon={<IconX size={20} />}
-            onClick={exitFullScreen}
-            className="exit-fullscreen-button"
-            title={t('conference.exitFullscreen')}
-          />
-        </div>
+        <FullscreenView
+          participant={fullscreenParticipant}
+          hasOtherParticipants={otherParticipants.length > 0}
+          showThumbnailsSidebar={showThumbnailsSidebar}
+          onToggleThumbnails={() =>
+            setShowThumbnailsSidebar(prevValue => !prevValue)
+          }
+          onExitFullScreen={exitFullScreen}
+        />
       ) : (isOneToOneView && remoteParticipant && localParticipantObj) ||
         isCalling ? (
         <OneToOneCallView
@@ -487,17 +455,10 @@ const ConferenceComponent: React.FC<{
           callingParticipantInfo={callingParticipantInfo}
         />
       ) : (
-        <div className={`participants-grid ${gridClassName}`}>
-          {participantsToRender.map((participant, idx) => (
-            <div key={participant.identity} className="size-full">
-              <CustomParticipantTile
-                participant={participant}
-                idx={idx}
-                onMaximize={() => enterFullScreen(participant.identity)}
-              />
-            </div>
-          ))}
-        </div>
+        <VideoGrid
+          participants={participantsToRender}
+          onEnterFullScreen={enterFullScreen}
+        />
       )}
 
       {/* Controls */}

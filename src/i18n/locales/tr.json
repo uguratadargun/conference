@@ -2,6 +2,9 @@
   "app": {
     "title": "Ordulu Konferans"
   },
+  "common": {
+    "you": "Sen"
+  },
   "preCall": {
     "headline": "Video Konferans Platformu",
     "subheadline": "Toplantıya katılmak için size gönderilen özel bağlantıyı kullanmanız gerekmektedir.",

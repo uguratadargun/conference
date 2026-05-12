@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Participant, Track } from 'livekit-client';
 import CustomTracks from './CustomTracks';
 import { IconMicrophoneOff, IconScreenShare } from '@tabler/icons-react';
@@ -82,10 +83,12 @@ const CustomParticipantTile: React.FC<{
   const borderColor = BORDER_COLORS[colorIndex % BORDER_COLORS.length];
   const nameColor = NAME_COLORS[colorIndex % NAME_COLORS.length];
 
-  const displayName = participant.name || participant.identity;
+  const { t } = useTranslation();
+  const realName = participant.name || participant.identity;
+  const displayName = participant.isLocal ? t('common.you') : realName;
   const department = participant?.department || '';
   const title = participant?.title || '';
-  const initials = displayName
+  const initials = realName
     .split(' ')
     .map(n => n[0]?.toUpperCase())
     .join('')
@@ -168,12 +171,11 @@ const CustomParticipantTile: React.FC<{
             <div className="participant-name-bottom-left">{displayName}</div>
           ))}
 
-        {!isThumbnail && showInfo && participant.isSpeaking && (
+        {!isThumbnail && showInfo && (
           <div
             className={`audio-waveform-container${
               participant.isSpeaking ? ' speaking' : ' silent'
             }`}
-            style={{ display: 'flex' }}
           >
             <div className="audio-waveform">
               {[...Array(9)].map((_, i) => (

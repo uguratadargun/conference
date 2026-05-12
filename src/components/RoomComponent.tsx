@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { IconRefresh, IconAlertCircle } from '@tabler/icons-react';
 import { getLivekitConfig, getTokenFromServer } from '../utils/livekit-token';
 import { generateAndSendE2EEKey, hexToKey } from '../utils/e2ee';
-import { ExternalE2EEKeyProvider } from 'livekit-client';
+import { ExternalE2EEKeyProvider, VideoPresets43 } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 
 function getRoomNameFromUrl() {
@@ -395,6 +395,9 @@ const RoomComponent: React.FC<{
           videoCodec: 'h264',
         },
         adaptiveStream: true,
+        videoCaptureDefaults: {
+          resolution: VideoPresets43.h720.resolution,
+        },
         audioCaptureDefaults: {
           echoCancellation: true,
           noiseSuppression: true,

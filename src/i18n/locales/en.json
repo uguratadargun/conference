@@ -2,6 +2,9 @@
   "app": {
     "title": "Ordulu Conference"
   },
+  "common": {
+    "you": "You"
+  },
   "preCall": {
     "headline": "Video Conference Platform",
     "subheadline": "To join the meeting, please use the personal link sent to you.",

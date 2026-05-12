@@ -241,6 +241,7 @@ const SettingsDialog: React.FC<{
                 ))}
               </select>
             </div>
+
           </div>
         </div>
       </div>
