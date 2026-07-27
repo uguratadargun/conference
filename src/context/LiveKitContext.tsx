@@ -4,8 +4,8 @@ import { getTokenFromServer } from '../utils/livekit-token';
 
 interface LiveKitContextType {
   generateToken: (
-    username?: string,
-    roomName?: string
+    username: string | undefined,
+    roomName: string
   ) => Promise<{
     url: string;
     token: string;

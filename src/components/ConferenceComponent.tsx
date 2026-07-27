@@ -65,7 +65,6 @@ const ConferenceComponent: React.FC<{
   const [showParticipantList, setShowParticipantList] = useState(false);
   // State to track one-to-one view mode
   const [isOneToOneView, setIsOneToOneView] = useState(false);
-  const [inviteCopied, setInviteCopied] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteInfo, setInviteInfo] = useState<{
     url: string;
@@ -748,56 +747,6 @@ const ConferenceComponent: React.FC<{
               </div>
             )}
 
-            {/* Tüm bilgileri kopyala butonu */}
-            {inviteInfo.password && (
-              <div
-                style={{
-                  marginBottom: 20,
-                  padding: '16px',
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  borderRadius: 12,
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
-                }}
-              >
-                <Button
-                  icon={
-                    inviteCopied ? (
-                      <IconCheck size={18} />
-                    ) : (
-                      <IconCopy size={18} />
-                    )
-                  }
-                  label={
-                    inviteCopied ? t('conference.share.copied') : t('conference.share.copyInvite')
-                  }
-                  onClick={async () => {
-                    const inviteText = [
-                      t('conference.share.inviteHeading'),
-                      '',
-                      t('conference.share.inviteGreeting'),
-                      '',
-                      t('conference.share.inviteBody'),
-                      '',
-                      `${t('conference.share.inviteLinkLabel')}: ${inviteInfo.url}`,
-                      `${t('conference.share.invitePasswordLabel')}: ${inviteInfo.password}`,
-                    ].join('\n');
-                    await navigator.clipboard.writeText(inviteText);
-                    setInviteCopied(true);
-                    setTimeout(() => setInviteCopied(false), 2000);
-                  }}
-                  style={{
-                    width: '100%',
-                    background: inviteCopied
-                      ? '#22c55e'
-                      : 'linear-gradient(90deg, #3b82f6 0%, #6366f1 100%)',
-                    border: 'none',
-                    color: '#fff',
-                    fontWeight: 600,
-                    padding: '12px 20px',
-                  }}
-                />
-              </div>
-            )}
           </div>
         </div>
       )}

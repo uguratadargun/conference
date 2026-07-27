@@ -143,12 +143,6 @@
       "show": "Show",
       "copy": "Copy",
       "copied": "Copied!",
-      "copyInvite": "Copy Invite Message",
-      "inviteHeading": "MEETING INVITATION",
-      "inviteGreeting": "Dear Participant,",
-      "inviteBody": "You can join the meeting using the link below:",
-      "inviteLinkLabel": "Connection Link",
-      "invitePasswordLabel": "Password",
       "close": "Close",
       "inviteInfoTitle": "Invite Details"
     }

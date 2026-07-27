@@ -143,12 +143,6 @@
       "show": "Göster",
       "copy": "Kopyala",
       "copied": "Kopyalandı!",
-      "copyInvite": "Davet Mesajını Kopyala",
-      "inviteHeading": "TOPLANTI DAVETİ",
-      "inviteGreeting": "Sayın Katılımcı,",
-      "inviteBody": "Aşağıdaki bağlantıyı kullanarak toplantıya katılabilirsiniz:",
-      "inviteLinkLabel": "Bağlantı Linki",
-      "invitePasswordLabel": "Şifre",
       "close": "Kapat",
       "inviteInfoTitle": "Davet Bilgileri"
     }

@@ -1,17 +1,22 @@
-import livekitConfig from '../livekit-config.json';
 import { hashKey, hexToKey } from './e2ee';
 
 type LivekitConfig = {
-  roomName: string;
   url: string;
 };
 
+let configPromise: Promise<LivekitConfig> | null = null;
+
 /**
- * LiveKit config'i döndürür
- * @returns LivekitConfig
+ * LiveKit config'i döndürür. Build'e gömülmez; dist/config.json'dan
+ * runtime'da okunur, böylece deploy sonrası düzenlenebilir.
+ * @returns Promise<LivekitConfig>
  */
-export const getLivekitConfig = (): LivekitConfig => {
-  return livekitConfig as LivekitConfig;
+export const getLivekitConfig = (): Promise<LivekitConfig> => {
+  configPromise ??= fetch('./config.json', { cache: 'no-store' }).then((r) => {
+    if (!r.ok) throw new Error(`config.json okunamadı: ${r.status}`);
+    return r.json() as Promise<LivekitConfig>;
+  });
+  return configPromise;
 };
 
 /**
@@ -21,8 +26,8 @@ export const getLivekitConfig = (): LivekitConfig => {
  * @returns Promise<{url: string, token: string, roomId: string, identity: string}>
  */
 export const getTokenFromServer = async (
-  username?: string,
-  roomName?: string,
+  username: string | undefined,
+  roomName: string,
   password?: string
 ): Promise<{
   url: string;
@@ -30,6 +35,7 @@ export const getTokenFromServer = async (
   roomId: string;
 }> => {
   try {
+    const livekitConfig = await getLivekitConfig();
     // LiveKit URL'inden HTTP API URL'i türet
     const livekitUrl = livekitConfig.url.replace(/^wss?:\/\//, '');
     const serverUrl = `https://${livekitUrl}`;
@@ -43,7 +49,7 @@ export const getTokenFromServer = async (
       },
       body: JSON.stringify({
         username: username || 'guest',
-        roomId: roomName || livekitConfig.roomName,
+        roomId: roomName,
         password: hashPassword,
       }),
     });
@@ -59,7 +65,7 @@ export const getTokenFromServer = async (
     return {
       url: livekitConfig.url,
       token: data.token,
-      roomId: data.roomId || roomName || livekitConfig.roomName,
+      roomId: data.roomId || roomName,
     };
   } catch (error) {
     console.error('Error getting token from server:', error);
