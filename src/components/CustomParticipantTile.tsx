@@ -94,18 +94,21 @@ const CustomParticipantTile: React.FC<{
     .join('')
     .slice(0, 2);
 
-  // Check if participant is sharing screen
-  const isScreenSharing = participant
-    .getTrackPublications()
-    .some(
-      track => track.source === Track.Source.ScreenShare && track.isSubscribed
-    );
+  // A publication that is not subscribed yet, or is muted, has nothing to
+  // render. Deciding on `isCameraEnabled` alone (which only reflects the
+  // publisher's metadata) leaves an empty black tile whenever the subscription
+  // is still pending - which is what late joiners hit.
+  const cameraPub = participant.getTrackPublication(Track.Source.Camera);
+  const screenPub = participant.getTrackPublication(Track.Source.ScreenShare);
+
+  const isScreenSharing = !!screenPub?.track && !screenPub.isMuted;
+  const hasCameraVideo = !!cameraPub?.track && !cameraPub.isMuted;
 
   // Hide avatar and info when video or screen is active
-  const showInfo = !participant.isCameraEnabled && !isScreenSharing;
+  const showInfo = !hasCameraVideo && !isScreenSharing;
 
   // Show name in bottom left if camera is on or screen sharing
-  const showNameBottomLeft = participant.isCameraEnabled || isScreenSharing;
+  const showNameBottomLeft = !showInfo;
 
   return (
     <div

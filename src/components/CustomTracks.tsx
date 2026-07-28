@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Track, Participant } from 'livekit-client';
+import { Track, Participant, RemoteTrackPublication } from 'livekit-client';
 import type { TrackReference } from '@livekit/components-core';
 import {
   AudioTrack,
@@ -16,72 +16,60 @@ const CustomTracks: React.FC<{
   const { localParticipant } = useLocalParticipant();
 
   // Use LiveKit's hook for remote participants
-  const videoTracks = useParticipantTracks(
-    [source],
-    participant.isLocal ? '' : participant.identity
-  );
+  const remoteIdentity = participant.isLocal ? '' : participant.identity;
+  const videoTracks = useParticipantTracks([source], remoteIdentity);
   const audioTracks = useParticipantTracks(
     [Track.Source.Microphone],
-    participant.isLocal ? '' : participant.identity
+    remoteIdentity
   );
 
-  // Get screen share tracks
-  const screenShareTracks = useParticipantTracks(
-    [Track.Source.ScreenShare],
-    participant.isLocal ? '' : participant.identity
-  );
-
-  // Get track references based on participant type and source
-  let trackRef;
+  let trackRef: TrackReference | undefined;
   if (participant.isLocal) {
-    if (source === Track.Source.Camera) {
-      const publication = localParticipant?.getTrackPublication(
-        Track.Source.Camera
-      );
-      if (publication?.track) {
-        trackRef = { participant, publication, source };
-      }
-    } else if (source === Track.Source.ScreenShare) {
-      const publication = localParticipant?.getTrackPublication(
-        Track.Source.ScreenShare
-      );
-      if (publication?.track) {
-        trackRef = { participant, publication, source };
-      }
+    const publication = localParticipant?.getTrackPublication(source);
+    if (publication) {
+      trackRef = { participant, publication, source };
     }
   } else {
-    if (source === Track.Source.Camera) {
-      trackRef = videoTracks[0];
-    } else if (source === Track.Source.ScreenShare) {
-      trackRef = screenShareTracks[0];
-    }
+    trackRef = videoTracks[0];
   }
+
+  const publication = trackRef?.publication;
+
+  // autoSubscribe normally handles this; nudge the server if a publication we
+  // want to render is still unsubscribed.
+  useEffect(() => {
+    if (
+      publication instanceof RemoteTrackPublication &&
+      !publication.isSubscribed
+    ) {
+      publication.setSubscribed(true);
+    }
+  }, [publication]);
+
+  // Only mount the <video> when there is an actual, unmuted track to play.
+  // A display:none <video> that stays attached makes adaptiveStream report the
+  // element as invisible and 0x0, which tells the SFU to stop sending the track.
+  // Resuming then depends on IntersectionObserver/ResizeObserver firing after
+  // React flips the style back - which is exactly what intermittently fails and
+  // leaves a blank tile while the sender's camera is on.
+  const hasVideo = !!publication?.track && !publication.isMuted;
 
   const audioTrackRef = participant.isLocal
     ? undefined // No audio for local participant
     : audioTracks[0];
 
-  // Determine if we're displaying a screen share track
-  const isScreenShare = source === Track.Source.ScreenShare;
-
-  // Define different styling for screen share vs camera tracks
-  const videoStyle = isScreenShare
-    ? {
-        objectFit: 'contain' as const,
-        display: trackRef ? 'block' : 'none',
-      }
-    : {
-        display: participant.isCameraEnabled ? 'block' : 'none',
-      };
-
   return (
     <div>
-      {trackRef && (
+      {hasVideo && trackRef && (
         <CustomVideoTrack
           trackRef={trackRef}
           participant={participant}
           className="participant-video"
-          style={videoStyle}
+          style={
+            source === Track.Source.ScreenShare
+              ? { objectFit: 'contain' }
+              : undefined
+          }
         />
       )}
       {audioTrackRef && (
@@ -102,25 +90,13 @@ const CustomVideoTrack: React.FC<{
   style?: React.CSSProperties;
 }> = ({ trackRef, participant, className, style }) => {
   const videoEl = useRef<HTMLVideoElement | null>(null);
-  const publication = trackRef.publication;
-  const track = publication?.track;
-  const trackSid = publication?.trackSid;
-
-  // Ensure remote tracks are subscribed
-  useEffect(() => {
-    if (!participant.isLocal && publication && !publication.isSubscribed) {
-      publication.setSubscribed(true);
-    }
-  }, [participant.isLocal, trackSid, publication]);
+  const track = trackRef.publication?.track;
 
   // Attach and detach the LiveKit track manually to avoid state updates after unmount
   useEffect(() => {
     const element = videoEl.current;
 
     if (!element || !track) {
-      if (element) {
-        element.srcObject = null;
-      }
       return;
     }
 
@@ -131,12 +107,6 @@ const CustomVideoTrack: React.FC<{
     };
   }, [track]);
 
-  const mergedStyle = {
-    ...style,
-    display:
-      style?.display !== undefined ? style.display : track ? 'block' : 'none',
-  };
-
   return (
     <video
       ref={videoEl}
@@ -144,7 +114,7 @@ const CustomVideoTrack: React.FC<{
       autoPlay
       playsInline
       className={className}
-      style={mergedStyle}
+      style={style}
     />
   );
 };
